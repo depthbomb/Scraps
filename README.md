@@ -23,7 +23,7 @@ There are various measures taken by Scrap&#46;TF to prevent these types of progr
   * A delay of around 3.5 to 5 seconds will stop you from hitting this
 * A second form of rate limiting if you hit the above limit too often, resulting in you being required to enter a CAPTCHA to enter a raffle
 
-The way I _think_ I got caught is from the very first rate limit. While I was tuning the delay on the raffle scanning operation (which, at the time, involved loading the page HTML once before using AJAX to get the rest of the raffles) I gothit with the limit. However, I noticed that you could still send requests to the AJAX endpoints to load raffles. I'm sure it was _totally not suspicious at all_ that I was entering raffles I shouldn't even be able to see because of being rate limited.
+The way I _think_ I got caught is from the very first rate limit. While I was tuning the delay on the raffle scanning operation (which, at the time, involved loading the page HTML once before using AJAX to get the rest of the raffles) I got hit with the limit. However, I noticed that you could still send requests to the AJAX endpoints to load raffles. I'm sure it was _totally not suspicious at all_ that I was entering raffles I shouldn't even be able to see because of being rate limited.
 
 Had I waited for this limit to be lifted, I might not have gotten banned. However this is only speculation as I don't know what the website logs and what their methods of detecting this are.
 
