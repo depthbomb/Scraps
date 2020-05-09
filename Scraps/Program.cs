@@ -149,7 +149,7 @@ namespace Scraps
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.BackgroundColor = ConsoleColor.Black;
             Console.WriteLine();
-            Console.WriteLine("Scraps is in no way associated with Scrap.TF. Using this program is in violation of Scrap.TF's community guidelines. While unlikely, you risk getting banned from Scrap.TF by using this program.");
+            Console.WriteLine("Scraps is in no way associated with Scrap.TF. Using this program is in violation of Scrap.TF's community guidelines and you risk getting site banned.");
             Console.WriteLine("You have been warned! If you do not want to continue, you may close the program now.");
             Console.WriteLine("This message will only appear once.");
             Console.WriteLine();
