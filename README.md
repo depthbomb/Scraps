@@ -4,7 +4,7 @@ Scrap.TF Raffle Joiner
 
 ---
 
-The idea Scraps was conceived during one of my periods of "devious programming". It is built on .NET Core 3.0 and relies on no third-parties aside from [Serilog.](serilog)
+The idea Scraps was conceived during one of my periods of "devious programming". It is built on .NET Core 3.0 and relies on no third-parties aside from [Serilog.](https://serilog.net/)
 
 It uses no exploits, all operations use the website's AJAX endpoints to handle loading of raffles and joining them. The timings are tuned for high efficiency as to avoid hitting rate limits and errors.
 
@@ -32,5 +32,3 @@ Had I waited for this limit to be lifted, I might not have gotten banned. Howeve
 This tool is in no way associated with Scrap&#46;TF and using it could likely involve you being banned (like I was).
 
 This tool was initially private but is now open source (albeit no releases are provided) as a way of presenting a proof of concept and to perhaps show how easy it is to make scripts to automate this aspect of the Scrap&#46;TF website in the hope that maybe there can be more protection against it.
-
-[serilog]: https://serilog.net/
