@@ -3,6 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+setup/*.aip
 setup/Setup Files/
 setup/Scraps-cache/
 setup/Prerequisites/
