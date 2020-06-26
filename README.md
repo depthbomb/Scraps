@@ -4,6 +4,8 @@ Scrap.TF Raffle Joiner
 
 ---
 
+![In Action](https://i.imgur.com/3gugL2I.png)
+
 The idea Scraps was conceived during one of my periods of "devious programming".
 
 It uses no exploits, all operations use the website's AJAX endpoints to handle loading of raffles and joining them. The timings are tuned for high efficiency as to avoid hitting rate limits and errors.
