@@ -31,7 +31,7 @@
     <ROW Property="ProductCode" Value="1033:{0BC74DC4-B7DF-4B70-811F-0BD3FA73D7D5} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Scraps"/>
-    <ROW Property="ProductVersion" Value="2.0.0.0" Type="32"/>
+    <ROW Property="ProductVersion" Value="2.0.1.0" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="ThreeColorsBackground" Value="background.png" Type="1" MsiKey="ThreeColorsBackground"/>
     <ROW Property="UpgradeCode" Value="{03124668-F707-4CDD-AC5E-738262932D26}"/>

@@ -9,11 +9,11 @@
 
 /// This program is distributed in the hope that it will be useful,
 /// but WITHOUT ANY WARRANTY; without even the implied warranty of
-/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 /// GNU General Public License for more details.
 
 /// You should have received a copy of the GNU General Public License
-/// along with this program.If not, see<https://www.gnu.org/licenses/>.
+/// along with this program. If not, see<https://www.gnu.org/licenses/>.
 #endregion License
 
 using System.Xml;
@@ -26,7 +26,6 @@ namespace Scraps.Models
         [XmlAnyElement("CookieInfo")]
         public XmlComment CookieInfo { get; set; } = new XmlDocument().CreateComment("This cookie allows the bot to log in as you on Scrap.TF. This cookie will so long as *you* are still logged in. If you log out then you will need to log in again and change this value. Also, do not give this cookie to anyone!");
         public string Cookie { get; set; }
-
         public bool SeenWarning { get; set; } = false;
     }
 }

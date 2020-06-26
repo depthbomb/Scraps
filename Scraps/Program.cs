@@ -9,11 +9,11 @@
 
 /// This program is distributed in the hope that it will be useful,
 /// but WITHOUT ANY WARRANTY; without even the implied warranty of
-/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 /// GNU General Public License for more details.
 
 /// You should have received a copy of the GNU General Public License
-/// along with this program.If not, see<https://www.gnu.org/licenses/>.
+/// along with this program. If not, see<https://www.gnu.org/licenses/>.
 #endregion License
 
 using System;
@@ -32,6 +32,7 @@ using System.Text.RegularExpressions;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using CommandLine;
 
 using Scraps.Models;
 using Scraps.Common;
@@ -52,6 +53,11 @@ namespace Scraps
 
         static async Task Main(string[] args)
         {
+            if(IsAlreadyRunning())
+            {
+                Environment.Exit(0);
+            }
+
             Console.Title = $"Scraps Raffle Joiner - {AppVersion.Full}";
 
             if (!Directory.Exists(Paths.StorePath))
@@ -59,16 +65,8 @@ namespace Scraps
                 Directory.CreateDirectory(Paths.StorePath);
             }
 
-            Verbose = args.Any(a => a.Contains("-v") || a.Contains("--verbose"));
-            Logger = InitializeLogger();
-            
-            Console.WriteLine("Scraps Raffle Joiner");
-            Console.WriteLine("By depthbomb - https://s.team/p/fwc-crhc");
-            Console.WriteLine();
-
-            if (File.Exists(Paths.SettingsFile))
+            if(File.Exists(Paths.SettingsFile))
             {
-                Logger.Debug("Loading settings file");
                 Settings = LoadSettings();
             }
             else
@@ -77,20 +75,22 @@ namespace Scraps
                 SaveSettings(Settings);
             }
 
-            if (args.Any(a => a.Contains("--config") || a.Contains("--settings")))
+            Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
             {
-                Console.WriteLine("Opening settings file...");
-                Process.Start("explorer.exe", Paths.SettingsFile);
-                Environment.Exit(0);
-            }
+                Verbose = o.Verbose;
+                if (o.OpenSettings)
+				{
+                    Console.WriteLine("Opening settings file...");
+                    Process.Start("explorer.exe", Paths.SettingsFile);
+                    Environment.Exit(0);
+                }
+            });
 
-            if (IsAlreadyRunning())
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Running multiple instances of Scraps will result in you hitting rate limits and it makes no difference anyways.");
-                Console.ResetColor();
-                ExitState();
-            }
+            Logger = InitializeLogger();
+            
+            Console.WriteLine("Scraps Raffle Joiner");
+            Console.WriteLine("By depthbomb - https://s.team/p/fwc-crhc");
+            Console.WriteLine();
 
             Logger.Debug("Session Started ({Version})", AppVersion.Full);
 
@@ -130,8 +130,8 @@ namespace Scraps
         #region Setup
         static HttpClient InitializeHttpClient()
         {
-            CookieContainer cookies = new CookieContainer();
-            HttpClientHandler handler = new HttpClientHandler()
+            var cookies = new CookieContainer();
+            var handler = new HttpClientHandler()
             {
                 CookieContainer = cookies,
                 UseCookies = true
@@ -188,6 +188,8 @@ namespace Scraps
         #region Operations
         static async Task Start()
         {
+            Console.CursorVisible = false;
+
             try
             {
                 await GetCsrf();
@@ -227,8 +229,8 @@ namespace Scraps
             foreach (string raffle in RaffleQueue)
             {
                 string html = await GetString($"https://scrap.tf/raffles/{raffle}");
-                Match hash = Regexes.RaffleHashRegex.Match(html);
-                Match limits = Regexes.RaffleLimitRegex.Match(html);
+                var hash = Regexes.RaffleHashRegex.Match(html);
+                var limits = Regexes.RaffleLimitRegex.Match(html);
 
                 if (limits.Success)
                 {
@@ -255,13 +257,16 @@ namespace Scraps
                         new KeyValuePair<string, string>("csrf", Csrf),
                     });
 
-                    var response = await Client.PostAsync(url, content);
+                    var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
+                        httpRequest.Content = content;
+                        httpRequest.Headers.Referrer = new Uri("https://scrap.tf/raffles/" + raffle);
+
+                    var response = await Client.SendAsync(httpRequest);
 
                     string json = response.Content.ReadAsStringAsync().Result;
 
                     var resp = JsonSerializer.Deserialize<JoinRaffleResponse>(json);
 
-                    // A bit redundant but I do it like this so we can log messages with context
                     if (resp.success)
                     {
                         entered++;
@@ -308,7 +313,7 @@ namespace Scraps
                 if (!resp.done)
                 {
                     Logger.Debug("Scanning next page (apex = {Apex})", lastId);
-                    await Task.Delay(250);
+                    await Task.Delay(500);
                     goto ScanNext;
                 }
 
@@ -325,7 +330,7 @@ namespace Scraps
             }
             else
             {
-                Logger.Error("Paginate response for apex {Apex} returned unsuccessful", lastId);
+                Logger.Error("Paginate response for apex {Apex} returned unsuccessful", lastId ?? "<null>");
             }
         }
 
@@ -356,6 +361,7 @@ namespace Scraps
             }
             else
             {
+                Console.WriteLine(html);
                 throw new Exception("Unable to retreive CSRF token. Please check your cookie value.");
             }
         }
