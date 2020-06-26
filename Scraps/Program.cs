@@ -94,11 +94,6 @@ namespace Scraps
 
             Logger.Debug("Session Started ({Version})", AppVersion.Full);
 
-            if (!Settings.SeenWarning)
-            {
-                ShowWarningMessage();
-            }
-
             if (Settings.Cookie.IsNullOrEmpty())
             {
                 Logger.Debug("User is configuring settings");
@@ -161,34 +156,14 @@ namespace Scraps
                 .WriteTo.File(Path.Combine(Paths.LogsPath, "Scraps-.log"), rollingInterval: RollingInterval.Day)
                 .CreateLogger();
         }
-
-        static void ShowWarningMessage()
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.WriteLine();
-            Console.WriteLine("Scraps is in no way associated with Scrap.TF. Using this program is in violation of Scrap.TF's community guidelines and you risk getting site banned.");
-            Console.WriteLine("You have been warned! If you do not want to continue, you may close the program now.");
-            Console.WriteLine("This message will only appear once.");
-            Console.WriteLine();
-            Console.WriteLine("Press Enter to continue");
-            Console.ResetColor();
-            Console.ReadLine();
-
-            Settings = new Settings()
-            {
-                Cookie = Settings.Cookie,
-                SeenWarning = true
-            };
-
-            SaveSettings();
-        }
         #endregion
 
         #region Operations
         static async Task Start()
         {
             Console.CursorVisible = false;
+
+            int scanDelay = 5000;
 
             try
             {
@@ -210,13 +185,20 @@ namespace Scraps
             {
                 Logger.Information("{Count} " + "raffle".Pluralize(RaffleQueue.Count) + " " + "is".Pluralize(RaffleQueue.Count, "are") + " available to enter", RaffleQueue.Count);
 
+                scanDelay = 5000;
+
                 await JoinRaffles();
             }
             else
             {
-                Logger.Debug("All raffles have been entered");
+                Logger.Debug("All raffles have been entered, scanning again after {Delay} seconds", (scanDelay / 1000));
 
-                await Task.Delay(5000);
+                await Task.Delay(scanDelay);
+
+                if(Settings.IncrementScanDelay)
+                {
+                    scanDelay = scanDelay + 1000;
+                }
             }
 
             goto ScanRaffles;
@@ -279,11 +261,7 @@ namespace Scraps
                         Logger.Error("Failed to join raffle {Id} with message {Message}", raffle, resp.message);
                     }
 
-                    // Only add a delay if the raffle ID we are currently on is not the last one in queue
-                    if (raffle != RaffleQueue.LastOrDefault())
-                    {
-                        await Task.Delay(3500);
-                    }
+                    await Task.Delay(3500);
                 }
                 else
                 {
