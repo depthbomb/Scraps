@@ -84,7 +84,7 @@ namespace Scraps
             {
                 Verbose = o.Verbose;
                 if (o.OpenSettings)
-				{
+                {
                     Console.WriteLine("Opening settings file...");
                     Process.Start("explorer.exe", Paths.SettingsFile);
                     Environment.Exit(0);
@@ -266,7 +266,7 @@ namespace Scraps
                     }
 
                     if (raffle != RaffleQueue.Last())
-					{
+                    {
                         await Task.Delay(4000);
                     }
                 }
@@ -312,7 +312,7 @@ namespace Scraps
                 var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
 
                 foreach (var el in raffleElements)
-				{
+                {
                     string elementHtml = el.InnerHtml.Trim();
                     string raffleId = Regexes.RaffleEntryRegex.Match(elementHtml).Groups[1].Value.Trim();
                     if (!raffleId.IsNullOrEmpty())  // For some reason `raffleId` will sometimes give us emptiness
@@ -324,8 +324,8 @@ namespace Scraps
                         }
                     }
                 }
-			}
-			else
+            }
+            else
             {
                 Logger.Error("Paginate response for apex {Apex} returned unsuccessful", lastId ?? "<null>");
             }
@@ -408,16 +408,16 @@ namespace Scraps
         }
 
         static void SetStatus(string status)
-		{
+        {
             if (status == null)
-			{
+            {
                 Console.Title = Title;
             }
             else
-			{
+            {
                 Console.Title = Title + $" - [{status}]";
-			}
-		}
+            }
+        }
 
         static bool IsAlreadyRunning()
             => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
