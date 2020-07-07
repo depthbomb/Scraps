@@ -16,16 +16,26 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using CommandLine;
+using System;
 
-namespace Scraps
+namespace Scraps.Common
 {
-	public class Options
-	{
-		[Option('v', "verbose", Required = false, HelpText = "Whether to display debug messages to the console")]
-		public bool Verbose { get; set; } = false;
+	public class AppVersion
+    {
+        public enum ReleaseTypes
+        {
+            Development,
+            PreRelease,
+            Release
+        }
 
-		[Option('c', "config", Required = false, HelpText = "Open the settings file")]
-		public bool OpenSettings { get; set; } = false;
-	}
+        public static Version AsDotNetVersion() => new Version(Major, Minor, Patch, Hotfix);
+        public static int Major => 2;
+        public static int Minor => 3;
+        public static int Patch => 0;
+        public static int Hotfix => 0;
+        public static ReleaseTypes ReleaseType => ReleaseTypes.Release;
+        public static string SemVer => $"{Major}.{Minor}.{Patch}.{Hotfix}";
+        public static string Full => $"{SemVer}-{ReleaseType}";
+    }
 }

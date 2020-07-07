@@ -13,7 +13,7 @@
 /// GNU General Public License for more details.
 
 /// You should have received a copy of the GNU General Public License
-/// along with this program. If not, see<https://www.gnu.org/licenses/>.
+/// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
 using System;
@@ -33,9 +33,11 @@ using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using CommandLine;
+using HtmlAgilityPack;
 
 using Scraps.Models;
 using Scraps.Common;
+using Scraps.Common.Models;
 
 namespace Scraps
 {
@@ -45,11 +47,14 @@ namespace Scraps
         static Logger Logger;
         static HttpClient Client;
         static Settings Settings;
+        static HtmlDocument Html = new HtmlDocument();
 
         static List<string> RaffleQueue = new List<string>();
         static List<string> EnteredRaffles = new List<string>();
 
         static bool Verbose = false;
+
+        static readonly string Title = $"Scraps Raffle Joiner - {AppVersion.Full}";
 
         static async Task Main(string[] args)
         {
@@ -58,7 +63,7 @@ namespace Scraps
                 Environment.Exit(0);
             }
 
-            Console.Title = $"Scraps Raffle Joiner - {AppVersion.Full}";
+            SetStatus("Booting...");
 
             if (!Directory.Exists(Paths.StorePath))
             {
@@ -113,12 +118,10 @@ namespace Scraps
                 SaveSettings();
             }
 
-#if !DEBUG
-            Jumplist.Jumplist.Register();
-#endif
-
+            SetStatus("Initializing HTTP client...");
             Client = InitializeHttpClient();
 
+            SetStatus("Starting operation...");
             await Start();
         }
 
@@ -168,13 +171,12 @@ namespace Scraps
             try
             {
                 await GetCsrf();
-
                 Logger.Information("Successfully logged in");
             }
             catch (Exception e)
             {
                 Logger.Error(e.Message);
-                ExitState();
+                Helpers.ExitState();
             }
 
             ScanRaffles:
@@ -183,6 +185,7 @@ namespace Scraps
 
             if (RaffleQueue.Count > 0)
             {
+                SetStatus("Joining raffles...");
                 Logger.Information("{Count} " + "raffle".Pluralize(RaffleQueue.Count) + " " + "is".Pluralize(RaffleQueue.Count, "are") + " available to enter", RaffleQueue.Count);
 
                 scanDelay = 5000;
@@ -191,6 +194,7 @@ namespace Scraps
             }
             else
             {
+                SetStatus("Waiting to scan...");
                 Logger.Debug("All raffles have been entered, scanning again after {Delay} seconds", (scanDelay / 1000));
 
                 await Task.Delay(scanDelay);
@@ -210,7 +214,7 @@ namespace Scraps
             int total = RaffleQueue.Count;
             foreach (string raffle in RaffleQueue)
             {
-                string html = await GetString($"https://scrap.tf/raffles/{raffle}");
+                string html = await Client.GetStringAsync($"https://scrap.tf/raffles/{raffle}");
                 var hash = Regexes.RaffleHashRegex.Match(html);
                 var limits = Regexes.RaffleLimitRegex.Match(html);
 
@@ -245,7 +249,7 @@ namespace Scraps
 
                     var response = await Client.SendAsync(httpRequest);
 
-                    string json = response.Content.ReadAsStringAsync().Result;
+                    string json = await response.Content.ReadAsStringAsync();
 
                     var resp = JsonSerializer.Deserialize<JoinRaffleResponse>(json);
 
@@ -261,10 +265,14 @@ namespace Scraps
                         Logger.Error("Failed to join raffle {Id} with message {Message}", raffle, resp.message);
                     }
 
-                    await Task.Delay(3500);
+                    if (raffle != RaffleQueue.Last())
+					{
+                        await Task.Delay(4000);
+                    }
                 }
                 else
                 {
+                    total--;
                     Logger.Error("Could not obtain hash from raffle {Id}", raffle);
                 }
             }
@@ -274,9 +282,10 @@ namespace Scraps
         {
             RaffleQueue.Clear();
 
+            SetStatus("Scanning...");
             Logger.Debug("Scanning raffles");
 
-            string html = string.Empty;
+            string html = await Client.GetStringAsync("https://scrap.tf/raffles");
             string lastId = string.Empty;
 
             ScanNext:
@@ -295,18 +304,28 @@ namespace Scraps
                     goto ScanNext;
                 }
 
-                Logger.Debug("Done scanning all raffles");
+                Logger.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles...");
 
-                foreach (Match raffle in Regexes.RaffleEntryRegex.Matches(html))
-                {
-                    string raffleId = raffle.Groups[1].Value;
-                    if (!RaffleQueue.Contains(raffleId) && !EnteredRaffles.Contains(raffleId))
+                Html.LoadHtml(html);
+                var document = Html.DocumentNode;
+
+                var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
+
+                foreach (var el in raffleElements)
+				{
+                    string elementHtml = el.InnerHtml.Trim();
+                    string raffleId = Regexes.RaffleEntryRegex.Match(elementHtml).Groups[1].Value.Trim();
+                    if (!raffleId.IsNullOrEmpty())  // For some reason `raffleId` will sometimes give us emptiness
                     {
-                        RaffleQueue.Add(raffleId);
+                        if(!RaffleQueue.Contains(raffleId) && !EnteredRaffles.Contains(raffleId))
+                        {
+                            SetStatus($"Adding raffle {raffleId} to queue...");
+                            RaffleQueue.Add(raffleId);
+                        }
                     }
                 }
-            }
-            else
+			}
+			else
             {
                 Logger.Error("Paginate response for apex {Apex} returned unsuccessful", lastId ?? "<null>");
             }
@@ -325,12 +344,13 @@ namespace Scraps
 
             var response = await Client.PostAsync(url, content);
 
-            return response.Content.ReadAsStringAsync().Result;
+            return await response.Content.ReadAsStringAsync();
         }
 
         static async Task GetCsrf()
         {
-            string html = await GetString("https://scrap.tf");
+            SetStatus("Grabbing CSRF token...");
+            string html = await Client.GetStringAsync("https://scrap.tf");
             Match csrf = Regexes.CsrfRegex.Match(html);
             if (csrf.Success)
             {
@@ -346,17 +366,6 @@ namespace Scraps
         #endregion
 
         #region Helpers
-        static async Task<string> GetString(string url)
-            => await Client.GetStringAsync(url);
-
-        static void ExitState()
-        {
-            Console.WriteLine();
-            Console.WriteLine("Press Enter to exit.");
-            Console.ReadLine();
-            Environment.Exit(0);
-        }
-
         static void SaveSettings(Settings settings = null)
         {
             if (settings == null)
@@ -397,6 +406,18 @@ namespace Scraps
                 }
             }
         }
+
+        static void SetStatus(string status)
+		{
+            if (status == null)
+			{
+                Console.Title = Title;
+            }
+            else
+			{
+                Console.Title = Title + $" - [{status}]";
+			}
+		}
 
         static bool IsAlreadyRunning()
             => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;

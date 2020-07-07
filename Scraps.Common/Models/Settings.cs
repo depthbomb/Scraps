@@ -13,15 +13,15 @@
 /// GNU General Public License for more details.
 
 /// You should have received a copy of the GNU General Public License
-/// along with this program. If not, see<https://www.gnu.org/licenses/>.
+/// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Scraps.Models
+namespace Scraps.Common.Models
 {
-    public class Settings
+	public class Settings
     {
         [XmlAnyElement("c1")]
         public XmlComment c1 { get; set; } = new XmlDocument().CreateComment("This cookie allows the bot to log in as you on Scrap.TF. This cookie will so long as *you* are still logged in. If you log out then you will need to log in again and change this value. Also, do not give this cookie to anyone!");

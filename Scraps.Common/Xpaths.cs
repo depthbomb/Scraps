@@ -16,16 +16,10 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using CommandLine;
-
-namespace Scraps
+namespace Scraps.Common
 {
-	public class Options
+	public static class Xpaths
 	{
-		[Option('v', "verbose", Required = false, HelpText = "Whether to display debug messages to the console")]
-		public bool Verbose { get; set; } = false;
-
-		[Option('c', "config", Required = false, HelpText = "Open the settings file")]
-		public bool OpenSettings { get; set; } = false;
+		public static readonly string UnenteredRaffles = "//*[contains(@class, 'panel-raffle') and not(contains(@class, 'raffle-entered'))]";
 	}
 }

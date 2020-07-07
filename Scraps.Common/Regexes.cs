@@ -9,11 +9,11 @@
 
 /// This program is distributed in the hope that it will be useful,
 /// but WITHOUT ANY WARRANTY; without even the implied warranty of
-/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 /// GNU General Public License for more details.
 
 /// You should have received a copy of the GNU General Public License
-/// along with this program.If not, see<https://www.gnu.org/licenses/>.
+/// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
 using System.Text.RegularExpressions;
@@ -23,8 +23,9 @@ namespace Scraps.Common
     public class Regexes
     {
         public static readonly Regex CsrfRegex = new Regex(@"ScrapTF\.User\.Hash = ""([a-f0-9]{64})"";");
-        public static readonly Regex RaffleEntryRegex = new Regex(@"<div class=""panel-raffle "" id=""raffle-box-([A-Z0-9]{6,})"">");
+        public static readonly Regex RaffleEntryRegex = new Regex(@"ScrapTF\.Raffles\.RedirectToRaffle\('([A-Z0-9]{6,})'\)");
         public static readonly Regex RaffleHashRegex = new Regex(@"EnterRaffle\('[A-Z0-9]{6,}', '([a-f0-9]{64})'");
         public static readonly Regex RaffleLimitRegex = new Regex(@"total=""(\d+)"" data-max=""(\d+)");
+        public static readonly Regex RaffleWithdrawRegex = new Regex(@"ScrapTF\.Raffles\.WithdrawRaffle\('([A-Z0-9]{6,})'\)");
     }
 }
