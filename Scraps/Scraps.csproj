@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(SolutionDir)setup\readme.html&quot; &quot;$(OutDir)_README.html&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)setup\changelog.html&quot; &quot;$(OutDir)_CHANGELOG.html&quot;&#xD;&#xA;" />
+    <Exec Command="copy /Y &quot;$(SolutionDir)setup\readme.html&quot; &quot;$(OutDir)_README.html&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)setup\changelog.html&quot; &quot;$(OutDir)_CHANGELOG.html&quot;&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(OutDir)*.*&quot; &quot;$(SolutionDir)setup\Setup Files\Scraps\&quot; /F /R /Y /I" />
   </Target>
 
 </Project>
