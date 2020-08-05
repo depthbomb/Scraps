@@ -15,7 +15,6 @@
     <PackageReference Include="Serilog" Version="2.9.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
-    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,9 +24,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Scraps.Common\Scraps.Common.csproj" />
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(SolutionDir)setup\readme.html&quot; &quot;$(OutDir)_README.html&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)setup\changelog.html&quot; &quot;$(OutDir)_CHANGELOG.html&quot;&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(OutDir)*.*&quot; &quot;$(SolutionDir)setup\Setup Files\Scraps\&quot; /F /R /Y /I" />
-  </Target>
 
 </Project>

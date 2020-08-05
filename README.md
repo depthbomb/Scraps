@@ -16,6 +16,8 @@ It uses no exploits, all operations use the website's AJAX endpoints to handle l
 
 Simply double-click the Scraps.exe file. The first time it is ran, you will be prompted to enter your `scr_session` cookie value that is stored in your browser while you are logged in to the website. You can paste values into the console window by right-clicking the output area or by right-clicking the window's titlebar, going to Edit, and clicking Paste.
 
+For more info, please consult the [instructions.](https://github.com/depthbomb/Scraps/blob/master/INSTRUCTIONS.md)
+
 ### Command line usage
 
 There are a few options that can be passed to Scraps when you run it
