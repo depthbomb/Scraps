@@ -10,6 +10,14 @@ The idea Scraps was conceived during one of my periods of "devious programming".
 
 It uses no exploits, all operations use the website's AJAX endpoints to handle loading of raffles and joining them. The timings are tuned for high efficiency as to avoid hitting rate limits and errors.
 
+## Requirements
+
+Scraps was developed on Windows 10 >=v2004. It will probably work on Windows 8 and maybe even Windows 7 but those are untested.
+
+You will also need to download and install the .NET Core Runtime installer for Windows (assuming you are using Windows) from [here.](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+
+![Clicky clicky](https://i.imgur.com/iXnKeqZ.png)
+
 ## Usage
 
 ### Conventional usage
