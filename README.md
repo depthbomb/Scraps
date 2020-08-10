@@ -33,6 +33,10 @@ There are a few options that can be passed to Scraps when you run it
 * `--verbose`/`-v` - Log debug info to the console window, not really any use to the normal user unless you just want to see more of what's going on
 * `--config`/`-c` - Opens your settings file in your OS's default program and closes Scraps
 
+## Help
+
+If you need help with Scraps then send me a DM on Discord `depthbomb#0163`. Avoid joining my Discord server from my GitHub profile as you may get mixed in with other people looking to join for other reasons.
+
 ## Disclaimer
 
 This tool is in no way associated with Scrap&#46;TF and using it puts your Scrap&#46;TF at risk of getting banned (although it is probably unlikely).
