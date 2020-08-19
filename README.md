@@ -14,7 +14,7 @@ It uses no exploits, all operations use the website's AJAX endpoints to handle l
 
 Scraps was developed on Windows 10 >=v2004. It will probably work on Windows 8 and maybe even Windows 7 but those are untested.
 
-You will also need to download and install the .NET Core Runtime installer for Windows (assuming you are using Windows) from [here.](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+You will also need to download the .NET Core Runtime installer for Windows from [here](https://dotnet.microsoft.com/download/dotnet-core/3.1) and install it.
 
 ![Clicky clicky](https://i.imgur.com/iXnKeqZ.png)
 
