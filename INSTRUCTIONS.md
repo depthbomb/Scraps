@@ -13,8 +13,8 @@ In order for Scraps to work, it needs your Scrap.TF cookie. Scraps will then use
 1. Visit Scrap.TF in a browser where you are logged into the site
 2. Go to your browser's developer tools, click Application at the top, and open up the Cookies menu on the side [(Image)](https://i.imgur.com/mJ3hfnr.png)
 3. Copy the entire value for the cookie named `scr_session` and paste it into the program when it asks for it
-  - You can right-click into the program window to paste
-  - ou can also paste by right-clicking the top border of the window, hovering over **Edit** and clicking **Paste**
+    - You can right-click into the program window to paste
+    - You can also paste by right-clicking the top border of the window, hovering over **Edit** and clicking **Paste**
 4. Your cookie will be saved to your settings file `Settings.xml` located in **My Documents\Caprine Logic\Scraps**
 5. Scraps will remain logged in as you so long as you do not log out of Scrap.TF
 
