@@ -151,14 +151,17 @@ namespace Scraps
 #else
             debug = Verbose;
 #endif
-
             return new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console(
                     restrictedToMinimumLevel: debug ? LogEventLevel.Debug : LogEventLevel.Information,
                     outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] {Message:l}{NewLine}{Exception}"
                  )
-                .WriteTo.File(Path.Combine(Paths.LogsPath, "Scraps-.log"), rollingInterval: RollingInterval.Day)
+                .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Fatal).WriteTo.File(Path.Combine(Paths.LogsPath, "Fatal-.log"), rollingInterval: RollingInterval.Month))
+                .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Error).WriteTo.File(Path.Combine(Paths.LogsPath, "Errors-.log"), rollingInterval: RollingInterval.Month))
+                .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Warning).WriteTo.File(Path.Combine(Paths.LogsPath, "Warning-.log"), rollingInterval: RollingInterval.Month))
+                .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Information).WriteTo.File(Path.Combine(Paths.LogsPath, "Info-.log"), rollingInterval: RollingInterval.Month))
+                .WriteTo.File(Path.Combine(Paths.LogsPath, "Verbose-.log"), rollingInterval: RollingInterval.Month)
                 .CreateLogger();
         }
         #endregion
@@ -178,7 +181,7 @@ namespace Scraps
             }
             catch (Exception e)
             {
-                Logger.Error(e.Message);
+                Logger.Fatal(e.Message);
                 Helpers.ExitState();
             }
 
@@ -229,7 +232,7 @@ namespace Scraps
                     if (num >= max)
                     {
                         total--;
-                        Logger.Warning("Raffle {Id} is full ({Num}/{Max}), skipping", raffle, num, max);
+                        Logger.Information("Raffle {Id} is full ({Num}/{Max}), skipping", raffle, num, max);
                         EnteredRaffles.Add(raffle);
                         continue;
                     }
@@ -267,7 +270,7 @@ namespace Scraps
                     else
                     {
                         total--;
-                        Logger.Error("Failed to join raffle {Id} with message {Message}", raffle, resp.message);
+                        Logger.Warning("Failed to join raffle {Id} with message {Message}", raffle, resp.message);
                     }
 
                     SetStatus("Waiting to join next raffle...");
@@ -276,7 +279,7 @@ namespace Scraps
                 else
                 {
                     total--;
-                    Logger.Error("Could not obtain hash from raffle {Id}", raffle);
+                    Logger.Warning("Could not obtain hash from raffle {Id}", raffle);
                 }
             }
         }
@@ -296,48 +299,56 @@ namespace Scraps
 
             SetStatus("Scanning...");
 
-            var resp = JsonSerializer.Deserialize<PaginateResponse>(await Paginate(lastId));
+            string json = await Paginate(lastId);
 
-            if (resp.success)
-            {
-                html += resp.html;
-                lastId = resp.lastid;
-
-                if (!resp.done)
+            try
+			{
+                var resp = JsonSerializer.Deserialize<PaginateResponse>(json);
+                if(resp.success)
                 {
-                    Logger.Debug("Scanning next page (apex = {Apex})", lastId);
-                    await Task.Delay(500);
-                    goto ScanNext;
-                }
+                    html += resp.html;
+                    lastId = resp.lastid;
 
-                Logger.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles...");
-
-                SetStatus("Parsing scanned data...");
-
-                Html.LoadHtml(html);
-
-                var document = Html.DocumentNode;
-                var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
-
-                foreach (var el in raffleElements)
-                {
-                    string elementHtml = el.InnerHtml.Trim();
-                    string raffleId = Regexes.RaffleEntryRegex.Match(elementHtml).Groups[1].Value.Trim();
-                    if(
-                        !raffleId.IsNullOrEmpty() &&    // For some reason `raffleId` will sometimes give us emptiness
-                        !RaffleQueue.Contains(raffleId) &&
-                        !EnteredRaffles.Contains(raffleId)
-                    )
+                    if(!resp.done)
                     {
-                        SetStatus($"Adding raffle {raffleId} to queue...");
-                        RaffleQueue.Add(raffleId);
+                        Logger.Debug("Scanning next page (apex = {Apex})", lastId);
+                        await Task.Delay(500);
+                        goto ScanNext;
+                    }
+
+                    Logger.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles...");
+
+                    SetStatus("Parsing scanned data...");
+
+                    Html.LoadHtml(html);
+
+                    var document = Html.DocumentNode;
+                    var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
+
+                    foreach(var el in raffleElements)
+                    {
+                        string elementHtml = el.InnerHtml.Trim();
+                        string raffleId = Regexes.RaffleEntryRegex.Match(elementHtml).Groups[1].Value.Trim();
+                        if(
+                            !raffleId.IsNullOrEmpty() &&    // For some reason `raffleId` will sometimes give us emptiness
+                            !RaffleQueue.Contains(raffleId) &&
+                            !EnteredRaffles.Contains(raffleId)
+                        )
+                        {
+                            SetStatus($"Adding raffle {raffleId} to queue...");
+                            RaffleQueue.Add(raffleId);
+                        }
                     }
                 }
+                else
+                {
+                    Logger.Error("Paginate response for apex {Apex} returned unsuccessful", lastId ?? "<null>");
+                }
             }
-            else
-            {
-                Logger.Error("Paginate response for apex {Apex} returned unsuccessful", lastId ?? "<null>");
-            }
+            catch(JsonException)
+			{
+                Logger.Error("Failed to read pagination data, got {String} instead of valid JSON", json);
+			}
         }
 
         static async Task<string> Paginate(string apex = null)

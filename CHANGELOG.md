@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.3.1.0
+
+- Improved error handling for pagination operation
+- Log file intervals are now by month and some levels are split into their own file
+
 ## Version 2.3.0.0
 
 - Added raffles joined during session to titlebar
