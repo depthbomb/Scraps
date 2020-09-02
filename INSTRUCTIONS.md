@@ -23,3 +23,6 @@ If you need to give Scraps a new cookie value, you can
 - Run Scraps with the `--config` flag to open your settings file so you may change the cookie
 - Delete your `Settings.xml` file and restart the program
   - This will reset _all_ of your settings in the process
+
+## Updating Scraps
+To update the program, simply download the latest release, run the extractor and overwrite all of the files in your existing Scraps installation. Your settings will remain unchanged as they are stored elsewhere.
