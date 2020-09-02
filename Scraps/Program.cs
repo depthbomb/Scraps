@@ -224,6 +224,15 @@ namespace Scraps
                 string html = await Client.GetStringAsync($"https://scrap.tf/raffles/{raffle}");
                 var hash = Regexes.RaffleHashRegex.Match(html);
                 var limits = Regexes.RaffleLimitRegex.Match(html);
+                bool hasEnded = html.Contains("data-time=\"Raffle Ended\"");
+
+                if (hasEnded)
+				{
+                    total--;
+                    Logger.Warning("Raffle {Id} has ended, skipping", raffle);
+                    EnteredRaffles.Add(raffle);
+                    continue;
+                }
 
                 if (limits.Success)
                 {

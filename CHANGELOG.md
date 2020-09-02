@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.3.2.0
+
+- Ended raffles will now be detected and skipped instead of displaying a "hash not found" warning
+
 ## Version 2.3.1.0
 
 - Improved error handling for pagination operation
