@@ -4,11 +4,11 @@ Scrap.TF Raffle Joiner
 
 ---
 
-![In Action](https://i.imgur.com/3gugL2I.png)
+![In Action](https://i.imgur.com/4Z1l3so.png)
 
-The idea Scraps was conceived during one of my periods of "devious programming".
+The idea for Scraps was conceived during one of my periods of "devious programming".
 
-It uses no exploits, all operations use the website's AJAX endpoints to handle loading of raffles and joining them. The timings are tuned for high efficiency as to avoid hitting rate limits and errors.
+It uses no exploits, doesn't rely on slow and clunky browser automation, and all operations use the website's AJAX endpoints to handle loading of raffles and joining them.
 
 ## Requirements
 
@@ -39,4 +39,4 @@ If you need help with Scraps then send me a DM on Discord `depthbomb#0163`. Avoi
 
 ## Disclaimer
 
-This tool is in no way associated with Scrap&#46;TF and using it puts your Scrap&#46;TF at risk of getting banned (although it is probably unlikely).
+This tool is in no way associated with Scrap&#46;TF (obviously) and using this tool is against their community guidelines so there is always a risk your Scrap&#46;TF account may get banned. Use this tool with caution or study it as a proof of concept.
