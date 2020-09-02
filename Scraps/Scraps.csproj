@@ -25,4 +25,10 @@
     <ProjectReference Include="..\Scraps.Common\Scraps.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="CaprineNet.Common.Utils">
+      <HintPath>..\..\CaprineNet\CaprineNet.Common.Utils\bin\Release\CaprineNet.Common.Utils.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

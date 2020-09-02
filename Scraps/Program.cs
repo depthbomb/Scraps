@@ -39,6 +39,8 @@ using Scraps.Models;
 using Scraps.Common;
 using Scraps.Common.Models;
 
+using CaprineNet.Common.Utils;
+
 namespace Scraps
 {
     class Program
@@ -54,6 +56,7 @@ namespace Scraps
         static List<string> EnteredRaffles = new List<string>();
 
         static bool Verbose = false;
+        static bool OnLatestRelease = false;
 
         static readonly string Title = $"Scraps Raffle Joiner - {AppVersion.Full}";
 
@@ -92,8 +95,12 @@ namespace Scraps
                 }
             });
 
+            Client = InitializeHttpClient();
+
+            await CheckForNewReleases();
+
             Logger = InitializeLogger();
-            
+
             Console.WriteLine("Scraps Raffle Joiner");
             Console.WriteLine("By depthbomb - https://s.team/p/fwc-crhc");
             Console.WriteLine("Changelog available at https://github.com/depthbomb/Scraps/blob/master/CHANGELOG.md");
@@ -120,10 +127,6 @@ namespace Scraps
                 SaveSettings();
             }
 
-            SetStatus("Initializing HTTP client...");
-            Client = InitializeHttpClient();
-
-            SetStatus("Starting operation...");
             await Start();
         }
 
@@ -141,6 +144,35 @@ namespace Scraps
             client.DefaultRequestHeaders.Add("cookie", "scr_session=" + Settings.Cookie);
 
             return client;
+        }
+
+        static async Task CheckForNewReleases()
+		{
+            Console.WriteLine("Checking for new releases...");
+
+            string uri = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
+            string json = await Client.GetStringAsync(uri);
+            var currentTag = new Version(AppVersion.SemVer);
+
+            var release = JsonSerializer.Deserialize<LatestRelease>(json);
+            var latestTag = new Version(release.tag_name.Replace("v", ""));   //  In case I'm inconsistent in tagging
+
+            var compare = currentTag.CompareTo(latestTag);
+            if (compare < 0)
+			{
+                Console.Clear();
+                ConsoleUtils.Restore();
+                ConsoleUtils.FlashWindow(5, false);
+                Console.WriteLine("A new version of Scraps ({0}) is available to download at {1}", latestTag.ToString(), release.html_url);
+                Console.WriteLine("Continuing in 5 seconds");
+                await Task.Delay(6000); //  Account for reading
+            }
+            else
+			{
+                OnLatestRelease = true;
+                Console.WriteLine("You are using the latest version of Scraps!");
+                Console.Clear();
+            }
         }
 
         static Logger InitializeLogger()
@@ -436,7 +468,7 @@ namespace Scraps
             }
         }
 
-        static void SetStatus(string status) => Console.Title = Title + $" - [Raffles Joined this session: {RafflesJoined}]" + $" - [{status}]";
+        static void SetStatus(string status) => Console.Title = Title + (OnLatestRelease ? "" : " - [OUTDATED]") + $" - [Raffles Joined this session: {RafflesJoined}]" + $" - [{status}]";
 
         static bool IsAlreadyRunning()
             => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
