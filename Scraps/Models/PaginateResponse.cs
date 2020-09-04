@@ -23,6 +23,7 @@ namespace Scraps.Models
         public bool success { get; set; }
         public string html { get; set; }
         public string lastid { get; set; }
+        public string message { get; set; } = null;
         public bool done { get; set; }
     }
 }

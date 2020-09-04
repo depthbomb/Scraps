@@ -56,7 +56,7 @@ namespace Scraps
         static List<string> EnteredRaffles = new List<string>();
 
         static bool Verbose = false;
-        static bool OnLatestRelease = false;
+        static bool OnLatestRelease = true;
 
         static readonly string Title = $"Scraps Raffle Joiner - {AppVersion.Full}";
 
@@ -160,6 +160,7 @@ namespace Scraps
             var compare = currentTag.CompareTo(latestTag);
             if (compare < 0)
 			{
+                OnLatestRelease = false;
                 Console.Clear();
                 ConsoleUtils.Restore();
                 ConsoleUtils.FlashWindow(5, false);
@@ -169,7 +170,6 @@ namespace Scraps
             }
             else
 			{
-                OnLatestRelease = true;
                 Console.WriteLine("You are using the latest version of Scraps!");
                 Console.Clear();
             }
@@ -258,32 +258,41 @@ namespace Scraps
                 var limits = Regexes.RaffleLimitRegex.Match(html);
                 bool hasEnded = html.Contains("data-time=\"Raffle Ended\"");
 
-                if (hasEnded)
+                if (IsHoneypotRaffle(html, out string honeypotInfo))
 				{
+                    Logger.Fatal("Raffle {Id} is very likely a honeypot and will be skipped: {Reason}", raffle, honeypotInfo);
                     total--;
-                    Logger.Warning("Raffle {Id} has ended, skipping", raffle);
                     EnteredRaffles.Add(raffle);
                     continue;
-                }
-
-                if (limits.Success)
-                {
-                    int num = int.Parse(limits.Groups[1].Value);
-                    int max = int.Parse(limits.Groups[2].Value);
-                    if (num >= max)
+				}
+                else
+				{
+                    if(hasEnded)
                     {
                         total--;
-                        Logger.Information("Raffle {Id} is full ({Num}/{Max}), skipping", raffle, num, max);
+                        Logger.Warning("Raffle {Id} has ended, skipping", raffle);
                         EnteredRaffles.Add(raffle);
                         continue;
                     }
-                }
 
-                if (hash.Success)
-                {
-                    string url = "https://scrap.tf/ajax/viewraffle/EnterRaffle";
-                    var content = new FormUrlEncodedContent(new[]
+                    if(limits.Success)
                     {
+                        int num = int.Parse(limits.Groups[1].Value);
+                        int max = int.Parse(limits.Groups[2].Value);
+                        if(num >= max)
+                        {
+                            total--;
+                            Logger.Information("Raffle {Id} is full ({Num}/{Max}), skipping", raffle, num, max);
+                            EnteredRaffles.Add(raffle);
+                            continue;
+                        }
+                    }
+
+                    if(hash.Success)
+                    {
+                        string url = "https://scrap.tf/ajax/viewraffle/EnterRaffle";
+                        var content = new FormUrlEncodedContent(new[]
+                        {
                         new KeyValuePair<string, string>("raffle", raffle),
                         new KeyValuePair<string, string>("captcha", ""),
                         new KeyValuePair<string, string>("hash", hash.Groups[1].Value),
@@ -291,36 +300,37 @@ namespace Scraps
                         new KeyValuePair<string, string>("csrf", Csrf),
                     });
 
-                    var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
+                        var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
                         httpRequest.Content = content;
                         httpRequest.Headers.Referrer = new Uri("https://scrap.tf/raffles/" + raffle);
 
-                    var response = await Client.SendAsync(httpRequest);
+                        var response = await Client.SendAsync(httpRequest);
 
-                    string json = await response.Content.ReadAsStringAsync();
+                        string json = await response.Content.ReadAsStringAsync();
 
-                    var resp = JsonSerializer.Deserialize<JoinRaffleResponse>(json);
+                        var resp = JsonSerializer.Deserialize<JoinRaffleResponse>(json);
 
-                    if (resp.success)
-                    {
-                        entered++;
-                        Logger.Information("[{Entered}/{Total}] Joined raffle {Id}", entered, total, raffle);
-                        EnteredRaffles.Add(raffle);
-                        RafflesJoined++;
+                        if(resp.success)
+                        {
+                            entered++;
+                            Logger.Information("[{Entered}/{Total}] Joined raffle {Id}", entered, total, raffle);
+                            EnteredRaffles.Add(raffle);
+                            RafflesJoined++;
+                        }
+                        else
+                        {
+                            total--;
+                            Logger.Warning("Failed to join raffle {Id} with message {Message}", raffle, resp.message);
+                        }
+
+                        SetStatus("Waiting to join next raffle...");
+                        await Task.Delay(4000);
                     }
                     else
                     {
                         total--;
-                        Logger.Warning("Failed to join raffle {Id} with message {Message}", raffle, resp.message);
+                        Logger.Warning("Could not obtain hash from raffle {Id}", raffle);
                     }
-
-                    SetStatus("Waiting to join next raffle...");
-                    await Task.Delay(4000);
-                }
-                else
-                {
-                    total--;
-                    Logger.Warning("Could not obtain hash from raffle {Id}", raffle);
                 }
             }
         }
@@ -383,7 +393,23 @@ namespace Scraps
                 }
                 else
                 {
-                    Logger.Error("Paginate response for apex {Apex} returned unsuccessful", lastId ?? "<null>");
+                    if (resp.message != null)
+					{
+                        if (resp.message.Contains("active site ban"))
+						{
+                            ConsoleUtils.FlashWindow(int.MaxValue, false);
+                            Logger.Fatal("ACCOUNT HAS BEEN BANNED");
+                            Helpers.ExitState();
+                        }
+                        else
+						{
+                            Logger.Error("Encountered an error while paginating: {Message}", resp.message);
+                        }
+                    }
+                    else
+					{
+                        Logger.Error("Paginate response for apex {Apex} was unsuccessful", lastId.IsNullOrEmpty() ? "<empty>" : lastId);
+                    }
                 }
             }
             catch(JsonException)
@@ -427,6 +453,43 @@ namespace Scraps
         #endregion
 
         #region Helpers
+        static bool IsHoneypotRaffle(string html, out string info)
+		{
+            Logger.Debug("Checking if raffle is a honeypot...");
+
+            info = null;
+
+            //  The latest honeypot raffle included internal styles in the raffle message that hid the enter button so this checks for styles that modify the button.
+            Match styleMatch = Regexes.HoneypotRaffleStyleRegex.Match(html);
+
+            //  Banned users appearing in the entries list is rare, this checks for at least 3 banned users which would indicate a honeypot
+            MatchCollection bannedEntries = Regexes.HoneypotRaffleBannedUsersRegex.Matches(html);
+
+            //  This is a weak check that looks for the presence of the warning image used in the latest honeypot.
+            //  Good on them for not writing out the warning and making my job harder >:[
+            bool hasWarningImage = html.Contains("<img src=\"https://feen.us/9o0qduam.png\">");
+
+            if (styleMatch.Success)
+			{
+                info = "Enter button style is modified: " + styleMatch.Groups[1].Value;
+                return true;
+			}
+            else if (hasWarningImage)
+			{
+                info = "Honeypot raffle warning image found: https://feen.us/9o0qduam.png";
+                return true;
+			}
+            else if (bannedEntries.Count >= 3)
+			{
+                info = $"{bannedEntries.Count} users who entered raffle are now banned";
+                return true;
+			}
+            else
+			{
+                return false;
+			}
+        }
+
         static void SaveSettings(Settings settings = null)
         {
             if (settings == null)
