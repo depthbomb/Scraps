@@ -10,6 +10,13 @@ The idea for Scraps was conceived during one of my periods of "devious programmi
 
 It uses no exploits, doesn't rely on slow and clunky browser automation, and all operations use the website's AJAX endpoints to handle loading of raffles and joining them.
 
+## Features
+
+- Fast and lighweight; no need to install Python/Node.JS/Java/etc, doesn't use browser automation
+- Easy to set up and configure, simply extract and run
+- Detailed logging so you can see everything it does and makes it easier to report problems
+- Honeypot/trap raffle detection; avoids fake raffles created by staff members that will get you banned
+
 ## Requirements
 
 Scraps was developed on Windows 10 >=v2004. It will probably work on Windows 8 and maybe even Windows 7 but those are untested.
