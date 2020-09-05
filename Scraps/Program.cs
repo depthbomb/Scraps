@@ -1,5 +1,5 @@
 ﻿#region License
-/// Scraps - Scrap.TF Raffle Joiner
+/// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2020  Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ namespace Scraps
         static bool Verbose = false;
         static bool OnLatestRelease = true;
 
-        static readonly string Title = $"Scraps Raffle Joiner - {AppVersion.Full}";
+        static readonly string Title = $"Scraps - {AppVersion.Full}";
 
         static async Task Main(string[] args)
         {
@@ -101,7 +101,7 @@ namespace Scraps
 
             Logger = InitializeLogger();
 
-            Console.WriteLine("Scraps Raffle Joiner");
+            Console.WriteLine("Scraps - Scrap.TF Raffle Bot");
             Console.WriteLine("By depthbomb - https://s.team/p/fwc-crhc");
             Console.WriteLine("Changelog available at https://github.com/depthbomb/Scraps/blob/master/CHANGELOG.md");
             Console.WriteLine();
@@ -397,9 +397,7 @@ namespace Scraps
 					{
                         if (resp.message.Contains("active site ban"))
 						{
-                            ConsoleUtils.FlashWindow(int.MaxValue, false);
-                            Logger.Fatal("ACCOUNT HAS BEEN BANNED");
-                            Helpers.ExitState();
+                            DisplayTombstone();
                         }
                         else
 						{
@@ -438,16 +436,23 @@ namespace Scraps
         static async Task GetCsrf()
         {
             string html = await Client.GetStringAsync("https://scrap.tf");
-            Match csrf = Regexes.CsrfRegex.Match(html);
-            if (csrf.Success)
-            {
-                Csrf = csrf.Groups[1].Value;
-                Logger.Debug("Obtained CSRF token ({Csrf})", Csrf);
+            if (html.Contains("You have recieved a site-ban"))
+			{
+                DisplayTombstone();
             }
             else
-            {
-                Console.WriteLine(html);
-                throw new Exception("Unable to retreive CSRF token. Please check your cookie value.");
+			{
+                Match csrf = Regexes.CsrfRegex.Match(html);
+                if(csrf.Success)
+                {
+                    Csrf = csrf.Groups[1].Value;
+                    Logger.Debug("Obtained CSRF token ({Csrf})", Csrf);
+                }
+                else
+                {
+                    Console.WriteLine(html);
+                    throw new Exception("Unable to retreive CSRF token. Please check your cookie value.");
+                }
             }
         }
         #endregion
@@ -531,10 +536,18 @@ namespace Scraps
             }
         }
 
-        static void SetStatus(string status) => Console.Title = Title + (OnLatestRelease ? "" : " - [OUTDATED]") + $" - [Raffles Joined this session: {RafflesJoined}]" + $" - [{status}]";
+        static void SetStatus(string status) => Console.Title = Title + (OnLatestRelease ? "" : " :: OUTDATED") + $" :: Raffles Joined this session: {RafflesJoined}" + $" :: {status}";
 
-        static bool IsAlreadyRunning()
-            => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
+        static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
+
+        static void DisplayTombstone()
+		{
+            ConsoleUtils.FlashWindow(int.MaxValue, false);
+            Console.Title = "R.I.P.";
+            Logger.Fatal("ACCOUNT HAS BEEN BANNED");
+            Logger.Fatal("You can use a different account with Scraps by changing your cookie value located in the settings file at {SettingsFolder}", Paths.SettingsFile);
+            Helpers.ExitState();
+        }
         #endregion
     }
 }

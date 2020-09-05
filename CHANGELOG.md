@@ -1,12 +1,13 @@
 # Changelog
 
-## Version 2.5.0.0
+## Version 2.5.1.0
 
 - Added honeypot raffle detection
   - These are modified raffles that ban you upon entering
 - Improved error messages while paginating
 - Program will now stop operations if it detects that the account has been banned
 - Fixed status briefly saying the program is outdated when starting up
+- Updated status formatting
 
 ## Version 2.4.0.0
 

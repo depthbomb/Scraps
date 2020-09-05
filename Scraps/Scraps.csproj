@@ -6,7 +6,7 @@
     <ApplicationIcon>Scraps.ico</ApplicationIcon>
     <Version>2.0.0.0</Version>
     <Authors>depthbomb</Authors>
-    <Product>Scraps Raffle Joiner</Product>
+    <Product>Scraps Raffle Bot</Product>
   </PropertyGroup>
 
   <ItemGroup>

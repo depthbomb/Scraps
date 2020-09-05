@@ -1,6 +1,6 @@
 # Scraps
 
-Scrap.TF Raffle Joiner
+Scrap.TF Raffle Bot
 
 ---
 

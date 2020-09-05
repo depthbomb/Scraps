@@ -1,5 +1,5 @@
 ﻿#region License
-/// Scraps - Scrap.TF Raffle Joiner
+/// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2020  Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
