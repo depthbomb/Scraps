@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.5.2.0
+
+- Removed debug logging inside honeypot checker
+
 ## Version 2.5.1.0
 
 - Added honeypot raffle detection

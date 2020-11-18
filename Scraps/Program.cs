@@ -147,7 +147,7 @@ namespace Scraps
         }
 
         static async Task CheckForNewReleases()
-		{
+        {
             Console.WriteLine("Checking for new releases...");
 
             string uri = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
@@ -159,7 +159,7 @@ namespace Scraps
 
             var compare = currentTag.CompareTo(latestTag);
             if (compare < 0)
-			{
+            {
                 OnLatestRelease = false;
                 Console.Clear();
                 ConsoleUtils.Restore();
@@ -169,7 +169,7 @@ namespace Scraps
                 await Task.Delay(6000); //  Account for reading
             }
             else
-			{
+            {
                 Console.WriteLine("You are using the latest version of Scraps!");
                 Console.Clear();
             }
@@ -259,14 +259,14 @@ namespace Scraps
                 bool hasEnded = html.Contains("data-time=\"Raffle Ended\"");
 
                 if (IsHoneypotRaffle(html, out string honeypotInfo))
-				{
+                {
                     Logger.Fatal("Raffle {Id} is very likely a honeypot and will be skipped: {Reason}", raffle, honeypotInfo);
                     total--;
                     EnteredRaffles.Add(raffle);
                     continue;
-				}
+                }
                 else
-				{
+                {
                     if(hasEnded)
                     {
                         total--;
@@ -293,12 +293,12 @@ namespace Scraps
                         string url = "https://scrap.tf/ajax/viewraffle/EnterRaffle";
                         var content = new FormUrlEncodedContent(new[]
                         {
-                        new KeyValuePair<string, string>("raffle", raffle),
-                        new KeyValuePair<string, string>("captcha", ""),
-                        new KeyValuePair<string, string>("hash", hash.Groups[1].Value),
-                        new KeyValuePair<string, string>("flag", ""),
-                        new KeyValuePair<string, string>("csrf", Csrf),
-                    });
+                            new KeyValuePair<string, string>("raffle", raffle),
+                            new KeyValuePair<string, string>("captcha", ""),
+                            new KeyValuePair<string, string>("hash", hash.Groups[1].Value),
+                            new KeyValuePair<string, string>("flag", ""),
+                            new KeyValuePair<string, string>("csrf", Csrf),
+                        });
 
                         var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
                         httpRequest.Content = content;
@@ -353,7 +353,7 @@ namespace Scraps
             string json = await Paginate(lastId);
 
             try
-			{
+            {
                 var resp = JsonSerializer.Deserialize<PaginateResponse>(json);
                 if(resp.success)
                 {
@@ -394,26 +394,26 @@ namespace Scraps
                 else
                 {
                     if (resp.message != null)
-					{
+                    {
                         if (resp.message.Contains("active site ban"))
-						{
+                        {
                             DisplayTombstone();
                         }
                         else
-						{
+                        {
                             Logger.Error("Encountered an error while paginating: {Message}", resp.message);
                         }
                     }
                     else
-					{
+                    {
                         Logger.Error("Paginate response for apex {Apex} was unsuccessful", lastId.IsNullOrEmpty() ? "<empty>" : lastId);
                     }
                 }
             }
             catch(JsonException)
-			{
+            {
                 Logger.Error("Failed to read pagination data, got {String} instead of valid JSON", json);
-			}
+            }
         }
 
         static async Task<string> Paginate(string apex = null)
@@ -436,12 +436,13 @@ namespace Scraps
         static async Task GetCsrf()
         {
             string html = await Client.GetStringAsync("https://scrap.tf");
+
             if (html.Contains("You have recieved a site-ban"))
-			{
+            {
                 DisplayTombstone();
             }
             else
-			{
+            {
                 Match csrf = Regexes.CsrfRegex.Match(html);
                 if(csrf.Success)
                 {
@@ -450,7 +451,6 @@ namespace Scraps
                 }
                 else
                 {
-                    Console.WriteLine(html);
                     throw new Exception("Unable to retreive CSRF token. Please check your cookie value.");
                 }
             }
@@ -459,9 +459,7 @@ namespace Scraps
 
         #region Helpers
         static bool IsHoneypotRaffle(string html, out string info)
-		{
-            Logger.Debug("Checking if raffle is a honeypot...");
-
+        {
             info = null;
 
             //  The latest honeypot raffle included internal styles in the raffle message that hid the enter button so this checks for styles that modify the button.
@@ -475,24 +473,24 @@ namespace Scraps
             bool hasWarningImage = html.Contains("<img src=\"https://feen.us/9o0qduam.png\">");
 
             if (styleMatch.Success)
-			{
+            {
                 info = "Enter button style is modified: " + styleMatch.Groups[1].Value;
                 return true;
-			}
+            }
             else if (hasWarningImage)
-			{
+            {
                 info = "Honeypot raffle warning image found: https://feen.us/9o0qduam.png";
                 return true;
-			}
+            }
             else if (bannedEntries.Count >= 3)
-			{
+            {
                 info = $"{bannedEntries.Count} users who entered raffle are now banned";
                 return true;
-			}
+            }
             else
-			{
+            {
                 return false;
-			}
+            }
         }
 
         static void SaveSettings(Settings settings = null)
@@ -541,7 +539,7 @@ namespace Scraps
         static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
 
         static void DisplayTombstone()
-		{
+        {
             ConsoleUtils.FlashWindow(int.MaxValue, false);
             Console.Title = "R.I.P.";
             Logger.Fatal("ACCOUNT HAS BEEN BANNED");
