@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.6.0.0
+
+- Added invalid max entries check to honeypot checker
+- Changed banned entry users check to look for at least 2 users instead of 3
+
 ## Version 2.5.2.0
 
 - Removed debug logging inside honeypot checker

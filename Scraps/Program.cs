@@ -120,7 +120,10 @@ namespace Scraps
 
                 settings.Cookie = Console.ReadLine().Trim();
 
-                if (settings.Cookie.IsNullOrEmpty()) goto AskForCookie;
+                if (settings.Cookie.IsNullOrEmpty())
+				{
+                    goto AskForCookie;
+                }
 
                 Settings = settings;
 
@@ -465,7 +468,10 @@ namespace Scraps
             //  The latest honeypot raffle included internal styles in the raffle message that hid the enter button so this checks for styles that modify the button.
             Match styleMatch = Regexes.HoneypotRaffleStyleRegex.Match(html);
 
-            //  Banned users appearing in the entries list is rare, this checks for at least 3 banned users which would indicate a honeypot
+            //  Users can only set the max entries to 100,000 while staff can go above this number.
+            Match maxEntriesMatch = Regexes.HoneypotRaffleMaxEntriesRegex.Match(html);
+
+            //  Banned users appearing in the entries list is rare, this captures all banned user avatars
             MatchCollection bannedEntries = Regexes.HoneypotRaffleBannedUsersRegex.Matches(html);
 
             //  This is a weak check that looks for the presence of the warning image used in the latest honeypot.
@@ -482,10 +488,22 @@ namespace Scraps
                 info = "Honeypot raffle warning image found: https://feen.us/9o0qduam.png";
                 return true;
             }
-            else if (bannedEntries.Count >= 3)
+            else if (bannedEntries.Count > 1)
             {
                 info = $"{bannedEntries.Count} users who entered raffle are now banned";
                 return true;
+            }
+            else if (maxEntriesMatch.Success)
+            {
+                if (int.TryParse(maxEntriesMatch.Groups[1].Value, out int maxEntries) && maxEntries > 100_000)
+                {
+                    info = $"Raffle has an impossible max entries value ({maxEntries} > 100,000)";
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {

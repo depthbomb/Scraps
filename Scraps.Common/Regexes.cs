@@ -28,6 +28,7 @@ namespace Scraps.Common
         public static readonly Regex RaffleLimitRegex = new Regex(@"total=""(\d+)"" data-max=""(\d+)");
         public static readonly Regex RaffleWithdrawRegex = new Regex(@"ScrapTF\.Raffles\.WithdrawRaffle\('([A-Z0-9]{6,})'\)");
         public static readonly Regex HoneypotRaffleStyleRegex = new Regex(@"<style>\.enter-raffle-btns \.btn{(.*)}<\/style>");
+        public static readonly Regex HoneypotRaffleMaxEntriesRegex = new Regex(@"data-max=""(\d{1,})""");
         public static readonly Regex HoneypotRaffleBannedUsersRegex = new Regex("<img class='tiny-raffle-avatar\\s?' style='border-color:\\s?#CC1100;?' src='(.*)' loading=\"lazy\"\\s?\\/>");
     }
 }
