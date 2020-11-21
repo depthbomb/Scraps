@@ -263,7 +263,7 @@ namespace Scraps
 
                 if (IsHoneypotRaffle(html, out string honeypotInfo))
                 {
-                    Logger.Fatal("Raffle {Id} is very likely a honeypot and will be skipped: {Reason}", raffle, honeypotInfo);
+                    Logger.Information("Raffle {Id} is very likely a honeypot and will be skipped: {Reason}", raffle, honeypotInfo);
                     total--;
                     EnteredRaffles.Add(raffle);
                     continue;
@@ -273,7 +273,7 @@ namespace Scraps
                     if(hasEnded)
                     {
                         total--;
-                        Logger.Warning("Raffle {Id} has ended, skipping", raffle);
+                        Logger.Information("Raffle {Id} has ended, skipping", raffle);
                         EnteredRaffles.Add(raffle);
                         continue;
                     }
@@ -323,7 +323,7 @@ namespace Scraps
                         else
                         {
                             total--;
-                            Logger.Warning("Failed to join raffle {Id} with message {Message}", raffle, resp.message);
+                            Logger.Information("Unable to join raffle {Id} with message {Message}", raffle, resp.message);
                         }
 
                         SetStatus("Waiting to join next raffle...");
@@ -355,67 +355,74 @@ namespace Scraps
 
             string json = await Paginate(lastId);
 
-            try
-            {
-                var resp = JsonSerializer.Deserialize<PaginateResponse>(json);
-                if(resp.success)
+            if (json == null)
+			{
+                await Task.Delay(10000);
+			}
+            else
+			{
+                try
                 {
-                    html += resp.html;
-                    lastId = resp.lastid;
-
-                    if(!resp.done)
+                    var resp = JsonSerializer.Deserialize<PaginateResponse>(json);
+                    if(resp.success)
                     {
-                        Logger.Debug("Scanning next page (apex = {Apex})", lastId);
-                        await Task.Delay(500);
-                        goto ScanNext;
-                    }
+                        html += resp.html;
+                        lastId = resp.lastid;
 
-                    Logger.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles...");
-
-                    SetStatus("Parsing scanned data...");
-
-                    Html.LoadHtml(html);
-
-                    var document = Html.DocumentNode;
-                    var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
-
-                    foreach(var el in raffleElements)
-                    {
-                        string elementHtml = el.InnerHtml.Trim();
-                        string raffleId = Regexes.RaffleEntryRegex.Match(elementHtml).Groups[1].Value.Trim();
-                        if(
-                            !raffleId.IsNullOrEmpty() &&    // For some reason `raffleId` will sometimes give us emptiness
-                            !RaffleQueue.Contains(raffleId) &&
-                            !EnteredRaffles.Contains(raffleId)
-                        )
+                        if(!resp.done)
                         {
-                            SetStatus($"Adding raffle {raffleId} to queue...");
-                            RaffleQueue.Add(raffleId);
+                            Logger.Debug("Scanning next page (apex = {Apex})", lastId);
+                            await Task.Delay(500);
+                            goto ScanNext;
                         }
-                    }
-                }
-                else
-                {
-                    if (resp.message != null)
-                    {
-                        if (resp.message.Contains("active site ban"))
+
+                        Logger.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles...");
+
+                        SetStatus("Parsing scanned data...");
+
+                        Html.LoadHtml(html);
+
+                        var document = Html.DocumentNode;
+                        var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
+
+                        foreach(var el in raffleElements)
                         {
-                            DisplayTombstone();
-                        }
-                        else
-                        {
-                            Logger.Error("Encountered an error while paginating: {Message}", resp.message);
+                            string elementHtml = el.InnerHtml.Trim();
+                            string raffleId = Regexes.RaffleEntryRegex.Match(elementHtml).Groups[1].Value.Trim();
+                            if(
+                                !raffleId.IsNullOrEmpty() &&    // For some reason `raffleId` will sometimes give us emptiness
+                                !RaffleQueue.Contains(raffleId) &&
+                                !EnteredRaffles.Contains(raffleId)
+                            )
+                            {
+                                SetStatus($"Adding raffle {raffleId} to queue...");
+                                RaffleQueue.Add(raffleId);
+                            }
                         }
                     }
                     else
                     {
-                        Logger.Error("Paginate response for apex {Apex} was unsuccessful", lastId.IsNullOrEmpty() ? "<empty>" : lastId);
+                        if(resp.message != null)
+                        {
+                            if(resp.message.Contains("active site ban"))
+                            {
+                                DisplayTombstone();
+                            }
+                            else
+                            {
+                                Logger.Error("Encountered an error while paginating: {Message}", resp.message);
+                            }
+                        }
+                        else
+                        {
+                            Logger.Error("Paginate response for apex {Apex} was unsuccessful", lastId.IsNullOrEmpty() ? "<empty>" : lastId);
+                        }
                     }
                 }
-            }
-            catch(JsonException)
-            {
-                Logger.Error("Failed to read pagination data, got {String} instead of valid JSON", json);
+                catch(JsonException ex)
+                {
+                    Logger.Error("Failed to read pagination data: {Error}", ex.Message);
+                }
             }
         }
 
@@ -433,7 +440,15 @@ namespace Scraps
 
             var response = await Client.PostAsync(url, content);
 
-            return await response.Content.ReadAsStringAsync();
+            if (response.StatusCode.ToString() == "OK")
+			{
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+			{
+                Logger.Warning("Pagination returned a {Status} response instead of JSON. Waiting...", response.StatusCode);
+                return null;
+			}
         }
 
         static async Task GetCsrf()
@@ -466,17 +481,19 @@ namespace Scraps
             info = null;
 
             //  The latest honeypot raffle included internal styles in the raffle message that hid the enter button so this checks for styles that modify the button.
+            //  This method appears to no longer work, but keeping it in just in case.
             Match styleMatch = Regexes.HoneypotRaffleStyleRegex.Match(html);
 
             //  Users can only set the max entries to 100,000 while staff can go above this number.
+            //  Latest honeypot raffle didn't utilize absurdly high max entries, but keeping this in because it is possible.
             Match maxEntriesMatch = Regexes.HoneypotRaffleMaxEntriesRegex.Match(html);
 
             //  Banned users appearing in the entries list is rare, this captures all banned user avatars
             MatchCollection bannedEntries = Regexes.HoneypotRaffleBannedUsersRegex.Matches(html);
 
-            //  This is a weak check that looks for the presence of the warning image used in the latest honeypot.
-            //  Good on them for not writing out the warning and making my job harder >:[
-            bool hasWarningImage = html.Contains("<img src=\"https://feen.us/9o0qduam.png\">");
+            //  Checks for warning images used in the raffle message
+            bool hasWarningImage = html.Contains("<img src=\"https://feen.us/9o0qduam.png\">") ||
+                                   html.Contains("<img src=\"https://i.nikkigar.de/qk4p0ubwef.png\">");
 
             if (styleMatch.Success)
             {
@@ -485,7 +502,7 @@ namespace Scraps
             }
             else if (hasWarningImage)
             {
-                info = "Honeypot raffle warning image found: https://feen.us/9o0qduam.png";
+                info = "Warning image found";
                 return true;
             }
             else if (bannedEntries.Count > 1)
@@ -497,18 +514,12 @@ namespace Scraps
             {
                 if (int.TryParse(maxEntriesMatch.Groups[1].Value, out int maxEntries) && maxEntries > 100_000)
                 {
-                    info = $"Raffle has an impossible max entries value ({maxEntries} > 100,000)";
+                    info = $"Impossible max entries value ({maxEntries} > 100,000)";
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         static void SaveSettings(Settings settings = null)

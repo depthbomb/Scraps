@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 2.6.1.0
+
+- Added an additional warning image to honeypot checker
+- Improved handling of pagination errors
+- Logging levels now follow a standard
+  - Warning, Error, and Fatal will no longer be used for events that do not impact operation of the program
+
 ## Version 2.6.0.0
 
 - Added invalid max entries check to honeypot checker
