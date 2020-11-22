@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.7.0.0
+
+- Added proxy support
+
 ## Version 2.6.1.0
 
 - Added an additional warning image to honeypot checker

@@ -56,6 +56,7 @@ namespace Scraps
         static List<string> EnteredRaffles = new List<string>();
 
         static bool Verbose = false;
+        static bool UseProxy = false;
         static bool OnLatestRelease = true;
 
         static readonly string Title = $"Scraps - {AppVersion.Full}";
@@ -87,6 +88,7 @@ namespace Scraps
             Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
             {
                 Verbose = o.Verbose;
+                UseProxy = o.UseProxy;
                 if (o.OpenSettings)
                 {
                     Console.WriteLine("Opening settings file...");
@@ -136,15 +138,55 @@ namespace Scraps
         #region Setup
         static HttpClient InitializeHttpClient()
         {
+        InitializeClient:
+
+            int proxyIndex = 0;
+            string userIP = GetUserIP();
             var cookies = new CookieContainer();
-            var handler = new HttpClientHandler()
+            var handler = new HttpClientHandler
             {
                 CookieContainer = cookies,
-                UseCookies = true
+                UseCookies = true,
             };
+
+            if (UseProxy)
+			{
+                string proxyFile = @".\proxies.txt";
+                if (!File.Exists(proxyFile))
+				{
+                    Console.WriteLine("Proxy list file not found. Please read https://github.com/depthbomb/Scraps/blob/master/INSTRUCTIONS.md for more info.");
+                    Helpers.ExitState();
+                }
+
+                IEnumerable<string> proxies = File.ReadLines(@".\proxies.txt");
+
+                if (proxyIndex + 1 >= proxies.Count())
+				{
+                    Console.WriteLine("Ran out of proxies to test. Please add new addresses to the proxies.txt file.");
+                    Helpers.ExitState();
+				}
+
+                string proxy = proxies.ElementAt(proxyIndex);
+                Console.WriteLine("Testing proxy {0}", proxy);
+                handler.Proxy = new WebProxy(proxy);
+                handler.UseProxy = true;
+			}
+
             HttpClient client = new HttpClient(handler);
             client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
             client.DefaultRequestHeaders.Add("cookie", "scr_session=" + Settings.Cookie);
+
+            if (UseProxy)
+			{
+                string testUrl = "https://ifconfig.co/ip";
+                string ip = client.GetStringAsync($"http://{testUrl}").Result;
+
+                if (ip == userIP)
+				{
+                    proxyIndex++;
+                    goto InitializeClient;
+				}
+            }
 
             return client;
         }
@@ -198,6 +240,14 @@ namespace Scraps
                 .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Information).WriteTo.File(Path.Combine(Paths.LogsPath, "Info-.log"), rollingInterval: RollingInterval.Month))
                 .WriteTo.File(Path.Combine(Paths.LogsPath, "Verbose-.log"), rollingInterval: RollingInterval.Month)
                 .CreateLogger();
+        }
+
+        static string GetUserIP()
+		{
+            string hostName = Dns.GetHostName();
+            string ip = Dns.GetHostByName(hostName).AddressList[0].ToString();
+
+            return ip;
         }
         #endregion
 
