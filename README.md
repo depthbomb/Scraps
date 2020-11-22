@@ -39,6 +39,7 @@ There are a few options that can be passed to Scraps when you run it
 
 * `--verbose`/`-v` - Log debug info to the console window, not really any use to the normal user unless you just want to see more of what's going on
 * `--config`/`-c` - Opens your settings file in your OS's default program and closes Scraps
+* `--proxy`/`-p` - Instruct Scraps to look for a `proxies.txt` file in its folder and use a proxy from that list. See instructions for more info.
 
 ## Help
 
