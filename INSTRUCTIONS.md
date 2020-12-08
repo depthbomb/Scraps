@@ -26,7 +26,7 @@ If you need to give Scraps a new cookie value, you can
 
 ## Using a proxy
 
-Since **2.7.0.0** Scraps can use a proxy to hide your IP address so you can't be detected as an alt account of a banned user. Follow the steps below to use this new feature:
+Since [**2.7.0.0**](https://github.com/depthbomb/Scraps/releases/tag/2.7.0.0-PreRelease) Scraps can use a proxy to hide your IP address so you can't be detected as an alt account of a banned user. Follow the steps below to use this new feature:
 
 1. Create a `proxies.txt` file in the same location as `Scraps.exe`
 2. Add proxy addresses to this file, separated by one line break
