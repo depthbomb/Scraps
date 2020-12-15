@@ -27,8 +27,5 @@ namespace Scraps
 
 		[Option('c', "config", Required = false, HelpText = "Open the settings file")]
 		public bool OpenSettings { get; set; } = false;
-
-		[Option('p', "proxy", Required = false, HelpText = "Whether to use a random proxy from a proxies.txt file")]
-		public bool UseProxy { get; set; } = false;
 	}
 }

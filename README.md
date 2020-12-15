@@ -29,7 +29,7 @@ You will also need to download the .NET Core Runtime installer for Windows from 
 
 ### Conventional usage
 
-Simply double-click the Scraps.exe file. The first time it is ran, you will be prompted to enter your `scr_session` cookie value that is stored in your browser while you are logged in to the website. You can paste values into the console window by right-clicking the output area or by right-clicking the window's titlebar, going to Edit, and clicking Paste.
+Before you start, make sure to fill out your `Settings.xml` file. Upon starting the program for the first time, Scraps will open the folder where your settings file is located so you may fill it out. After it is filled out, you may press enter in Scraps to restart it.
 
 For more info, please consult the [instructions.](https://github.com/depthbomb/Scraps/blob/master/INSTRUCTIONS.md)
 
@@ -39,11 +39,14 @@ There are a few options that can be passed to Scraps when you run it
 
 * `--verbose`/`-v` - Log debug info to the console window, not really any use to the normal user unless you just want to see more of what's going on
 * `--config`/`-c` - Opens your settings file in your OS's default program and closes Scraps
-* `--proxy`/`-p` - Instruct Scraps to look for a `proxies.txt` file in its folder and use a proxy from that list. See instructions for more info.
+
+## Avoiding Bans
+
+The default settings are set so as to avoid hitting any rate limits and drawing suspicion. Since staff can see if you are using the same IP for multiple accounts, it is highly recommended that you run a VPN alongside Scraps to hide your IP if you are to use multiple accounts.
 
 ## Help
 
-If you need help with Scraps then send me a DM on Discord `depthbomb#0163`. Avoid joining my Discord server from my GitHub profile as you may get mixed in with other people looking to join for other reasons.
+If you need help with Scraps then send me a DM on Discord `depthbomb#0163`.
 
 ## Disclaimer
 

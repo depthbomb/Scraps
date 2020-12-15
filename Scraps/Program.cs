@@ -51,12 +51,12 @@ namespace Scraps
         static Settings Settings;
         static HtmlDocument Html = new HtmlDocument();
 
+        static int SettingsVersion = 1;
         static int RafflesJoined = 0;
         static List<string> RaffleQueue = new List<string>();
         static List<string> EnteredRaffles = new List<string>();
 
         static bool Verbose = false;
-        static bool UseProxy = false;
         static bool OnLatestRelease = true;
 
         static readonly string Title = $"Scraps - {AppVersion.Full}";
@@ -68,80 +68,92 @@ namespace Scraps
                 Environment.Exit(0);
             }
 
-            SetStatus("Booting...");
+            await CheckForNewReleases();
 
-            if (!Directory.Exists(Paths.StorePath))
+            Logger = InitializeLogger();
+            Logger.Debug("Session Started ({Version})", AppVersion.Full);
+
+            LoadSettings();
+            ParseArguments(args);
+
+            Console.WriteLine();
+            Console.WriteLine("Scraps - Scrap.TF Raffle Bot");
+            Console.WriteLine("By depthbomb - https://s.team/p/fwc-crhc");
+            Console.WriteLine("Changelog available at https://github.com/depthbomb/Scraps/blob/master/CHANGELOG.md");
+            Console.WriteLine();
+
+            if(Settings.Version != SettingsVersion)
+            {
+                Console.WriteLine("Your settings file is outdated, press Enter to back up the old version so you may fill out the new one.");
+                Console.ReadLine();
+                SaveSettings(null, "Settings_OLD");
+                SaveSettings(new Settings { Version = SettingsVersion });
+                SelectFile(Paths.SettingsFile);
+                Console.WriteLine("Press Enter to restart Scraps when you're done.");
+                Console.ReadLine();
+
+                LoadSettings();
+            }
+
+            if (Settings.Cookie.IsNullOrEmpty() || Settings.Cookie.Contains("cookie"))
+            {
+                Logger.Debug("User prompted to edit settings");
+
+                Console.WriteLine("Your cookie value is missing from your settings file.");
+                Console.WriteLine("Press Enter to open your settings file.");
+                Console.ReadLine();
+                SelectFile(Paths.SettingsFile);
+                Console.WriteLine("Press Enter when you are done making modifications to your settings file.");
+                Console.ReadLine();
+
+                LoadSettings();
+            }
+
+            Client = InitializeHttpClient();
+
+            await Start();
+        }
+
+        #region Setup
+        static void LoadSettings()
+        {
+            if(!Directory.Exists(Paths.StorePath))
             {
                 Directory.CreateDirectory(Paths.StorePath);
             }
 
-            if(File.Exists(Paths.SettingsFile))
+            if(!File.Exists(Paths.SettingsFile))
             {
-                Settings = LoadSettings();
+                Settings = new Settings();
             }
             else
             {
-                Settings = new Settings();
-                SaveSettings(Settings);
+                using(var sw = new StreamReader(Paths.SettingsFile))
+                {
+                    var serializer = new XmlSerializer(typeof(Settings));
+                    Settings = serializer.Deserialize(sw) as Settings;
+                }
             }
 
+            SaveSettings();
+        }
+
+        static void ParseArguments(string[] args)
+		{
             Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
             {
                 Verbose = o.Verbose;
-                UseProxy = o.UseProxy;
-                if (o.OpenSettings)
+                if(o.OpenSettings)
                 {
                     Console.WriteLine("Opening settings file...");
                     Process.Start("explorer.exe", Paths.SettingsFile);
                     Environment.Exit(0);
                 }
             });
-
-            Client = InitializeHttpClient();
-
-            await CheckForNewReleases();
-
-            Logger = InitializeLogger();
-
-            Console.WriteLine("Scraps - Scrap.TF Raffle Bot");
-            Console.WriteLine("By depthbomb - https://s.team/p/fwc-crhc");
-            Console.WriteLine("Changelog available at https://github.com/depthbomb/Scraps/blob/master/CHANGELOG.md");
-            Console.WriteLine();
-
-            Logger.Debug("Session Started ({Version})", AppVersion.Full);
-
-            if (Settings.Cookie.IsNullOrEmpty())
-            {
-                Logger.Debug("User is configuring settings");
-
-                var settings = new Settings();
-
-                AskForCookie:
-
-                Console.Write("Please enter your scr_session cookie: ");
-
-                settings.Cookie = Console.ReadLine().Trim();
-
-                if (settings.Cookie.IsNullOrEmpty())
-				{
-                    goto AskForCookie;
-                }
-
-                Settings = settings;
-
-                SaveSettings();
-            }
-
-            await Start();
         }
 
-        #region Setup
         static HttpClient InitializeHttpClient()
         {
-        InitializeClient:
-
-            int proxyIndex = 0;
-            string userIP = GetUserIP();
             var cookies = new CookieContainer();
             var handler = new HttpClientHandler
             {
@@ -149,44 +161,10 @@ namespace Scraps
                 UseCookies = true,
             };
 
-            if (UseProxy)
-			{
-                string proxyFile = @".\proxies.txt";
-                if (!File.Exists(proxyFile))
-				{
-                    Console.WriteLine("Proxy list file not found. Please read https://github.com/depthbomb/Scraps/blob/master/INSTRUCTIONS.md for more info.");
-                    Helpers.ExitState();
-                }
-
-                IEnumerable<string> proxies = File.ReadLines(@".\proxies.txt");
-
-                if (proxyIndex + 1 >= proxies.Count())
-				{
-                    Console.WriteLine("Ran out of proxies to test. Please add new addresses to the proxies.txt file.");
-                    Helpers.ExitState();
-				}
-
-                string proxy = proxies.ElementAt(proxyIndex);
-                Console.WriteLine("Testing proxy {0}", proxy);
-                handler.Proxy = new WebProxy(proxy);
-                handler.UseProxy = true;
-			}
-
-            HttpClient client = new HttpClient(handler);
-            client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
-            client.DefaultRequestHeaders.Add("cookie", "scr_session=" + Settings.Cookie);
-
-            if (UseProxy)
-			{
-                string testUrl = "https://ifconfig.co/ip";
-                string ip = client.GetStringAsync($"http://{testUrl}").Result;
-
-                if (ip == userIP)
-				{
-                    proxyIndex++;
-                    goto InitializeClient;
-				}
-            }
+            var client = new HttpClient(handler);
+                client.Timeout = TimeSpan.FromSeconds(5);
+                client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
+                client.DefaultRequestHeaders.Add("cookie", "scr_session=" + Settings.Cookie);
 
             return client;
         }
@@ -195,8 +173,11 @@ namespace Scraps
         {
             Console.WriteLine("Checking for new releases...");
 
+            var client = new HttpClient();
+                client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
+
             string uri = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
-            string json = await Client.GetStringAsync(uri);
+            string json = await client.GetStringAsync(uri);
             var currentTag = new Version(AppVersion.SemVer);
 
             var release = JsonSerializer.Deserialize<LatestRelease>(json);
@@ -218,6 +199,8 @@ namespace Scraps
                 Console.WriteLine("You are using the latest version of Scraps!");
                 Console.Clear();
             }
+
+            client.Dispose();
         }
 
         static Logger InitializeLogger()
@@ -240,14 +223,6 @@ namespace Scraps
                 .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Information).WriteTo.File(Path.Combine(Paths.LogsPath, "Info-.log"), rollingInterval: RollingInterval.Month))
                 .WriteTo.File(Path.Combine(Paths.LogsPath, "Verbose-.log"), rollingInterval: RollingInterval.Month)
                 .CreateLogger();
-        }
-
-        static string GetUserIP()
-		{
-            string hostName = Dns.GetHostName();
-            string ip = Dns.GetHostByName(hostName).AddressList[0].ToString();
-
-            return ip;
         }
         #endregion
 
@@ -377,7 +352,7 @@ namespace Scraps
                         }
 
                         SetStatus("Waiting to join next raffle...");
-                        await Task.Delay(4000);
+                        await Task.Delay(Settings.JoinDelay);
                     }
                     else
                     {
@@ -572,7 +547,7 @@ namespace Scraps
             return false;
         }
 
-        static void SaveSettings(Settings settings = null)
+        static void SaveSettings(Settings settings = null, string fileName = "Settings")
         {
             if (settings == null)
             {
@@ -586,30 +561,13 @@ namespace Scraps
                 OmitXmlDeclaration = true
             };
 
-            using (var sw = new StreamWriter(Paths.SettingsFile))
+            string settingsFile = Paths.SettingsFile.Replace("Settings.xml", $"{fileName}.xml");
+
+            using (var sw = new StreamWriter(settingsFile))
             using (var writer = XmlWriter.Create(sw, xmlSettings))
             {
                 var serializer = new XmlSerializer(typeof(Settings));
                 serializer.Serialize(writer, settings);
-            }
-        }
-
-        static Settings LoadSettings()
-        {
-            if (!File.Exists(Paths.SettingsFile))
-            {
-                Settings = new Settings();
-                SaveSettings();
-
-                return Settings;
-            }
-            else
-            {
-                using (var sw = new StreamReader(Paths.SettingsFile))
-                {
-                    var serializer = new XmlSerializer(typeof(Settings));
-                    return serializer.Deserialize(sw) as Settings;
-                }
             }
         }
 
@@ -625,6 +583,15 @@ namespace Scraps
             Logger.Fatal("You can use a different account with Scraps by changing your cookie value located in the settings file at {SettingsFolder}", Paths.SettingsFile);
             Helpers.ExitState();
         }
+
+        static void SelectFile(string filePath)
+		{
+            string args = string.Format("/e, /select, \"{0}\"", filePath);
+            var pi = new ProcessStartInfo();
+                pi.FileName = "explorer";
+                pi.Arguments = args;
+            Process.Start(pi);
+		}
         #endregion
     }
 }

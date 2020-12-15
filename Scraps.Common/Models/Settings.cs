@@ -23,12 +23,20 @@ namespace Scraps.Common.Models
 {
 	public class Settings
     {
+        [XmlAnyElement("c0")]
+        public XmlComment c0 { get; set; } = new XmlDocument().CreateComment("Do not modify this, it will be used in the future to make it easier for me to add new settings.");
+        public int Version { get; set; }
+
         [XmlAnyElement("c1")]
         public XmlComment c1 { get; set; } = new XmlDocument().CreateComment("This cookie allows the bot to log in as you on Scrap.TF. This cookie will so long as *you* are still logged in. If you log out then you will need to log in again and change this value. Also, do not give this cookie to anyone!");
-        public string Cookie { get; set; }
+        public string Cookie { get; set; } = "scr_session cookie here!";
 
         [XmlAnyElement("c2")]
         public XmlComment c2 { get; set; } = new XmlDocument().CreateComment("This will increment the delay before rescanning by 1 second if the scan returned no available raffles.");
         public bool IncrementScanDelay { get; set; } = true;
+
+        [XmlAnyElement("c3")]
+        public XmlComment c3 { get; set; } = new XmlDocument().CreateComment("The delay between joining raffles in queue in milliseconds (1000 = 1 second). Setting this number below 4000 may result in rate limiting");
+        public int JoinDelay { get; set; } = 4000;
     }
 }
