@@ -2,7 +2,8 @@
 
 ## Version 2.7.0.0
 
-- Added proxy support
+- Rewrote settings handling
+- New releases are now checked for at the very start of the program
 
 ## Version 2.6.1.0
 
