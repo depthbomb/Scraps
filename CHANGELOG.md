@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.7.1.0
+
+- Fixed verbose mode not working
+
 ## Version 2.7.0.0
 
 - Rewrote settings handling

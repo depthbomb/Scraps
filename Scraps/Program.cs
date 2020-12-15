@@ -68,13 +68,14 @@ namespace Scraps
                 Environment.Exit(0);
             }
 
+            ParseArguments(args);
+
             await CheckForNewReleases();
 
             Logger = InitializeLogger();
             Logger.Debug("Session Started ({Version})", AppVersion.Full);
 
             LoadSettings();
-            ParseArguments(args);
 
             Console.WriteLine();
             Console.WriteLine("Scraps - Scrap.TF Raffle Bot");
