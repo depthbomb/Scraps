@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 2.8.0.0
+
+- Added option to vote in polls
+  - This chooses a random option from the list of available poll options
+- Added message if you are running the latest program version
+- Modified log lines that included instances of the word **Enter**
+  - Enter -> \[Enter\]
+
 ## Version 2.7.1.0
 
 - Fixed verbose mode not working

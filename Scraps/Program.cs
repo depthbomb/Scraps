@@ -49,9 +49,10 @@ namespace Scraps
         static Logger Logger;
         static HttpClient Client;
         static Settings Settings;
+        static Random Rng = new Random();
         static HtmlDocument Html = new HtmlDocument();
 
-        static int SettingsVersion = 1;
+        static int SettingsVersion = 2;
         static int RafflesJoined = 0;
         static List<string> RaffleQueue = new List<string>();
         static List<string> EnteredRaffles = new List<string>();
@@ -85,12 +86,12 @@ namespace Scraps
 
             if(Settings.Version != SettingsVersion)
             {
-                Console.WriteLine("Your settings file is outdated, press Enter to back up the old version so you may fill out the new one.");
+                Console.WriteLine("Your settings file is outdated, press [Enter] to back up the old version so you may fill out the new one.");
                 Console.ReadLine();
                 SaveSettings(null, "Settings_OLD");
                 SaveSettings(new Settings { Version = SettingsVersion });
                 SelectFile(Paths.SettingsFile);
-                Console.WriteLine("Press Enter to restart Scraps when you're done.");
+                Console.WriteLine("Press [Enter] to restart Scraps when you're done.");
                 Console.ReadLine();
 
                 LoadSettings();
@@ -101,10 +102,10 @@ namespace Scraps
                 Logger.Debug("User prompted to edit settings");
 
                 Console.WriteLine("Your cookie value is missing from your settings file.");
-                Console.WriteLine("Press Enter to open your settings file.");
+                Console.WriteLine("Press [Enter] to open your settings file.");
                 Console.ReadLine();
                 SelectFile(Paths.SettingsFile);
-                Console.WriteLine("Press Enter when you are done making modifications to your settings file.");
+                Console.WriteLine("Press [Enter] when you are done making modifications to your settings file.");
                 Console.ReadLine();
 
                 LoadSettings();
@@ -188,17 +189,17 @@ namespace Scraps
             if (compare < 0)
             {
                 OnLatestRelease = false;
-                Console.Clear();
                 ConsoleUtils.Restore();
-                ConsoleUtils.FlashWindow(5, false);
+                ConsoleUtils.FlashWindow(5, true);
+                Console.BackgroundColor = ConsoleColor.Yellow;
+                Console.ForegroundColor = ConsoleColor.Black;
                 Console.WriteLine("A new version of Scraps ({0}) is available to download at {1}", latestTag.ToString(), release.html_url);
-                Console.WriteLine("Continuing in 5 seconds");
-                await Task.Delay(6000); //  Account for reading
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
             }
             else
-            {
-                Console.WriteLine("You are using the latest version of Scraps!");
-                Console.Clear();
+			{
+                Console.WriteLine("You are running the latest version of Scraps!");
             }
 
             client.Dispose();
@@ -345,6 +346,28 @@ namespace Scraps
                             Logger.Information("[{Entered}/{Total}] Joined raffle {Id}", entered, total, raffle);
                             EnteredRaffles.Add(raffle);
                             RafflesJoined++;
+
+                            if (Settings.VoteInPolls)
+							{
+                                var poll = Regexes.RafflePollRegex.Match(html);
+                                if(poll.Success)
+                                {
+                                    string pollId = poll.Groups[1].Value;
+
+                                    Logger.Information("Voting in poll {Poll}", pollId);
+
+                                    var optionsMatches = Regexes.RafflePollOptionRegex.Matches(html);
+                                    if (optionsMatches.Count > 0)
+									{
+                                        Logger.Information("Found {OptionCount} option(s) in poll", optionsMatches.Count);
+                                        await AnswerPoll(pollId, optionsMatches.Count);
+                                    }
+                                    else
+									{
+                                        Logger.Warning("Didn't find any options in poll");
+                                    }
+                                }
+                            }
                         }
                         else
                         {
@@ -475,6 +498,41 @@ namespace Scraps
                 Logger.Warning("Pagination returned a {Status} response instead of JSON. Waiting...", response.StatusCode);
                 return null;
 			}
+        }
+
+        static async Task AnswerPoll(string poll, int numChoices)
+		{
+            string url = "https://scrap.tf/ajax/viewpoll/SubmitAnswer";
+            string choice = Rng.Next(0, numChoices).ToString();
+
+            Logger.Information("Randomly chose poll option {Option}", choice);
+
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("poll", poll),
+                new KeyValuePair<string, string>("answers[]", choice),
+                new KeyValuePair<string, string>("csrf", Csrf),
+            });
+
+            var response = await Client.PostAsync(url, content);
+
+            if(response.StatusCode.ToString() == "OK")
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                var data = JsonSerializer.Deserialize<SubmitAnswerResponse>(json);
+                if (data.success && data.message == "Answered!")
+				{
+                    Logger.Information("Successfully answered poll!");
+                }
+                else
+				{
+                    Logger.Information("Poll answer failed: {Message}", data.message);
+                }
+            }
+            else
+            {
+                Logger.Error("Request to answer poll failed: {StatusCode}", response.StatusCode);
+            }
         }
 
         static async Task GetCsrf()

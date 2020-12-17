@@ -16,20 +16,12 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Scraps.Common
+namespace Scraps.Models
 {
-	public static class Helpers
+	public class SubmitAnswerResponse
 	{
-        public static void ExitState()
-        {
-            Console.WriteLine();
-            Console.WriteLine("Press [Enter] to exit.");
-            Console.ReadLine();
-            Environment.Exit(0);
-        }
-    }
+		public string message { get; set; }
+		public bool success { get; set; }
+	}
+
 }

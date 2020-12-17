@@ -36,7 +36,11 @@ namespace Scraps.Common.Models
         public bool IncrementScanDelay { get; set; } = true;
 
         [XmlAnyElement("c3")]
-        public XmlComment c3 { get; set; } = new XmlDocument().CreateComment("The delay between joining raffles in queue in milliseconds (1000 = 1 second). Setting this number below 4000 may result in rate limiting");
+        public XmlComment c3 { get; set; } = new XmlDocument().CreateComment("The delay between joining raffles in queue in milliseconds (1000 = 1 second). Setting this number below 4000 may result in rate limiting.");
         public int JoinDelay { get; set; } = 4000;
+
+        [XmlAnyElement("c4")]
+        public XmlComment c4 { get; set; } = new XmlDocument().CreateComment("Whether to vote for a random answer in a poll if the raffle has one.");
+        public bool VoteInPolls { get; set; } = false;
     }
 }
