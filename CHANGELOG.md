@@ -5,10 +5,10 @@
 - Added Discord Rich Presence support because why not
 - Added persistent raffles joined count
   - Only raffles joined on or after this version of Scraps will be counted
-- Added status for joining poll
+- Added status for answering raffle polls
 - Fixed polls not working if they allow multiple choice
 - Chosen poll choice now shows the number as it appears rather than its programmatic number
-- Added pluralization to poll joining log lines
+- Added pluralization to poll log lines
 - Updated app icon
 
 ## Version 2.8.0.0
