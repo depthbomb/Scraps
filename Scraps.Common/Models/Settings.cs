@@ -42,5 +42,9 @@ namespace Scraps.Common.Models
         [XmlAnyElement("c4")]
         public XmlComment c4 { get; set; } = new XmlDocument().CreateComment("Whether to vote for a random answer in a poll if the raffle has one.");
         public bool VoteInPolls { get; set; } = false;
+
+        [XmlAnyElement("c5")]
+        public XmlComment c5 { get; set; } = new XmlDocument().CreateComment("Whether to enable Rich Presence for Discord which will show how long Scraps has been running and how many total raffles you've entered.");
+        public bool EnableDiscordRichPresensce { get; set; } = false;
     }
 }

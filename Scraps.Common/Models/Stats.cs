@@ -16,18 +16,15 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.IO;
-using System.Reflection;
+using System.Xml;
+using System.Xml.Serialization;
 
-namespace Scraps.Common
+namespace Scraps.Common.Models
 {
-    public class Paths
-    {
-        public static string InstallPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        public static readonly string StorePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Caprine Logic", "Scraps");
-        public static readonly string LogsPath = Path.Combine(StorePath, "Logs");
-        public static readonly string StatsFile = Path.Combine(StorePath, "Stats.xml");
-        public static readonly string SettingsFile = Path.Combine(StorePath, "Settings.xml");
-    }
+	public class Stats
+	{
+		[XmlAnyElement("c0")]
+		public XmlComment c0 { get; set; } = new XmlDocument().CreateComment("This value stores your total joined raffles. If you REALLY wanted to, you can change this to whatever number you want.");
+		public int TotalRafflesJoined { get; set; } = 0;
+	}
 }

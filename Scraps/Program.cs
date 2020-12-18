@@ -21,6 +21,7 @@ using System.IO;
 using System.Xml;
 using System.Net;
 using System.Linq;
+using System.Timers;
 using System.Net.Http;
 using System.Text.Json;
 using System.Diagnostics;
@@ -34,6 +35,7 @@ using Serilog.Core;
 using Serilog.Events;
 using CommandLine;
 using HtmlAgilityPack;
+using DiscordRPC;
 
 using Scraps.Models;
 using Scraps.Common;
@@ -47,12 +49,14 @@ namespace Scraps
     {
         static string Csrf;
         static Logger Logger;
+        static Timer RpcTimer;
         static HttpClient Client;
         static Settings Settings;
+        static DiscordRpcClient RpcClient;
         static Random Rng = new Random();
         static HtmlDocument Html = new HtmlDocument();
 
-        static int SettingsVersion = 2;
+        static int SettingsVersion = 3;
         static int RafflesJoined = 0;
         static List<string> RaffleQueue = new List<string>();
         static List<string> EnteredRaffles = new List<string>();
@@ -60,6 +64,7 @@ namespace Scraps
         static bool Verbose = false;
         static bool OnLatestRelease = true;
 
+        static readonly string RpcClientId = "789333681998397460";
         static readonly string Title = $"Scraps - {AppVersion.Full}";
 
         static async Task Main(string[] args)
@@ -112,6 +117,13 @@ namespace Scraps
             }
 
             Client = InitializeHttpClient();
+
+            LoadRafflesJoiend();
+            
+            if (Settings.EnableDiscordRichPresensce)
+			{
+                InitializeRichPresence();
+            }
 
             await Start();
         }
@@ -226,6 +238,54 @@ namespace Scraps
                 .WriteTo.File(Path.Combine(Paths.LogsPath, "Verbose-.log"), rollingInterval: RollingInterval.Month)
                 .CreateLogger();
         }
+
+        static void InitializeRichPresence()
+		{
+            Logger.Debug("Initializing Rich Presence");
+            var start = DateTime.UtcNow;
+			string getJoined()
+			{
+                return $"{RafflesJoined} "+"raffle".Pluralize(RafflesJoined)+" joined!";
+            };
+            string details = "Scrap.TF Raffle Bot";
+            var timestamps = new Timestamps
+            {
+                Start = start
+            };
+            var assets = new Assets
+            {
+                LargeImageKey = "scraps",
+                LargeImageText = "github.com/depthbomb/scraps"
+            };
+            RpcTimer = new Timer
+            {
+                Interval = TimeSpan.FromSeconds(7.5).TotalMilliseconds, // Presence updates are only updated every 15 seconds, but send more frequently so we ensure the latest data is available
+                Enabled = false
+            };
+
+            RpcClient = new DiscordRpcClient(RpcClientId);
+            RpcClient.Initialize();
+            RpcClient.SetPresence(new RichPresence
+            {
+                Details = details,
+                State = getJoined(),
+                Timestamps = timestamps,
+                Assets = assets
+            });
+
+            RpcTimer.Elapsed += (sender, e) =>
+            {
+                RpcClient.SetPresence(new RichPresence
+                {
+                    Details = details,
+                    State = getJoined(),
+                    Timestamps = timestamps,
+                    Assets = assets
+                });
+            };
+            RpcTimer.Start();
+            Logger.Debug("Rich Presence update timer started");
+        }
         #endregion
 
         #region Operations
@@ -272,6 +332,8 @@ namespace Scraps
                     scanDelay = scanDelay + 1000;
                 }
             }
+
+            UpdateStats();
 
             goto ScanRaffles;
         }
@@ -354,12 +416,12 @@ namespace Scraps
                                 {
                                     string pollId = poll.Groups[1].Value;
 
-                                    Logger.Information("Voting in poll {Poll}", pollId);
+                                    Logger.Debug("Voting in poll {Poll}", pollId);
 
                                     var optionsMatches = Regexes.RafflePollOptionRegex.Matches(html);
                                     if (optionsMatches.Count > 0)
 									{
-                                        Logger.Information("Found {OptionCount} option(s) in poll", optionsMatches.Count);
+                                        Logger.Debug("Found {OptionCount} "+"option".Pluralize(optionsMatches.Count) +" in poll", optionsMatches.Count);
                                         await AnswerPoll(pollId, optionsMatches.Count);
                                     }
                                     else
@@ -502,15 +564,17 @@ namespace Scraps
 
         static async Task AnswerPoll(string poll, int numChoices)
 		{
-            string url = "https://scrap.tf/ajax/viewpoll/SubmitAnswer";
-            string choice = Rng.Next(0, numChoices).ToString();
+            SetStatus($"Voting in poll {poll}");
 
-            Logger.Information("Randomly chose poll option {Option}", choice);
+            string url = "https://scrap.tf/ajax/viewpoll/SubmitAnswer";
+            int choice = Rng.Next(0, numChoices);
+
+            Logger.Debug("Randomly chose poll option {Option}", choice + 1);
 
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("poll", poll),
-                new KeyValuePair<string, string>("answers[]", choice),
+                new KeyValuePair<string, string>("answers[]", choice.ToString()),
                 new KeyValuePair<string, string>("csrf", Csrf),
             });
 
@@ -613,7 +677,7 @@ namespace Scraps
                 settings = Settings;
             }
 
-            XmlWriterSettings xmlSettings = new XmlWriterSettings()
+            XmlWriterSettings xmlSettings = new XmlWriterSettings
             {
                 Indent = true,
                 IndentChars = "\t",
@@ -636,6 +700,19 @@ namespace Scraps
 
         static void DisplayTombstone()
         {
+            if(Settings.EnableDiscordRichPresensce)
+			{
+                RpcTimer.Stop();
+                RpcClient.SetPresence(new RichPresence
+                {
+                    Details = "Account Banned",
+                    Assets = new Assets
+					{
+                        LargeImageKey = "banned",
+                        LargeImageText = "R.I.P."
+					}
+                });
+			}
             ConsoleUtils.FlashWindow(int.MaxValue, false);
             Console.Title = "R.I.P.";
             Logger.Fatal("ACCOUNT HAS BEEN BANNED");
@@ -651,6 +728,45 @@ namespace Scraps
                 pi.Arguments = args;
             Process.Start(pi);
 		}
+
+        static void LoadRafflesJoiend()
+		{
+            string statsFile = Paths.StatsFile;
+            if (File.Exists(statsFile))
+			{
+                using(var sw = new StreamReader(statsFile))
+                {
+                    var serializer = new XmlSerializer(typeof(Stats));
+                    var stats = serializer.Deserialize(sw) as Stats;
+
+                    RafflesJoined = stats.TotalRafflesJoined;
+                }
+            }
+		}
+
+        static void UpdateStats()
+		{
+            SetStatus("Saving stats...");
+
+            string statsFile = Paths.StatsFile;
+            var xmlSettings = new XmlWriterSettings
+            {
+                Indent = true,
+                IndentChars = "\t",
+                OmitXmlDeclaration = true
+            };
+            var stats = new Stats
+            {
+                TotalRafflesJoined = RafflesJoined
+            };
+
+            using(var sw = new StreamWriter(statsFile))
+            using(var writer = XmlWriter.Create(sw, xmlSettings))
+            {
+                var serializer = new XmlSerializer(typeof(Stats));
+                serializer.Serialize(writer, stats);
+            }
+        }
         #endregion
     }
 }
