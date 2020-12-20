@@ -32,19 +32,10 @@ namespace Scraps.Common.Models
         public string Cookie { get; set; } = "scr_session cookie here!";
 
         [XmlAnyElement("c2")]
-        public XmlComment c2 { get; set; } = new XmlDocument().CreateComment("This will increment the delay before rescanning by 1 second if the scan returned no available raffles.");
-        public bool IncrementScanDelay { get; set; } = true;
-
-        [XmlAnyElement("c3")]
-        public XmlComment c3 { get; set; } = new XmlDocument().CreateComment("The delay between joining raffles in queue in milliseconds (1000 = 1 second). Setting this number below 4000 may result in rate limiting.");
-        public int JoinDelay { get; set; } = 4000;
-
-        [XmlAnyElement("c4")]
-        public XmlComment c4 { get; set; } = new XmlDocument().CreateComment("Whether to vote for a random answer in a poll if the raffle has one.");
-        public bool VoteInPolls { get; set; } = false;
-
-        [XmlAnyElement("c5")]
-        public XmlComment c5 { get; set; } = new XmlDocument().CreateComment("Whether to enable Rich Presence for Discord which will show how long Scraps has been running and how many total raffles you've entered.");
+        public XmlComment c2 { get; set; } = new XmlDocument().CreateComment("Whether to enable Rich Presence for Discord which will show how long Scraps has been running for and how many total raffles you've entered.");
         public bool EnableDiscordRichPresensce { get; set; } = false;
+
+        public Delays Delays { get; set; } = new Delays();
+        public RaffleActions RaffleActions { get; set; } = new RaffleActions();
     }
 }

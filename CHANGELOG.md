@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 2.10.0.0
+
+- Scan delays and join delays are now configurable in your settings file
+- Entered raffles are now stored in your stats file
+- Successful poll answering log lines will no longer be displayed
+- Site rules are now accepted upon logging in (if needed)
+- Stats are now also saved after each raffle join
+
 ## Version 2.9.0.0
 
 - Added Discord Rich Presence support because why not

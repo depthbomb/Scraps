@@ -56,15 +56,15 @@ namespace Scraps
         static Random Rng = new Random();
         static HtmlDocument Html = new HtmlDocument();
 
-        static int SettingsVersion = 3;
+        static int SettingsVersion = 4;
         static int RafflesJoined = 0;
+        static bool AcceptedRules = false;
         static List<string> RaffleQueue = new List<string>();
         static List<string> EnteredRaffles = new List<string>();
 
         static bool Verbose = false;
         static bool OnLatestRelease = true;
 
-        static readonly string RpcClientId = "789333681998397460";
         static readonly string Title = $"Scraps - {AppVersion.Full}";
 
         static async Task Main(string[] args)
@@ -118,10 +118,10 @@ namespace Scraps
 
             Client = InitializeHttpClient();
 
-            LoadRafflesJoiend();
+            LoadStats();
             
             if (Settings.EnableDiscordRichPresensce)
-			{
+            {
                 InitializeRichPresence();
             }
 
@@ -139,6 +139,7 @@ namespace Scraps
             if(!File.Exists(Paths.SettingsFile))
             {
                 Settings = new Settings();
+                SaveSettings();
             }
             else
             {
@@ -148,12 +149,10 @@ namespace Scraps
                     Settings = serializer.Deserialize(sw) as Settings;
                 }
             }
-
-            SaveSettings();
         }
 
         static void ParseArguments(string[] args)
-		{
+        {
             Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
             {
                 Verbose = o.Verbose;
@@ -210,7 +209,7 @@ namespace Scraps
                 Console.ForegroundColor = ConsoleColor.White;
             }
             else
-			{
+            {
                 Console.WriteLine("You are running the latest version of Scraps!");
             }
 
@@ -240,11 +239,11 @@ namespace Scraps
         }
 
         static void InitializeRichPresence()
-		{
+        {
             Logger.Debug("Initializing Rich Presence");
             var start = DateTime.UtcNow;
-			string getJoined()
-			{
+            string getJoined()
+            {
                 return $"{RafflesJoined} "+"raffle".Pluralize(RafflesJoined)+" joined!";
             };
             string details = "Scrap.TF Raffle Bot";
@@ -263,7 +262,7 @@ namespace Scraps
                 Enabled = false
             };
 
-            RpcClient = new DiscordRpcClient(RpcClientId);
+            RpcClient = new DiscordRpcClient("789333681998397460");
             RpcClient.Initialize();
             RpcClient.SetPresence(new RichPresence
             {
@@ -301,7 +300,7 @@ namespace Scraps
                 await GetCsrf();
                 Logger.Information("Successfully logged in");
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 Logger.Fatal(e.Message);
                 Helpers.ExitState();
@@ -314,9 +313,9 @@ namespace Scraps
             if (RaffleQueue.Count > 0)
             {
                 SetStatus("Joining raffles...");
-                Logger.Information("{Count} " + "raffle".Pluralize(RaffleQueue.Count) + " " + "is".Pluralize(RaffleQueue.Count, "are") + " available to enter", RaffleQueue.Count);
+                Logger.Information("{Count} "+"raffle".Pluralize(RaffleQueue.Count)+" "+"is".Pluralize(RaffleQueue.Count, "are")+" available to enter", RaffleQueue.Count);
 
-                scanDelay = 5000;
+                scanDelay = Settings.Delays.ScanDelay;
 
                 await JoinRaffles();
             }
@@ -327,15 +326,128 @@ namespace Scraps
 
                 await Task.Delay(scanDelay);
 
-                if(Settings.IncrementScanDelay)
+                if(Settings.Delays.IncrementScanDelay)
                 {
                     scanDelay = scanDelay + 1000;
                 }
             }
 
-            UpdateStats();
+            SaveStats();
 
             goto ScanRaffles;
+        }
+
+        static async Task ScanRaffles()
+        {
+            SetStatus("Starting scan...");
+
+            RaffleQueue.Clear();
+
+            Logger.Debug("Scanning raffles");
+
+            string html = await Client.GetStringAsync("https://scrap.tf/raffles");
+            string lastId = string.Empty;
+
+            ScanNext:
+
+            SetStatus("Scanning...");
+
+            string json = await Paginate(lastId);
+
+            if(json == null)
+            {
+                await Task.Delay(10000);
+            }
+            else
+            {
+                try
+                {
+                    var resp = JsonSerializer.Deserialize<PaginateResponse>(json);
+                    if(resp.success)
+                    {
+                        html += resp.html;
+                        lastId = resp.lastid;
+
+                        if(!resp.done)
+                        {
+                            Logger.Debug("Scanning next page (apex = {Apex})", lastId);
+                            await Task.Delay(Settings.Delays.PaginateDelay);
+                            goto ScanNext;
+                        }
+
+                        Logger.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles...");
+
+                        SetStatus("Parsing scanned data...");
+
+                        Html.LoadHtml(html);
+
+                        var document = Html.DocumentNode;
+                        var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
+
+                        foreach(var el in raffleElements)
+                        {
+                            string elementHtml = el.InnerHtml.Trim();
+                            string raffleId = Regexes.RaffleEntryRegex.Match(elementHtml).Groups[1].Value.Trim();
+                            if(
+                                !raffleId.IsNullOrEmpty() &&    // For some reason `raffleId` will sometimes give us emptiness
+                                !RaffleQueue.Contains(raffleId) &&
+                                !EnteredRaffles.Contains(raffleId)
+                            )
+                            {
+                                SetStatus($"Adding raffle {raffleId} to queue...");
+                                RaffleQueue.Add(raffleId);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if(resp.message != null)
+                        {
+                            if(resp.message.Contains("active site ban"))
+                            {
+                                DisplayTombstone();
+                            }
+                            else
+                            {
+                                Logger.Error("Encountered an error while paginating: {Message}", resp.message);
+                            }
+                        }
+                        else
+                        {
+                            Logger.Error("Paginate response for apex {Apex} was unsuccessful", lastId.IsNullOrEmpty() ? "<empty>" : lastId);
+                        }
+                    }
+                }
+                catch(JsonException ex)
+                {
+                    Logger.Error("Failed to read pagination data: {Error}", ex.Message);
+                }
+            }
+        }
+
+        static async Task<string> Paginate(string apex = null)
+        {
+            SetStatus("Paginating...");
+            string url = "https://scrap.tf/ajax/raffles/Paginate";
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("start", apex),
+                new KeyValuePair<string, string>("sort", "1"),
+                new KeyValuePair<string, string>("puzzle", "0"),
+                new KeyValuePair<string, string>("csrf", Csrf),
+            });
+
+            var response = await Client.PostAsync(url, content);
+
+            if(response.StatusCode.ToString() == "OK")
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                Logger.Warning("Pagination returned a {Status} response instead of JSON. Waiting...", response.StatusCode);
+                return null;
+            }
         }
 
         static async Task JoinRaffles()
@@ -409,8 +521,8 @@ namespace Scraps
                             EnteredRaffles.Add(raffle);
                             RafflesJoined++;
 
-                            if (Settings.VoteInPolls)
-							{
+                            if (Settings.RaffleActions.VoteInPolls)
+                            {
                                 var poll = Regexes.RafflePollRegex.Match(html);
                                 if(poll.Success)
                                 {
@@ -420,12 +532,12 @@ namespace Scraps
 
                                     var optionsMatches = Regexes.RafflePollOptionRegex.Matches(html);
                                     if (optionsMatches.Count > 0)
-									{
+                                    {
                                         Logger.Debug("Found {OptionCount} "+"option".Pluralize(optionsMatches.Count) +" in poll", optionsMatches.Count);
                                         await AnswerPoll(pollId, optionsMatches.Count);
                                     }
                                     else
-									{
+                                    {
                                         Logger.Warning("Didn't find any options in poll");
                                     }
                                 }
@@ -437,8 +549,10 @@ namespace Scraps
                             Logger.Information("Unable to join raffle {Id} with message {Message}", raffle, resp.message);
                         }
 
+                        SaveStats();
+
                         SetStatus("Waiting to join next raffle...");
-                        await Task.Delay(Settings.JoinDelay);
+                        await Task.Delay(Settings.Delays.JoinDelay);
                     }
                     else
                     {
@@ -449,121 +563,8 @@ namespace Scraps
             }
         }
 
-        static async Task ScanRaffles()
-        {
-            SetStatus("Starting scan...");
-
-            RaffleQueue.Clear();
-
-            Logger.Debug("Scanning raffles");
-
-            string html = await Client.GetStringAsync("https://scrap.tf/raffles");
-            string lastId = string.Empty;
-
-            ScanNext:
-
-            SetStatus("Scanning...");
-
-            string json = await Paginate(lastId);
-
-            if (json == null)
-			{
-                await Task.Delay(10000);
-			}
-            else
-			{
-                try
-                {
-                    var resp = JsonSerializer.Deserialize<PaginateResponse>(json);
-                    if(resp.success)
-                    {
-                        html += resp.html;
-                        lastId = resp.lastid;
-
-                        if(!resp.done)
-                        {
-                            Logger.Debug("Scanning next page (apex = {Apex})", lastId);
-                            await Task.Delay(500);
-                            goto ScanNext;
-                        }
-
-                        Logger.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles...");
-
-                        SetStatus("Parsing scanned data...");
-
-                        Html.LoadHtml(html);
-
-                        var document = Html.DocumentNode;
-                        var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
-
-                        foreach(var el in raffleElements)
-                        {
-                            string elementHtml = el.InnerHtml.Trim();
-                            string raffleId = Regexes.RaffleEntryRegex.Match(elementHtml).Groups[1].Value.Trim();
-                            if(
-                                !raffleId.IsNullOrEmpty() &&    // For some reason `raffleId` will sometimes give us emptiness
-                                !RaffleQueue.Contains(raffleId) &&
-                                !EnteredRaffles.Contains(raffleId)
-                            )
-                            {
-                                SetStatus($"Adding raffle {raffleId} to queue...");
-                                RaffleQueue.Add(raffleId);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if(resp.message != null)
-                        {
-                            if(resp.message.Contains("active site ban"))
-                            {
-                                DisplayTombstone();
-                            }
-                            else
-                            {
-                                Logger.Error("Encountered an error while paginating: {Message}", resp.message);
-                            }
-                        }
-                        else
-                        {
-                            Logger.Error("Paginate response for apex {Apex} was unsuccessful", lastId.IsNullOrEmpty() ? "<empty>" : lastId);
-                        }
-                    }
-                }
-                catch(JsonException ex)
-                {
-                    Logger.Error("Failed to read pagination data: {Error}", ex.Message);
-                }
-            }
-        }
-
-        static async Task<string> Paginate(string apex = null)
-        {
-            SetStatus("Paginating...");
-            string url = "https://scrap.tf/ajax/raffles/Paginate";
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("start", apex),
-                new KeyValuePair<string, string>("sort", "1"),
-                new KeyValuePair<string, string>("puzzle", "0"),
-                new KeyValuePair<string, string>("csrf", Csrf),
-            });
-
-            var response = await Client.PostAsync(url, content);
-
-            if (response.StatusCode.ToString() == "OK")
-			{
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-			{
-                Logger.Warning("Pagination returned a {Status} response instead of JSON. Waiting...", response.StatusCode);
-                return null;
-			}
-        }
-
         static async Task AnswerPoll(string poll, int numChoices)
-		{
+        {
             SetStatus($"Voting in poll {poll}");
 
             string url = "https://scrap.tf/ajax/viewpoll/SubmitAnswer";
@@ -584,18 +585,47 @@ namespace Scraps
             {
                 string json = await response.Content.ReadAsStringAsync();
                 var data = JsonSerializer.Deserialize<SubmitAnswerResponse>(json);
-                if (data.success && data.message == "Answered!")
-				{
-                    Logger.Information("Successfully answered poll!");
-                }
-                else
-				{
-                    Logger.Information("Poll answer failed: {Message}", data.message);
+                if (!data.success || data.message != "Answered!")
+                {
+                    Logger.Error("Poll answer failed: {Message}", data.message);
                 }
             }
             else
             {
                 Logger.Error("Request to answer poll failed: {StatusCode}", response.StatusCode);
+            }
+        }
+
+        static async Task AcceptRules()
+        {
+            Logger.Debug("Attempting to accept site rules...");
+
+            string url = "https://scrap.tf/ajax/rules/Accept";
+
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("csrf", Csrf)
+            });
+
+            var response = await Client.PostAsync(url, content);
+
+            if(response.StatusCode.ToString() == "OK")
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                var data = JsonSerializer.Deserialize<AcceptRulesResponse>(json);
+                if(data.success == "true")
+                {
+                    AcceptedRules = true;
+                    Logger.Information("Accepted site rules");
+                }
+                else
+                {
+                    Logger.Error("Failed to accept site rules: {Message}", data.message);
+                }
+            }
+            else
+            {
+                Logger.Error("Request to accept site rules failed: {StatusCode}", response.StatusCode);
             }
         }
 
@@ -614,6 +644,11 @@ namespace Scraps
                 {
                     Csrf = csrf.Groups[1].Value;
                     Logger.Debug("Obtained CSRF token ({Csrf})", Csrf);
+                    if(!AcceptedRules)
+                    {
+                        await AcceptRules();
+                    }
+                    SaveStats();
                 }
                 else
                 {
@@ -694,25 +729,25 @@ namespace Scraps
             }
         }
 
-        static void SetStatus(string status) => Console.Title = Title + (OnLatestRelease ? "" : " :: OUTDATED") + $" :: Raffles Joined this session: {RafflesJoined}" + $" :: {status}";
+        static void SetStatus(string status) => Console.Title = Title + (OnLatestRelease ? "" : " :: OUTDATED") + $" :: {RafflesJoined} {"Raffle".Pluralize(RafflesJoined)} Joined" + $" :: {status}";
 
         static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
 
         static void DisplayTombstone()
         {
             if(Settings.EnableDiscordRichPresensce)
-			{
+            {
                 RpcTimer.Stop();
                 RpcClient.SetPresence(new RichPresence
                 {
                     Details = "Account Banned",
                     Assets = new Assets
-					{
+                    {
                         LargeImageKey = "banned",
                         LargeImageText = "R.I.P."
-					}
+                    }
                 });
-			}
+            }
             ConsoleUtils.FlashWindow(int.MaxValue, false);
             Console.Title = "R.I.P.";
             Logger.Fatal("ACCOUNT HAS BEEN BANNED");
@@ -721,43 +756,45 @@ namespace Scraps
         }
 
         static void SelectFile(string filePath)
-		{
+        {
             string args = string.Format("/e, /select, \"{0}\"", filePath);
             var pi = new ProcessStartInfo();
                 pi.FileName = "explorer";
                 pi.Arguments = args;
             Process.Start(pi);
-		}
+        }
 
-        static void LoadRafflesJoiend()
-		{
+        static void LoadStats()
+        {
             string statsFile = Paths.StatsFile;
             if (File.Exists(statsFile))
-			{
+            {
                 using(var sw = new StreamReader(statsFile))
                 {
                     var serializer = new XmlSerializer(typeof(Stats));
                     var stats = serializer.Deserialize(sw) as Stats;
 
                     RafflesJoined = stats.TotalRafflesJoined;
+                    EnteredRaffles = stats.EnteredRaffles;
+                    AcceptedRules = stats.AcceptedRules;
                 }
             }
-		}
+        }
 
-        static void UpdateStats()
-		{
+        static void SaveStats()
+        {
             SetStatus("Saving stats...");
 
             string statsFile = Paths.StatsFile;
             var xmlSettings = new XmlWriterSettings
             {
-                Indent = true,
-                IndentChars = "\t",
                 OmitXmlDeclaration = true
             };
             var stats = new Stats
             {
-                TotalRafflesJoined = RafflesJoined
+                TotalRafflesJoined = RafflesJoined,
+                EnteredRaffles = EnteredRaffles,
+                AcceptedRules = AcceptedRules,
             };
 
             using(var sw = new StreamWriter(statsFile))

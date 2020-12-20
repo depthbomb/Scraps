@@ -16,14 +16,15 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Scraps.Common.Models
 {
-	public class Stats
+	public class RaffleActions
 	{
-		public bool AcceptedRules { get; set; } = false;
-		public int TotalRafflesJoined { get; set; } = 0;
-		public List<string> EnteredRaffles { get; set; } = new List<string>();
+		[XmlAnyElement("c1")]
+		public XmlComment c1 { get; set; } = new XmlDocument().CreateComment("Whether to vote for a random answer in a poll if the raffle has one.");
+		public bool VoteInPolls { get; set; } = false;
 	}
 }
