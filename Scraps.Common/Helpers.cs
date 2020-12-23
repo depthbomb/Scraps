@@ -22,8 +22,8 @@ using System.Text;
 
 namespace Scraps.Common
 {
-	public static class Helpers
-	{
+    public static class Helpers
+    {
         public static void ExitState()
         {
             Console.WriteLine();

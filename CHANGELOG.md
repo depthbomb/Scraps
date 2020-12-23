@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 2.11.0.0
+
+- Stats are now saved via `System.Configuration.ConfigurationManager`, which should be more reliable and prevent corruption
+- Entered raffle IDs will no longer be saved
+  - This could cause problems when switching accounts in Scraps
+- There will no longer be a delay after joining if the queue only contains one raffle
+- Updated separator in statuses
+- You will now be alerted if you've won any raffles
+
 ## Version 2.10.0.0
 
 - Scan delays and join delays are now configurable in your settings file

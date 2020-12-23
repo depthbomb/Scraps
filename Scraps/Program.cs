@@ -42,6 +42,7 @@ using Scraps.Common;
 using Scraps.Common.Models;
 
 using CaprineNet.Common.Utils;
+using CaprineNet.Common.Extensions;
 
 namespace Scraps
 {
@@ -64,6 +65,7 @@ namespace Scraps
 
         static bool Verbose = false;
         static bool OnLatestRelease = true;
+        static bool AlertedOfWonRaffles = false;
 
         static readonly string Title = $"Scraps - {AppVersion.Full}";
 
@@ -95,7 +97,7 @@ namespace Scraps
                 Console.ReadLine();
                 SaveSettings(null, "Settings_OLD");
                 SaveSettings(new Settings { Version = SettingsVersion });
-                SelectFile(Paths.SettingsFile);
+                IOUtils.OpenFolderAndSelect(Paths.SettingsFile);
                 Console.WriteLine("Press [Enter] to restart Scraps when you're done.");
                 Console.ReadLine();
 
@@ -109,7 +111,7 @@ namespace Scraps
                 Console.WriteLine("Your cookie value is missing from your settings file.");
                 Console.WriteLine("Press [Enter] to open your settings file.");
                 Console.ReadLine();
-                SelectFile(Paths.SettingsFile);
+                IOUtils.OpenFolderAndSelect(Paths.SettingsFile);
                 Console.WriteLine("Press [Enter] when you are done making modifications to your settings file.");
                 Console.ReadLine();
 
@@ -384,6 +386,21 @@ namespace Scraps
                         var document = Html.DocumentNode;
                         var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
 
+                        if(html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
+                        {
+                            if(!AlertedOfWonRaffles)
+                            {
+                                Logger.Information("{Message}", "There won raffles that you need to withdraw!");
+                                ConsoleUtils.FlashWindow(10, false);
+                                ConsoleUtils.Restore();
+                                AlertedOfWonRaffles = true;
+                            }
+                        }
+                        else
+                        {
+                            AlertedOfWonRaffles = false;
+                        }
+
                         foreach(var el in raffleElements)
                         {
                             string elementHtml = el.InnerHtml.Trim();
@@ -454,6 +471,7 @@ namespace Scraps
         {
             int entered = 0;
             int total = RaffleQueue.Count;
+            int joinDelay = Settings.Delays.JoinDelay;
             foreach (string raffle in RaffleQueue)
             {
                 SetStatus($"Attempting to join raffle {raffle}...");
@@ -551,8 +569,11 @@ namespace Scraps
 
                         SaveStats();
 
-                        SetStatus("Waiting to join next raffle...");
-                        await Task.Delay(Settings.Delays.JoinDelay);
+                        if (RaffleQueue.Count > 1)
+                        {
+                            SetStatus("Waiting to join next raffle...");
+                            await Task.Delay(joinDelay);
+                        }
                     }
                     else
                     {
@@ -588,6 +609,10 @@ namespace Scraps
                 if (!data.success || data.message != "Answered!")
                 {
                     Logger.Error("Poll answer failed: {Message}", data.message);
+                }
+                else
+                {
+                    Logger.Debug("Successfully answered poll {Poll}", poll);
                 }
             }
             else
@@ -729,7 +754,7 @@ namespace Scraps
             }
         }
 
-        static void SetStatus(string status) => Console.Title = Title + (OnLatestRelease ? "" : " :: OUTDATED") + $" :: {RafflesJoined} {"Raffle".Pluralize(RafflesJoined)} Joined" + $" :: {status}";
+        static void SetStatus(string status) => Console.Title = Title + (OnLatestRelease ? "" : " — OUTDATED") + $" — {RafflesJoined} {"Raffle".Pluralize(RafflesJoined)} Joined" + $" — {status}";
 
         static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
 
@@ -755,54 +780,56 @@ namespace Scraps
             Helpers.ExitState();
         }
 
-        static void SelectFile(string filePath)
-        {
-            string args = string.Format("/e, /select, \"{0}\"", filePath);
-            var pi = new ProcessStartInfo();
-                pi.FileName = "explorer";
-                pi.Arguments = args;
-            Process.Start(pi);
-        }
-
         static void LoadStats()
         {
-            string statsFile = Paths.StatsFile;
-            if (File.Exists(statsFile))
-            {
-                using(var sw = new StreamReader(statsFile))
-                {
-                    var serializer = new XmlSerializer(typeof(Stats));
-                    var stats = serializer.Deserialize(sw) as Stats;
+            var stats = Properties.Stats.Default;
 
-                    RafflesJoined = stats.TotalRafflesJoined;
-                    EnteredRaffles = stats.EnteredRaffles;
-                    AcceptedRules = stats.AcceptedRules;
-                }
+            if(stats.UpgradeRequired)
+            {
+                stats.Upgrade();
+                stats.UpgradeRequired = false;
+                stats.Save();
             }
+
+            if(!stats.Activated)
+            {
+                Logger.Debug("New user stats file is inactive, activating...");
+                string statsFile = Paths.StatsFile;
+                if(File.Exists(statsFile))
+                {
+                    Logger.Debug("User has legacy stats file, importing stats...");
+                    using(var sw = new StreamReader(statsFile))
+                    {
+                        var serializer = new XmlSerializer(typeof(Stats));
+                        var data = serializer.Deserialize(sw) as Stats;
+
+                        stats.AcceptedRules = data.AcceptedRules;
+                        stats.TotalRafflesJoined = data.TotalRafflesJoined;
+                    }
+                }
+                else
+                {
+                    Logger.Debug("Setting default stats...");
+                    stats.AcceptedRules = false;
+                    stats.TotalRafflesJoined = 0;
+                }
+
+                stats.Activated = true;
+                stats.Save();
+            }
+
+            AcceptedRules = stats.AcceptedRules;
+            RafflesJoined = stats.TotalRafflesJoined;
         }
 
         static void SaveStats()
         {
             SetStatus("Saving stats...");
 
-            string statsFile = Paths.StatsFile;
-            var xmlSettings = new XmlWriterSettings
-            {
-                OmitXmlDeclaration = true
-            };
-            var stats = new Stats
-            {
-                TotalRafflesJoined = RafflesJoined,
-                EnteredRaffles = EnteredRaffles,
-                AcceptedRules = AcceptedRules,
-            };
-
-            using(var sw = new StreamWriter(statsFile))
-            using(var writer = XmlWriter.Create(sw, xmlSettings))
-            {
-                var serializer = new XmlSerializer(typeof(Stats));
-                serializer.Serialize(writer, stats);
-            }
+            var settings = Properties.Stats.Default;
+                settings.AcceptedRules = AcceptedRules;
+                settings.TotalRafflesJoined = RafflesJoined;
+                settings.Save();
         }
         #endregion
     }

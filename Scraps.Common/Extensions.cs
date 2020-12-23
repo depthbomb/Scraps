@@ -29,11 +29,8 @@ namespace Scraps.Common
         public static string Pluralize(this string singularForm, int howMany, string pluralForm)
             => howMany == 1 ? singularForm : pluralForm;
 
-        public static bool IsNullOrEmpty(this string input)
-            => string.IsNullOrEmpty(input);
-
         public static void Shuffle<T>(this List<T> list)
-		{
+        {
             RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
             int n = list.Count;
             while (n > 1)

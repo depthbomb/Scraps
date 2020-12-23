@@ -20,10 +20,9 @@ using System.Collections.Generic;
 
 namespace Scraps.Common.Models
 {
-	public class Stats
-	{
-		public bool AcceptedRules { get; set; } = false;
-		public int TotalRafflesJoined { get; set; } = 0;
-		public List<string> EnteredRaffles { get; set; } = new List<string>();
-	}
+    public class Stats
+    {
+        public bool AcceptedRules { get; set; } = false;
+        public int TotalRafflesJoined { get; set; } = 0;
+    }
 }

@@ -4,12 +4,12 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon>Scraps.ico</ApplicationIcon>
-    <Version>2.10.0.0</Version>
+    <Version>2.11.0.0</Version>
     <Authors>depthbomb</Authors>
     <Product>Scrap.TF Raffle Bot</Product>
     <Company>Caprine Logic</Company>
-    <AssemblyVersion>2.10.0.0</AssemblyVersion>
-    <FileVersion>2.10.0.0</FileVersion>
+    <AssemblyVersion>2.11.0.0</AssemblyVersion>
+    <FileVersion>2.11.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,10 +19,7 @@
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,9 +27,27 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="CaprineNet.Common.Extensions">
+      <HintPath>..\..\CaprineNet\CaprineNet.Common.Extensions\bin\Release\CaprineNet.Common.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="CaprineNet.Common.Utils">
       <HintPath>..\..\CaprineNet\CaprineNet.Common.Utils\bin\Release\CaprineNet.Common.Utils.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Stats.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Stats.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Stats.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Stats.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>
