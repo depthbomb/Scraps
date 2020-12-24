@@ -35,6 +35,10 @@ namespace Scraps.Common.Models
         public XmlComment c2 { get; set; } = new XmlDocument().CreateComment("Whether to enable Rich Presence for Discord which will show how long Scraps has been running for and how many total raffles you've entered.");
         public bool EnableDiscordRichPresensce { get; set; } = false;
 
+        [XmlAnyElement("c3")]
+        public XmlComment c3 { get; set; } = new XmlDocument().CreateComment("Whether to enable Windows toast notifications for various events.");
+        public bool EnableToastNotifications { get; set; } = true;
+
         public Delays Delays { get; set; } = new Delays();
         public RaffleActions RaffleActions { get; set; } = new RaffleActions();
     }

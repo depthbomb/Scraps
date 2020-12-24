@@ -26,6 +26,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Windows.UI.Notifications;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -57,7 +58,7 @@ namespace Scraps
         static Random Rng = new Random();
         static HtmlDocument Html = new HtmlDocument();
 
-        static int SettingsVersion = 4;
+        static int SettingsVersion = 5;
         static int RafflesJoined = 0;
         static bool AcceptedRules = false;
         static List<string> RaffleQueue = new List<string>();
@@ -67,7 +68,7 @@ namespace Scraps
         static bool OnLatestRelease = true;
         static bool AlertedOfWonRaffles = false;
 
-        static readonly string Title = $"Scraps - {AppVersion.Full}";
+        static readonly string Title = $"Scraps {AppVersion.Full}";
 
         static async Task Main(string[] args)
         {
@@ -78,18 +79,21 @@ namespace Scraps
 
             ParseArguments(args);
 
-            await CheckForNewReleases();
-
-            Logger = InitializeLogger();
-            Logger.Debug("Session Started ({Version})", AppVersion.Full);
-
-            LoadSettings();
-
             Console.WriteLine();
             Console.WriteLine("Scraps - Scrap.TF Raffle Bot");
             Console.WriteLine("By depthbomb - https://s.team/p/fwc-crhc");
             Console.WriteLine("Changelog available at https://github.com/depthbomb/Scraps/blob/master/CHANGELOG.md");
             Console.WriteLine();
+
+            await CheckForNewReleases();
+
+            Console.WriteLine();
+            Console.WriteLine("=".Repeat(Console.BufferWidth));
+
+            Logger = InitializeLogger();
+            Logger.Debug("Session Started ({Version})", AppVersion.Full);
+
+            LoadSettings();
 
             if(Settings.Version != SettingsVersion)
             {
@@ -391,8 +395,14 @@ namespace Scraps
                             if(!AlertedOfWonRaffles)
                             {
                                 Logger.Information("{Message}", "There won raffles that you need to withdraw!");
-                                ConsoleUtils.FlashWindow(10, false);
-                                ConsoleUtils.Restore();
+
+                                ConsoleUtils.FlashWindow(5, false);
+
+                                if(Settings.EnableToastNotifications)
+                                {
+                                    ShowToastNotification("Items Need Withdrawing", "You've won one or more raffles and need to withdraw the items.");
+                                }
+
                                 AlertedOfWonRaffles = true;
                             }
                         }
@@ -773,7 +783,13 @@ namespace Scraps
                     }
                 });
             }
-            ConsoleUtils.FlashWindow(int.MaxValue, false);
+
+            if(Settings.EnableToastNotifications)
+            {
+                ShowToastNotification("Account Banned", string.Format("You can use a different account with Scraps by changing your cookie value located in the settings file at {0}", Paths.SettingsFile));
+            }
+
+            ConsoleUtils.FlashWindow(25, false);
             Console.Title = "R.I.P.";
             Logger.Fatal("ACCOUNT HAS BEEN BANNED");
             Logger.Fatal("You can use a different account with Scraps by changing your cookie value located in the settings file at {SettingsFolder}", Paths.SettingsFile);
@@ -830,6 +846,18 @@ namespace Scraps
                 settings.AcceptedRules = AcceptedRules;
                 settings.TotalRafflesJoined = RafflesJoined;
                 settings.Save();
+        }
+
+        static void ShowToastNotification(string title, string body)
+        {
+            var template = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
+            var textNodes = template.GetElementsByTagName("text");
+                textNodes[0].AppendChild(template.CreateTextNode(title));
+                textNodes[1].AppendChild(template.CreateTextNode(body));
+
+            var toast = new ToastNotification(template);
+            var manager = ToastNotificationManager.CreateToastNotifier("Scrap.TF Raffle Bot");
+                manager.Show(toast);
         }
         #endregion
     }

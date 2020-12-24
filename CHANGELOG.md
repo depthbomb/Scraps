@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 2.12.0.0
+
+- Cleaned up pre-operation log lines
+- Added Windows toast notification support for certain events
+  - Configurable in your settings file
+- 
+
 ## Version 2.11.0.0
 
 - Stats are now saved via `System.Configuration.ConfigurationManager`, which should be more reliable and prevent corruption
