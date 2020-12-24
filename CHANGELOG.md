@@ -5,7 +5,6 @@
 - Cleaned up pre-operation log lines
 - Added Windows toast notification support for certain events
   - Configurable in your settings file
-- 
 
 ## Version 2.11.0.0
 
