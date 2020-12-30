@@ -31,6 +31,6 @@ namespace Scraps.Common
         public static readonly Regex RafflePollOptionRegex = new Regex(@"<input name=""optionsRadios"" type=""(radio|checkbox)"" data-toggle=""(radio|checkbox)"" value=""(.*)"" id=""radio(.*)"" required>");
         public static readonly Regex HoneypotRaffleStyleRegex = new Regex(@"<style>\.enter-raffle-btns \.btn{(.*)}<\/style>");
         public static readonly Regex HoneypotRaffleMaxEntriesRegex = new Regex(@"data-max=""(\d{1,})""");
-        public static readonly Regex HoneypotRaffleBannedUsersRegex = new Regex("<img class='tiny-raffle-avatar\\s?' style='border-color:\\s?#CC1100;?' src='(.*)' loading=\"lazy\"\\s?\\/>");
+        public static readonly Regex HoneypotRaffleBannedUsersRegex = new Regex(@"<img class='tiny-raffle-avatar\s?' style='border-color:\s?#CC1100;?' src='(.*)' loading=""lazy""\s?\/>");
     }
 }

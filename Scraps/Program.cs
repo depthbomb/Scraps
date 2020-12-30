@@ -58,7 +58,7 @@ namespace Scraps
         static Random Rng = new Random();
         static HtmlDocument Html = new HtmlDocument();
 
-        static int SettingsVersion = 5;
+        static int SettingsVersion = 6;
         static int RafflesJoined = 0;
         static bool AcceptedRules = false;
         static List<string> RaffleQueue = new List<string>();
@@ -312,36 +312,36 @@ namespace Scraps
                 Helpers.ExitState();
             }
 
-            ScanRaffles:
+		    ScanRaffles:
 
-            await ScanRaffles();
+			await ScanRaffles();
 
-            if (RaffleQueue.Count > 0)
-            {
-                SetStatus("Joining raffles...");
-                Logger.Information("{Count} "+"raffle".Pluralize(RaffleQueue.Count)+" "+"is".Pluralize(RaffleQueue.Count, "are")+" available to enter", RaffleQueue.Count);
+			if(RaffleQueue.Count > 0)
+			{
+				SetStatus("Joining raffles...");
+				Logger.Information("{Count} " + "raffle".Pluralize(RaffleQueue.Count) + " " + "is".Pluralize(RaffleQueue.Count, "are") + " available to enter", RaffleQueue.Count);
 
-                scanDelay = Settings.Delays.ScanDelay;
+				scanDelay = Settings.Delays.ScanDelay;
 
-                await JoinRaffles();
-            }
-            else
-            {
-                SetStatus("Waiting to scan...");
-                Logger.Debug("All raffles have been entered, scanning again after {Delay} seconds", (scanDelay / 1000));
+				await JoinRaffles();
+			}
+			else
+			{
+				SetStatus("Waiting to scan...");
+				Logger.Debug("All raffles have been entered, scanning again after {Delay} seconds", (scanDelay / 1000));
 
-                await Task.Delay(scanDelay);
+				await Task.Delay(scanDelay);
 
-                if(Settings.Delays.IncrementScanDelay)
-                {
-                    scanDelay = scanDelay + 1000;
-                }
-            }
+				if(Settings.Delays.IncrementScanDelay)
+				{
+					scanDelay = scanDelay + 1000;
+				}
+			}
 
-            SaveStats();
+			SaveStats();
 
-            goto ScanRaffles;
-        }
+			goto ScanRaffles;
+		}
 
         static async Task ScanRaffles()
         {
@@ -394,7 +394,7 @@ namespace Scraps
                         {
                             if(!AlertedOfWonRaffles)
                             {
-                                Logger.Information("{Message}", "There won raffles that you need to withdraw!");
+                                Logger.Information("{Message}", "There are won raffles that you need to withdraw!");
 
                                 ConsoleUtils.FlashWindow(5, false);
 
@@ -482,6 +482,7 @@ namespace Scraps
             int entered = 0;
             int total = RaffleQueue.Count;
             int joinDelay = Settings.Delays.JoinDelay;
+            bool isParanoid = false;
             foreach (string raffle in RaffleQueue)
             {
                 SetStatus($"Attempting to join raffle {raffle}...");
@@ -511,10 +512,20 @@ namespace Scraps
                     {
                         int num = int.Parse(limits.Groups[1].Value);
                         int max = int.Parse(limits.Groups[2].Value);
+
+                        if(Settings.Paranoid && num < 2)
+                        {
+                            Logger.Information("{Prefix}: Raffle {Id} does not have at least 2 entries, skipping", "Paranoid", raffle);
+                            isParanoid = true;
+                            total--;
+                            continue;
+                        }
+
                         if(num >= max)
                         {
-                            total--;
                             Logger.Information("Raffle {Id} is full ({Num}/{Max}), skipping", raffle, num, max);
+
+                            total--;
                             EnteredRaffles.Add(raffle);
                             continue;
                         }
@@ -579,7 +590,7 @@ namespace Scraps
 
                         SaveStats();
 
-                        if (RaffleQueue.Count > 1)
+                        if ((RaffleQueue.Count > 1 && entered != total) || isParanoid)
                         {
                             SetStatus("Waiting to join next raffle...");
                             await Task.Delay(joinDelay);
@@ -709,11 +720,18 @@ namespace Scraps
             //  Banned users appearing in the entries list is rare, this captures all banned user avatars
             MatchCollection bannedEntries = Regexes.HoneypotRaffleBannedUsersRegex.Matches(html);
 
-            //  Checks for warning images used in the raffle message
-            bool hasWarningImage = html.Contains("<img src=\"https://feen.us/9o0qduam.png\">") ||
-                                   html.Contains("<img src=\"https://i.nikkigar.de/qk4p0ubwef.png\">");
+            //  Checks for image elements using a specific domain
+            bool hasWarningImage = html.Contains("<img src=\"https://i.nikkigar.de");
 
-            if (styleMatch.Success)
+            //  The last two honeypots used this method where the display property is modified inline instead of internally
+            bool hasModifiedEnterButton2 = html.Contains("button style=\"display:none;\" rel=\"tooltip-free\" data-placement=\"top\" title=\"This public raffle is free to enter by anyone");
+
+            if(hasModifiedEnterButton2)
+            {
+                info = "Enter button is hidden via inline style";
+                return true;
+            }
+            else if(styleMatch.Success)
             {
                 info = "Enter button style is modified: " + styleMatch.Groups[1].Value;
                 return true;

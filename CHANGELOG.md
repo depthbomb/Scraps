@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 2.13.0.0
+
+- Added paranoid mode
+  - This enables stricter checks in an attempt to avoid bans
+  - MAY result in skipping legit raffles, but better safe than sorry
+- Fixed a typo
+
 ## Version 2.12.0.0
 
 - Cleaned up pre-operation log lines
@@ -10,7 +17,7 @@
 
 - Stats are now saved via `System.Configuration.ConfigurationManager`, which should be more reliable and prevent corruption
 - Entered raffle IDs will no longer be saved
-  - This could cause problems when switching accounts in Scraps
+  - This could cause problems when switching to a different account
 - There will no longer be a delay after joining if the queue only contains one raffle
 - Updated separator in statuses
 - You will now be alerted if you've won any raffles

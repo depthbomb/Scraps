@@ -31,7 +31,7 @@ namespace Scraps.Common
 
         public static Version AsDotNetVersion() => new Version(Major, Minor, Patch, Hotfix);
         public static int Major => 2;
-        public static int Minor => 12;
+        public static int Minor => 13;
         public static int Patch => 0;
         public static int Hotfix => 0;
         public static ReleaseTypes ReleaseType => ReleaseTypes.Release;

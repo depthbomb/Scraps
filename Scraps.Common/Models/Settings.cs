@@ -39,6 +39,10 @@ namespace Scraps.Common.Models
         public XmlComment c3 { get; set; } = new XmlDocument().CreateComment("Whether to enable Windows toast notifications for various events.");
         public bool EnableToastNotifications { get; set; } = true;
 
+        [XmlAnyElement("c4")]
+        public XmlComment c4 { get; set; } = new XmlDocument().CreateComment("Enables paranoid mode which will make Scraps be super strict in checking raffles as to avoid honeypots. MAY result in skipping normal raffles, but better safe than sorry.");
+        public bool Paranoid { get; set; } = true;
+
         public Delays Delays { get; set; } = new Delays();
         public RaffleActions RaffleActions { get; set; } = new RaffleActions();
     }
