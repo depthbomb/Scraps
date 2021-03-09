@@ -362,6 +362,7 @@ namespace Scraps
 
             if(json == null)
             {
+                // Just wait a little bit
                 await Task.Delay(10000);
             }
             else
@@ -390,28 +391,19 @@ namespace Scraps
                         var document = Html.DocumentNode;
                         var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
 
-                        if(html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
+                        // Check if the Withdraw Items button appears on the listings page
+                        if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
                         {
-                            if(!AlertedOfWonRaffles)
-                            {
-                                Logger.Information("{Message}", "There are won raffles that you need to withdraw!");
-
-                                ConsoleUtils.FlashWindow(5, false);
-
-                                if(Settings.EnableToastNotifications)
-                                {
-                                    ShowToastNotification("Items Need Withdrawing", "You've won one or more raffles and need to withdraw the items.");
-                                }
-
-                                AlertedOfWonRaffles = true;
-                            }
+                            // Add won raffles to EnteredRaffles and alert of the # of won raffles if we haven't already.
+                            await CheckForWonRaffles();
                         }
                         else
                         {
+                            // Set to false if the button does not apper so that we may be alerted again when we win new raffles
                             AlertedOfWonRaffles = false;
                         }
 
-                        foreach(var el in raffleElements)
+                        foreach (var el in raffleElements)
                         {
                             string elementHtml = el.InnerHtml.Trim();
                             string raffleId = Regexes.RaffleEntryRegex.Match(elementHtml).Groups[1].Value.Trim();
@@ -482,7 +474,16 @@ namespace Scraps
             int entered = 0;
             int total = RaffleQueue.Count;
             int joinDelay = Settings.Delays.JoinDelay;
-            bool isParanoid = false;
+
+            foreach (string raffle in EnteredRaffles)
+            {
+                if (RaffleQueue.Contains(raffle))
+                {
+                    Logger.Debug("Removing {Entered} from queue because it was found in EnteredRaffles", raffle);
+                    RaffleQueue.Remove(raffle);
+                }
+            }
+
             foreach (string raffle in RaffleQueue)
             {
                 SetStatus($"Attempting to join raffle {raffle}...");
@@ -516,7 +517,6 @@ namespace Scraps
                         if(Settings.Paranoid && num < 2)
                         {
                             Logger.Information("{Prefix}: Raffle {Id} does not have at least 2 entries, skipping", "Paranoid", raffle);
-                            isParanoid = true;
                             total--;
                             continue;
                         }
@@ -544,8 +544,8 @@ namespace Scraps
                         });
 
                         var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
-                        httpRequest.Content = content;
-                        httpRequest.Headers.Referrer = new Uri("https://scrap.tf/raffles/" + raffle);
+                            httpRequest.Content = content;
+                            httpRequest.Headers.Referrer = new Uri("https://scrap.tf/raffles/" + raffle);
 
                         var response = await Client.SendAsync(httpRequest);
 
@@ -572,7 +572,7 @@ namespace Scraps
                                     var optionsMatches = Regexes.RafflePollOptionRegex.Matches(html);
                                     if (optionsMatches.Count > 0)
                                     {
-                                        Logger.Debug("Found {OptionCount} "+"option".Pluralize(optionsMatches.Count) +" in poll", optionsMatches.Count);
+                                        Logger.Debug("Found {OptionCount} "+"option".Pluralize(optionsMatches.Count)+" in poll", optionsMatches.Count);
                                         await AnswerPoll(pollId, optionsMatches.Count);
                                     }
                                     else
@@ -590,11 +590,8 @@ namespace Scraps
 
                         SaveStats();
 
-                        if ((RaffleQueue.Count > 1 && entered != total) || isParanoid)
-                        {
-                            SetStatus("Waiting to join next raffle...");
-                            await Task.Delay(joinDelay);
-                        }
+                        SetStatus("Waiting to join next raffle...");
+                        await Task.Delay(joinDelay);
                     }
                     else
                     {
@@ -602,6 +599,11 @@ namespace Scraps
                         Logger.Warning("Could not obtain hash from raffle {Id}", raffle);
                     }
                 }
+            }
+
+            if (entered > 0)
+            {
+                Logger.Information("Finished entering queued raffles");
             }
         }
 
@@ -642,6 +644,39 @@ namespace Scraps
             }
         }
 
+        static async Task CheckForWonRaffles()
+        {
+            string url = "https://scrap.tf/raffles/won";
+            string html = await Client.GetStringAsync(url);
+            var raffleIds = Regexes.RaffleEntryRegex.Matches(html);
+            int wonRaffles = raffleIds.Count;
+
+            foreach (Match id in raffleIds)
+            {
+                string raffleId = id.Groups[1].Value;
+                
+                if (!EnteredRaffles.Contains(raffleId))
+                {
+                    Logger.Debug("Adding {Entered} to EnteredRaffles list because it is a won raffle", raffleId);
+                    EnteredRaffles.Add(raffleId);
+                }
+            }
+
+            if (!AlertedOfWonRaffles)
+            {
+                Logger.Information("You've won {Number} " + "raffle".Pluralize(wonRaffles) + " that " + "needs".Pluralize(wonRaffles, "need") + " to be withdrawn!", wonRaffles);
+
+                ConsoleUtils.FlashWindow(5, false);
+
+                if (Settings.EnableToastNotifications)
+                {
+                    ShowToastNotification("Items Need Withdrawing", string.Format("You've won {0} {1} that {2} to be withdrawn!", wonRaffles, "raffle".Pluralize(wonRaffles), "needs".Pluralize(wonRaffles, "need")));
+                }
+
+                AlertedOfWonRaffles = true;
+            }
+        }
+
         static async Task AcceptRules()
         {
             Logger.Debug("Attempting to accept site rules...");
@@ -677,6 +712,7 @@ namespace Scraps
 
         static async Task GetCsrf()
         {
+            TryLogin:
             string html = await Client.GetStringAsync("https://scrap.tf");
 
             if (html.Contains("You have recieved a site-ban"))
@@ -698,7 +734,16 @@ namespace Scraps
                 }
                 else
                 {
-                    throw new Exception("Unable to retreive CSRF token. Please check your cookie value.");
+                    if(html.Contains("<div class=\"dialog-title\">We're down!</div>"))
+                    {
+                        Logger.Error("Site appears to be down/under maintenance. Trying again after 1 minute.");
+                        await Task.Delay(60 * 1000);
+                        goto TryLogin;
+                    }
+					else
+					{
+                        throw new Exception("Unable to retreive CSRF token. Please check your cookie value.");
+                    }
                 }
             }
         }

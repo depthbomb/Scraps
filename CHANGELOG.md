@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 2.13.1.0
+
+- Added maintenance check during login
+- Added a log line for when Scraps has finished entering raffles in a queue
+- You will now be alert of won raffles via the new _Won Raffles_ page and won raffles will be added to the **Entered Raffles** list
+  - No "raffled ended, skipping" warning because it treated a won raffle as an available one
+
 ## Version 2.13.0.0
 
 - Added paranoid mode
