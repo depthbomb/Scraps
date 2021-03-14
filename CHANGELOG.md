@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 2.14.0.0
+- Due to feature creep, the following features have been removed
+  - Stats
+  - Discord Rich Presence
+- Temporarily removed accepting of site rules since it appears to not be required anymore
+
+Scraps is now compiled to a single executable and binaries for older version of Windows (on different architectures) are available but __untested.__
+
 ## Version 2.13.1.0
 
 - Added maintenance check during login

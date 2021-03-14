@@ -21,7 +21,6 @@ using System.IO;
 using System.Xml;
 using System.Net;
 using System.Linq;
-using System.Timers;
 using System.Net.Http;
 using System.Text.Json;
 using System.Diagnostics;
@@ -36,7 +35,6 @@ using Serilog.Core;
 using Serilog.Events;
 using CommandLine;
 using HtmlAgilityPack;
-using DiscordRPC;
 
 using Scraps.Models;
 using Scraps.Common;
@@ -51,16 +49,14 @@ namespace Scraps
     {
         static string Csrf;
         static Logger Logger;
-        static Timer RpcTimer;
         static HttpClient Client;
         static Settings Settings;
-        static DiscordRpcClient RpcClient;
         static Random Rng = new Random();
         static HtmlDocument Html = new HtmlDocument();
 
-        static int SettingsVersion = 6;
+        static int SettingsVersion = 7;
         static int RafflesJoined = 0;
-        static bool AcceptedRules = false;
+        // static bool AcceptedRules = false;
         static List<string> RaffleQueue = new List<string>();
         static List<string> EnteredRaffles = new List<string>();
 
@@ -123,13 +119,6 @@ namespace Scraps
             }
 
             Client = InitializeHttpClient();
-
-            LoadStats();
-            
-            if (Settings.EnableDiscordRichPresensce)
-            {
-                InitializeRichPresence();
-            }
 
             await Start();
         }
@@ -243,54 +232,6 @@ namespace Scraps
                 .WriteTo.File(Path.Combine(Paths.LogsPath, "Verbose-.log"), rollingInterval: RollingInterval.Month)
                 .CreateLogger();
         }
-
-        static void InitializeRichPresence()
-        {
-            Logger.Debug("Initializing Rich Presence");
-            var start = DateTime.UtcNow;
-            string getJoined()
-            {
-                return $"{RafflesJoined} "+"raffle".Pluralize(RafflesJoined)+" joined!";
-            };
-            string details = "Scrap.TF Raffle Bot";
-            var timestamps = new Timestamps
-            {
-                Start = start
-            };
-            var assets = new Assets
-            {
-                LargeImageKey = "scraps",
-                LargeImageText = "github.com/depthbomb/scraps"
-            };
-            RpcTimer = new Timer
-            {
-                Interval = TimeSpan.FromSeconds(7.5).TotalMilliseconds, // Presence updates are only updated every 15 seconds, but send more frequently so we ensure the latest data is available
-                Enabled = false
-            };
-
-            RpcClient = new DiscordRpcClient("789333681998397460");
-            RpcClient.Initialize();
-            RpcClient.SetPresence(new RichPresence
-            {
-                Details = details,
-                State = getJoined(),
-                Timestamps = timestamps,
-                Assets = assets
-            });
-
-            RpcTimer.Elapsed += (sender, e) =>
-            {
-                RpcClient.SetPresence(new RichPresence
-                {
-                    Details = details,
-                    State = getJoined(),
-                    Timestamps = timestamps,
-                    Assets = assets
-                });
-            };
-            RpcTimer.Start();
-            Logger.Debug("Rich Presence update timer started");
-        }
         #endregion
 
         #region Operations
@@ -337,8 +278,6 @@ namespace Scraps
 					scanDelay = scanDelay + 1000;
 				}
 			}
-
-			SaveStats();
 
 			goto ScanRaffles;
 		}
@@ -588,8 +527,6 @@ namespace Scraps
                             Logger.Information("Unable to join raffle {Id} with message {Message}", raffle, resp.message);
                         }
 
-                        SaveStats();
-
                         SetStatus("Waiting to join next raffle...");
                         await Task.Delay(joinDelay);
                     }
@@ -677,7 +614,7 @@ namespace Scraps
             }
         }
 
-        static async Task AcceptRules()
+/*        static async Task AcceptRules()
         {
             Logger.Debug("Attempting to accept site rules...");
 
@@ -708,7 +645,7 @@ namespace Scraps
             {
                 Logger.Error("Request to accept site rules failed: {StatusCode}", response.StatusCode);
             }
-        }
+        }*/
 
         static async Task GetCsrf()
         {
@@ -726,11 +663,10 @@ namespace Scraps
                 {
                     Csrf = csrf.Groups[1].Value;
                     Logger.Debug("Obtained CSRF token ({Csrf})", Csrf);
-                    if(!AcceptedRules)
+                    /*if(!AcceptedRules)
                     {
                         await AcceptRules();
-                    }
-                    SaveStats();
+                    }*/
                 }
                 else
                 {
@@ -827,26 +763,12 @@ namespace Scraps
             }
         }
 
-        static void SetStatus(string status) => Console.Title = Title + (OnLatestRelease ? "" : " — OUTDATED") + $" — {RafflesJoined} {"Raffle".Pluralize(RafflesJoined)} Joined" + $" — {status}";
+        static void SetStatus(string status) => Console.Title = Title + (OnLatestRelease ? "" : " — OUTDATED") + $" — {RafflesJoined} {"Raffle".Pluralize(RafflesJoined)} joined this session" + $" — {status}";
 
         static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
 
         static void DisplayTombstone()
         {
-            if(Settings.EnableDiscordRichPresensce)
-            {
-                RpcTimer.Stop();
-                RpcClient.SetPresence(new RichPresence
-                {
-                    Details = "Account Banned",
-                    Assets = new Assets
-                    {
-                        LargeImageKey = "banned",
-                        LargeImageText = "R.I.P."
-                    }
-                });
-            }
-
             if(Settings.EnableToastNotifications)
             {
                 ShowToastNotification("Account Banned", string.Format("You can use a different account with Scraps by changing your cookie value located in the settings file at {0}", Paths.SettingsFile));
@@ -857,58 +779,6 @@ namespace Scraps
             Logger.Fatal("ACCOUNT HAS BEEN BANNED");
             Logger.Fatal("You can use a different account with Scraps by changing your cookie value located in the settings file at {SettingsFolder}", Paths.SettingsFile);
             Helpers.ExitState();
-        }
-
-        static void LoadStats()
-        {
-            var stats = Properties.Stats.Default;
-
-            if(stats.UpgradeRequired)
-            {
-                stats.Upgrade();
-                stats.UpgradeRequired = false;
-                stats.Save();
-            }
-
-            if(!stats.Activated)
-            {
-                Logger.Debug("New user stats file is inactive, activating...");
-                string statsFile = Paths.StatsFile;
-                if(File.Exists(statsFile))
-                {
-                    Logger.Debug("User has legacy stats file, importing stats...");
-                    using(var sw = new StreamReader(statsFile))
-                    {
-                        var serializer = new XmlSerializer(typeof(Stats));
-                        var data = serializer.Deserialize(sw) as Stats;
-
-                        stats.AcceptedRules = data.AcceptedRules;
-                        stats.TotalRafflesJoined = data.TotalRafflesJoined;
-                    }
-                }
-                else
-                {
-                    Logger.Debug("Setting default stats...");
-                    stats.AcceptedRules = false;
-                    stats.TotalRafflesJoined = 0;
-                }
-
-                stats.Activated = true;
-                stats.Save();
-            }
-
-            AcceptedRules = stats.AcceptedRules;
-            RafflesJoined = stats.TotalRafflesJoined;
-        }
-
-        static void SaveStats()
-        {
-            SetStatus("Saving stats...");
-
-            var settings = Properties.Stats.Default;
-                settings.AcceptedRules = AcceptedRules;
-                settings.TotalRafflesJoined = RafflesJoined;
-                settings.Save();
         }
 
         static void ShowToastNotification(string title, string body)

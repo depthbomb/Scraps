@@ -32,15 +32,11 @@ namespace Scraps.Common.Models
         public string Cookie { get; set; } = "scr_session cookie here!";
 
         [XmlAnyElement("c2")]
-        public XmlComment c2 { get; set; } = new XmlDocument().CreateComment("Whether to enable Rich Presence for Discord which will show how long Scraps has been running for and how many total raffles you've entered.");
-        public bool EnableDiscordRichPresensce { get; set; } = false;
-
-        [XmlAnyElement("c3")]
-        public XmlComment c3 { get; set; } = new XmlDocument().CreateComment("Whether to enable Windows toast notifications for various events.");
+        public XmlComment c2 { get; set; } = new XmlDocument().CreateComment("Whether to enable Windows toast notifications for various events.");
         public bool EnableToastNotifications { get; set; } = true;
 
-        [XmlAnyElement("c4")]
-        public XmlComment c4 { get; set; } = new XmlDocument().CreateComment("Enables paranoid mode which will make Scraps be super strict in checking raffles as to avoid honeypots. MAY result in skipping normal raffles, but better safe than sorry.");
+        [XmlAnyElement("c3")]
+        public XmlComment c3 { get; set; } = new XmlDocument().CreateComment("Enables paranoid mode which will make Scraps be super strict in checking raffles as to avoid honeypots. MAY result in skipping normal raffles, but better safe than sorry.");
         public bool Paranoid { get; set; } = true;
 
         public Delays Delays { get; set; } = new Delays();

@@ -27,7 +27,6 @@ namespace Scraps.Common
         public static string InstallPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static readonly string StorePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Caprine Logic", "Scraps");
         public static readonly string LogsPath = Path.Combine(StorePath, "Logs");
-        public static readonly string StatsFile = Path.Combine(StorePath, "Stats.xml");
         public static readonly string SettingsFile = Path.Combine(StorePath, "Settings.xml");
     }
 }
