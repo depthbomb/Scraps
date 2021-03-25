@@ -5,7 +5,6 @@
   - Only tested on ARM64 (Raspberry Pi 4, for example)
   - Application data is stored in `/var/lib/scraps`
   - Removed some unimportant features that prevented the port
-- Entered raffles are now checked for on startup via the _Entered Raffles_ page
 - Greatly improved toast notifications
 - Dropped support for Windows 7
 
