@@ -25,7 +25,6 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Windows.UI.Notifications;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -33,15 +32,13 @@ using System.Text.RegularExpressions;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
-using CommandLine;
 using HtmlAgilityPack;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 using Scraps.Models;
 using Scraps.Common;
 using Scraps.Common.Models;
-
-using CaprineNet.Common.Utils;
-using CaprineNet.Common.Extensions;
+using Constants = Scraps.Common.Constants;
 
 namespace Scraps
 {
@@ -54,7 +51,7 @@ namespace Scraps
         static Random Rng = new Random();
         static HtmlDocument Html = new HtmlDocument();
 
-        static int SettingsVersion = 7;
+        static int SettingsVersion = 8;
         static int RafflesJoined = 0;
         // static bool AcceptedRules = false;
         static List<string> RaffleQueue = new List<string>();
@@ -68,9 +65,16 @@ namespace Scraps
 
         static async Task Main(string[] args)
         {
-            if(IsAlreadyRunning())
+            if (!HasWritePermissions())
             {
-                Environment.Exit(0);
+                Console.WriteLine("Scraps needs to be ran with elevated permissions.");
+                Console.WriteLine("Please run Scraps {0}.", Constants.IsUnix ? "with sudo" : "as administrator");
+                Environment.Exit(1);
+            }
+
+            if (IsAlreadyRunning())
+            {
+                Environment.Exit(1);
             }
 
             ParseArguments(args);
@@ -97,7 +101,10 @@ namespace Scraps
                 Console.ReadLine();
                 SaveSettings(null, "Settings_OLD");
                 SaveSettings(new Settings { Version = SettingsVersion });
-                IOUtils.OpenFolderAndSelect(Paths.SettingsFile);
+                if (!Constants.IsUnix)
+                {
+                    SelectFile(Paths.SettingsFile);
+                }
                 Console.WriteLine("Press [Enter] to restart Scraps when you're done.");
                 Console.ReadLine();
 
@@ -108,10 +115,13 @@ namespace Scraps
             {
                 Logger.Debug("User prompted to edit settings");
 
-                Console.WriteLine("Your cookie value is missing from your settings file.");
-                Console.WriteLine("Press [Enter] to open your settings file.");
-                Console.ReadLine();
-                IOUtils.OpenFolderAndSelect(Paths.SettingsFile);
+                Console.WriteLine("Your cookie value is missing from your settings file, please fill it out.");
+                if (!Constants.IsUnix)
+                {
+                    Console.WriteLine("Press [Enter] to open your settings file.");
+                    Console.ReadLine();
+                    SelectFile(Paths.SettingsFile);
+                }
                 Console.WriteLine("Press [Enter] when you are done making modifications to your settings file.");
                 Console.ReadLine();
 
@@ -148,16 +158,17 @@ namespace Scraps
 
         static void ParseArguments(string[] args)
         {
-            Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
+            bool hasVerboseArgs = args.Contains("-v") || args.Contains("--verbose");
+            bool hasOpenConfigArgs = args.Contains("-c") || args.Contains("--config");
+
+            if (hasOpenConfigArgs)
             {
-                Verbose = o.Verbose;
-                if(o.OpenSettings)
-                {
-                    Console.WriteLine("Opening settings file...");
-                    Process.Start("explorer.exe", Paths.SettingsFile);
-                    Environment.Exit(0);
-                }
-            });
+                Console.WriteLine("Opening settings file...");
+                Process.Start("explorer.exe", Paths.SettingsFile);
+                Environment.Exit(0);
+            }
+
+            Verbose = hasVerboseArgs;
         }
 
         static HttpClient InitializeHttpClient()
@@ -195,8 +206,6 @@ namespace Scraps
             if (compare < 0)
             {
                 OnLatestRelease = false;
-                ConsoleUtils.Restore();
-                ConsoleUtils.FlashWindow(5, true);
                 Console.BackgroundColor = ConsoleColor.Yellow;
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.WriteLine("A new version of Scraps ({0}) is available to download at {1}", latestTag.ToString(), release.html_url);
@@ -456,6 +465,7 @@ namespace Scraps
                         if(Settings.Paranoid && num < 2)
                         {
                             Logger.Information("{Prefix}: Raffle {Id} does not have at least 2 entries, skipping", "Paranoid", raffle);
+
                             total--;
                             continue;
                         }
@@ -581,6 +591,11 @@ namespace Scraps
             }
         }
 
+        static async Task CheckForEnteredRaffles()
+        {
+
+        }
+
         static async Task CheckForWonRaffles()
         {
             string url = "https://scrap.tf/raffles/won";
@@ -603,11 +618,42 @@ namespace Scraps
             {
                 Logger.Information("You've won {Number} " + "raffle".Pluralize(wonRaffles) + " that " + "needs".Pluralize(wonRaffles, "need") + " to be withdrawn!", wonRaffles);
 
-                ConsoleUtils.FlashWindow(5, false);
-
-                if (Settings.EnableToastNotifications)
+                if (Settings.EnableToastNotifications && Common.Constants.Platform == "Win32NT")
                 {
-                    ShowToastNotification("Items Need Withdrawing", string.Format("You've won {0} {1} that {2} to be withdrawn!", wonRaffles, "raffle".Pluralize(wonRaffles), "needs".Pluralize(wonRaffles, "need")));
+                    if (ToastNotificationManagerCompat.WasCurrentProcessToastActivated()) return;
+
+                    // Create a temporary file and download the Scrap.TF logo to use as the app logo override for the toast notification.
+                    string appLogoOverride = Path.GetTempFileName();
+                    byte[] data = await Client.GetByteArrayAsync("https://scrap.tf/apple-touch-icon.png?" + Guid.NewGuid().ToString());
+                    await File.WriteAllBytesAsync(appLogoOverride, data);
+
+                    var viewButton = new ToastButton();
+                        viewButton.AddArgument("action", "viewRafflesWonPage");
+                        viewButton.SetContent("View Won Raffles");
+
+                    var dismissButton = new ToastButton();
+                        dismissButton.SetContent("Dismiss");
+                        dismissButton.SetDismissActivation();
+
+                    var toast = new ToastContentBuilder();
+                        toast.AddAppLogoOverride(new Uri(appLogoOverride), ToastGenericAppLogoCrop.Circle, null, false);
+                        toast.AddAttributionText(string.Format("Scraps {0}", AppVersion.Full));
+                        toast.AddText("Items Need Withdrawing");
+                        toast.AddText(string.Format("You've won {0} {1} that {2} to be withdrawn!", wonRaffles, "raffle".Pluralize(wonRaffles), "needs".Pluralize(wonRaffles, "need")));
+                        toast.AddButton(viewButton);
+                        toast.AddButton(dismissButton);
+                        toast.Show();
+
+                    ToastNotificationManagerCompat.OnActivated += (args) =>
+                    {
+                        var parsed = ToastArguments.Parse(args.Argument);
+                        switch (parsed["action"])
+                        {
+                            case "viewRafflesWonPage":
+                                Process.Start("explorer.exe", "https://scrap.tf/raffles/won");
+                                break;
+                        }
+                    };
                 }
 
                 AlertedOfWonRaffles = true;
@@ -771,26 +817,62 @@ namespace Scraps
         {
             if(Settings.EnableToastNotifications)
             {
-                ShowToastNotification("Account Banned", string.Format("You can use a different account with Scraps by changing your cookie value located in the settings file at {0}", Paths.SettingsFile));
+                ToastNotificationManagerCompat.OnActivated += (args) =>
+                {
+                    var parsed = ToastArguments.Parse(args.Argument);
+                    switch (parsed["action"])
+                    {
+                        case "openSettingsFile":
+                            Process.Start("explorer.exe", Paths.SettingsFile);
+                            break;
+                    }
+                };
+
+                if (ToastNotificationManagerCompat.WasCurrentProcessToastActivated()) return;
+
+                var openButton = new ToastButton();
+                    openButton.AddArgument("action", "openSettingsFile");
+                    openButton.SetContent("Open Settings File");
+
+                var toast = new ToastContentBuilder();
+                toast.AddText("Account Banned");
+                toast.AddButton(openButton);
+                toast.Show();
             }
 
-            ConsoleUtils.FlashWindow(25, false);
             Console.Title = "R.I.P.";
             Logger.Fatal("ACCOUNT HAS BEEN BANNED");
             Logger.Fatal("You can use a different account with Scraps by changing your cookie value located in the settings file at {SettingsFolder}", Paths.SettingsFile);
             Helpers.ExitState();
         }
 
-        static void ShowToastNotification(string title, string body)
+        static void SelectFile(string path)
         {
-            var template = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
-            var textNodes = template.GetElementsByTagName("text");
-                textNodes[0].AppendChild(template.CreateTextNode(title));
-                textNodes[1].AppendChild(template.CreateTextNode(body));
+            string args = string.Format("/e, /select, \"{0}\"", path);
 
-            var toast = new ToastNotification(template);
-            var manager = ToastNotificationManager.CreateToastNotifier("Scrap.TF Raffle Bot");
-                manager.Show(toast);
+            var pInfo = new ProcessStartInfo()
+            {
+                FileName = "explorer",
+                Arguments = args
+            };
+
+            Process.Start(pInfo);
+        }
+
+        static bool HasWritePermissions()
+        {
+            string str = Rng.Next(10000, 99999999).ToString();
+            try
+            {
+                File.WriteAllText(str, str);
+                File.Delete(str);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         #endregion
     }

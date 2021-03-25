@@ -16,16 +16,13 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using CommandLine;
+using System;
 
-namespace Scraps
+namespace Scraps.Common
 {
-	public class Options
-	{
-		[Option('v', "verbose", Required = false, HelpText = "Whether to display debug messages to the console")]
-		public bool Verbose { get; set; } = false;
-
-		[Option('c', "config", Required = false, HelpText = "Open the settings file")]
-		public bool OpenSettings { get; set; } = false;
-	}
+    public class Constants
+    {
+        public static string Platform = Environment.OSVersion.Platform.ToString();
+        public static bool IsUnix = Platform == "Unix";
+    }
 }

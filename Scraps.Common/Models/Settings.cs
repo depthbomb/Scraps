@@ -32,7 +32,7 @@ namespace Scraps.Common.Models
         public string Cookie { get; set; } = "scr_session cookie here!";
 
         [XmlAnyElement("c2")]
-        public XmlComment c2 { get; set; } = new XmlDocument().CreateComment("Whether to enable Windows toast notifications for various events.");
+        public XmlComment c2 { get; set; } = new XmlDocument().CreateComment("Whether to enable Windows toast notifications for various events. Only works on Windows, duh.");
         public bool EnableToastNotifications { get; set; } = true;
 
         [XmlAnyElement("c3")]

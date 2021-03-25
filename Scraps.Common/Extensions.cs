@@ -16,6 +16,7 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
+using System.Text;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
@@ -23,6 +24,10 @@ namespace Scraps.Common
 {
     public static class Extensions
     {
+        public static string Repeat(this string str, int count) => new StringBuilder(str.Length * count).Insert(0, str, count).ToString();
+
+        public static bool IsNullOrEmpty(this string str) => string.IsNullOrEmpty(str);
+
         public static string Pluralize(this string singularForm, int howMany) => singularForm.Pluralize(howMany, singularForm + "s");
 
         public static string Pluralize(this string singularForm, int howMany, string pluralForm) => howMany == 1 ? singularForm : pluralForm;

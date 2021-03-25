@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 2.15.0.0
+- Scraps is now supported on Linux
+  - Only tested on ARM64 (Raspberry Pi 4, for example)
+  - Application data is stored in `/var/lib/scraps`
+  - Removed some unimportant features that prevented the port
+- Entered raffles are now checked for on startup via the _Entered Raffles_ page
+- Greatly improved toast notifications
+- Dropped support for Windows 7
+
 ## Version 2.14.0.0
 - Due to feature creep, the following features have been removed
   - Stats

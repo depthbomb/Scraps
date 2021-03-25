@@ -19,11 +19,11 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Requirements
 
-Scraps was developed on Windows 10 >=v2004. It will probably work on Windows 8 and maybe even Windows 7 but those are untested.
+Scraps was developed on Windows 10 >=v2004 but it will probably work on Windows 8/8.1.
 
-You will also need to download the .NET Core Runtime installer for Windows from [here](https://dotnet.microsoft.com/download/dotnet-core/3.1) and install it.
+**As of 2.15.0.0**, Scraps is published as "self-contained" which means it shouldn't require the .NET Core 3.1 runtime. However, if you encounter problems then you can get the SDK or Desktop Runtime [here](https://dotnet.microsoft.com/download/dotnet-core/3.1).
 
-![Clicky clicky](https://i.imgur.com/iXnKeqZ.png)
+![Clicky clicky](https://i.imgur.com/j61pqXS.png)
 
 ## Usage
 

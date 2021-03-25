@@ -17,12 +17,10 @@
 #endregion License
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Scraps.Common
 {
-    public static class Helpers
+    public class Helpers
     {
         public static void ExitState()
         {
