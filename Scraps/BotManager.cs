@@ -282,7 +282,9 @@ namespace Scraps
                                 }
                                 else
                                 {
-                                    OnLogger?.Invoke(this, new LoggerArgs(LogEventLevel.Error, "Encountered an error while paginating: {Message}", paginateResponse.message));
+                                    OnLogger?.Invoke(this, new LoggerArgs(LogEventLevel.Error, "Encountered an error while paginating: {Message} - Waiting 10 seconds", paginateResponse.message));
+
+                                    await Task.Delay(10_000);
                                 }
                             }
                             else
@@ -499,9 +501,9 @@ namespace Scraps
             SendStatus($"Voting in poll {pollId}");
 
             string url = "https://scrap.tf/ajax/viewpoll/SubmitAnswer";
-            int choice = _rng.Next(0, numOptions);
+            int choice = numOptions > 1 ? _rng.Next(0, numOptions) : 0;
 
-            OnLogger?.Invoke(this, new LoggerArgs(LogEventLevel.Debug, "Randomly chose poll option {Option}", numOptions + 1));
+            OnLogger?.Invoke(this, new LoggerArgs(LogEventLevel.Debug, "Chose poll option {Option}", numOptions + 1));
 
             var content = new FormUrlEncodedContent(new[]
             {
