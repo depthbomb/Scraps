@@ -16,13 +16,17 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Models
+using System;
+using System.Collections.Generic;
+
+namespace Scraps.Events
 {
-    public class JoinRaffleResponse
+    public class RafflesWonArgs : EventArgs
     {
-        public string message { get; set; }
-        public string entered_message { get; set; }
-        public bool can_comment { get; set; }
-        public bool success { get; set; }
+        public List<string> RaffleIds { get; set; }
+        public RafflesWonArgs(List<string> raffleIds)
+        {
+            RaffleIds = raffleIds;
+        }
     }
 }

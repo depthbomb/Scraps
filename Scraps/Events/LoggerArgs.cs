@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2020  Caprine Logic
+/// Copyright(C) 2021  Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -16,15 +16,27 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System.Xml;
-using System.Xml.Serialization;
+using Serilog.Events;
 
-namespace Scraps.Common.Models
+namespace Scraps.Events
 {
-	public class RaffleActions
-	{
-		[XmlAnyElement("c1")]
-		public XmlComment c1 { get; set; } = new XmlDocument().CreateComment("Whether to vote for a random answer in a poll if the raffle has one.");
-		public bool VoteInPolls { get; set; } = false;
-	}
+    public class LoggerArgs
+    {
+        public LogEventLevel Level { get; set; }
+        public string Template { get; set; }
+        public object[] Properties { get; set; }
+
+        public LoggerArgs(LogEventLevel level, string template, params object[] properties)
+        {
+            Level = level;
+            Template = template;
+            Properties = properties;
+        }
+
+        public LoggerArgs(LogEventLevel level, string template)
+        {
+            Level = level;
+            Template = template;
+        }
+    }
 }

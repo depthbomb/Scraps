@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2020  Caprine Logic
+/// Copyright(C) 2021  Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
 
 namespace Scraps.Models
 {
-	public class CommentsPostResponse
-	{
-		public bool success { get; set; }
-		public bool closed { get; set; }
-		public string message { get; set; } = null;
-	}
+    public class CommentsPostResponse
+    {
+        public bool success { get; set; }
+        public bool closed { get; set; }
+        public string message { get; set; } = null;
+    }
 }

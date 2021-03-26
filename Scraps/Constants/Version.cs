@@ -16,13 +16,24 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Models
+namespace Scraps.Constants
 {
-    public class JoinRaffleResponse
+    public static class Version
     {
-        public string message { get; set; }
-        public string entered_message { get; set; }
-        public bool can_comment { get; set; }
-        public bool success { get; set; }
+        public enum ReleaseTypes
+        {
+            Development,
+            PreRelease,
+            Release
+        }
+
+        public static System.Version AsDotNetVersion() => new System.Version(Major, Minor, Patch, Hotfix);
+        public static int Major => 3;
+        public static int Minor => 0;
+        public static int Patch => 0;
+        public static int Hotfix => 0;
+        public static ReleaseTypes ReleaseType => ReleaseTypes.Release;
+        public static string SemVer => $"{Major}.{Minor}.{Patch}.{Hotfix}";
+        public static string Full => $"{SemVer}-{ReleaseType}";
     }
 }

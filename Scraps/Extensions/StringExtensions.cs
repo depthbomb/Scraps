@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2020  Caprine Logic
+/// Copyright(C) 2021  Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -17,12 +17,10 @@
 #endregion License
 
 using System.Text;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 
-namespace Scraps.Common
+namespace Scraps.Extensions
 {
-    public static class Extensions
+    public static class StringExtensions
     {
         public static string Repeat(this string str, int count) => new StringBuilder(str.Length * count).Insert(0, str, count).ToString();
 
@@ -31,22 +29,5 @@ namespace Scraps.Common
         public static string Pluralize(this string singularForm, int howMany) => singularForm.Pluralize(howMany, singularForm + "s");
 
         public static string Pluralize(this string singularForm, int howMany, string pluralForm) => howMany == 1 ? singularForm : pluralForm;
-
-        public static void Shuffle<T>(this List<T> list)
-        {
-            RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
-            int n = list.Count;
-            while (n > 1)
-            {
-                byte[] box = new byte[1];
-                do provider.GetBytes(box);
-                while(!(box[0] < n * (byte.MaxValue / n)));
-                int k = (box[0] % n);
-                n--;
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
-            }
-        }
     }
 }

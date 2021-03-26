@@ -16,13 +16,16 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Models
+using System;
+
+namespace Scraps.Events
 {
-    public class JoinRaffleResponse
+    public class CsrfTokenObtainedArgs : EventArgs
     {
-        public string message { get; set; }
-        public string entered_message { get; set; }
-        public bool can_comment { get; set; }
-        public bool success { get; set; }
+        public string CsrfToken { get; set; }
+        public CsrfTokenObtainedArgs(string csrfToken)
+        {
+            CsrfToken = csrfToken;
+        }
     }
 }

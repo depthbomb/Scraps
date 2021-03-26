@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2020  Caprine Logic
+/// Copyright(C) 2021  Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -16,10 +16,12 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Common
+namespace Scraps.Constants
 {
-    public class Strings
+    public static class Strings
     {
-        public static readonly string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36";
+        public const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36";
+        public const string AccountBanned = "You have recieved a site-ban";
+        public const string SiteDown = "<div class=\"dialog-title\">We're down!</div>";
     }
 }

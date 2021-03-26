@@ -16,13 +16,10 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Models
+namespace Scraps.Constants
 {
-    public class JoinRaffleResponse
+    public static class Xpaths
     {
-        public string message { get; set; }
-        public string entered_message { get; set; }
-        public bool can_comment { get; set; }
-        public bool success { get; set; }
+        public const string UnenteredRaffles = "//*[contains(@class, 'panel-raffle') and not(contains(@class, 'raffle-entered'))]";
     }
 }

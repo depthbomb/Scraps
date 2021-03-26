@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2020  Caprine Logic
+/// Copyright(C) 2021  Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -16,18 +16,28 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 
-namespace Scraps.Common
+namespace Scraps.Extensions
 {
-    public class Helpers
+    public static class ListExtensions
     {
-        public static void ExitState()
+        public static void Shuffle<T>(this IList<T> list)
         {
-            Console.WriteLine();
-            Console.WriteLine("Press [Enter] to exit.");
-            Console.ReadLine();
-            Environment.Exit(0);
+            RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
+            int n = list.Count;
+            while (n > 1)
+            {
+                byte[] box = new byte[1];
+                do provider.GetBytes(box);
+                while (!(box[0] < n * (byte.MaxValue / n)));
+                int k = (box[0] % n);
+                n--;
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
         }
     }
 }

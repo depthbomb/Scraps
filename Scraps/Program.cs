@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2020  Caprine Logic
+/// Copyright(C) 2021  Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -18,58 +18,52 @@
 
 using System;
 using System.IO;
-using System.Xml;
 using System.Net;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
-using HtmlAgilityPack;
-using Microsoft.Toolkit.Uwp.Notifications;
 
 using Scraps.Models;
-using Scraps.Common;
-using Scraps.Common.Models;
-using Constants = Scraps.Common.Constants;
+using Scraps.Constants;
+using Scraps.Extensions;
 
 namespace Scraps
 {
     class Program
     {
-        static string Csrf;
-        static Logger Logger;
-        static HttpClient Client;
-        static Settings Settings;
-        static Random Rng = new Random();
-        static HtmlDocument Html = new HtmlDocument();
-
-        static int SettingsVersion = 8;
-        static int RafflesJoined = 0;
-        // static bool AcceptedRules = false;
-        static List<string> RaffleQueue = new List<string>();
-        static List<string> EnteredRaffles = new List<string>();
-
-        static bool Verbose = false;
-        static bool OnLatestRelease = true;
-        static bool AlertedOfWonRaffles = false;
-
-        static readonly string Title = $"Scraps {AppVersion.Full}";
+        static bool _verbose;
+        static Logger _logger;
+        static Config _config;
+        static HttpClient _http;
 
         static async Task Main(string[] args)
         {
             if (!HasWritePermissions())
             {
-                Console.WriteLine("Scraps needs to be ran with elevated permissions.");
-                Console.WriteLine("Please run Scraps {0}.", Constants.IsUnix ? "with sudo" : "as administrator");
-                Environment.Exit(1);
+                if (Platform.IsUnix)
+                {
+                    Console.WriteLine("Scraps needs to be ran with elevated permissions.");
+                    Console.WriteLine("Please run Scraps with sudo.");
+                    Environment.Exit(1);
+                }
+                else
+                {
+                    string assembly = Process.GetCurrentProcess().MainModule.FileName;
+                    Console.WriteLine(assembly);
+                    var si = new ProcessStartInfo(assembly)
+                    {
+                        Arguments = "runas",
+                    };
+
+                    Process.Start(si);
+                    Environment.Exit(0);
+                }
             }
 
             if (IsAlreadyRunning())
@@ -77,82 +71,74 @@ namespace Scraps
                 Environment.Exit(1);
             }
 
-            ParseArguments(args);
-
             Console.WriteLine();
             Console.WriteLine("Scraps - Scrap.TF Raffle Bot");
             Console.WriteLine("By depthbomb - https://s.team/p/fwc-crhc");
             Console.WriteLine("Changelog available at https://github.com/depthbomb/Scraps/blob/master/CHANGELOG.md");
             Console.WriteLine();
 
-            await CheckForNewReleases();
+            CheckForNewReleases();
 
-            Console.WriteLine();
+            ParseArguments(args);
+
+            InitializeLogger();
+            InitializeSettings();
+            InitializeHttpClient();
+
             Console.WriteLine("=".Repeat(Console.BufferWidth));
+            Console.WriteLine();
 
-            Logger = InitializeLogger();
-            Logger.Debug("Session Started ({Version})", AppVersion.Full);
-
-            LoadSettings();
-
-            if(Settings.Version != SettingsVersion)
-            {
-                Console.WriteLine("Your settings file is outdated, press [Enter] to back up the old version so you may fill out the new one.");
-                Console.ReadLine();
-                SaveSettings(null, "Settings_OLD");
-                SaveSettings(new Settings { Version = SettingsVersion });
-                if (!Constants.IsUnix)
-                {
-                    SelectFile(Paths.SettingsFile);
-                }
-                Console.WriteLine("Press [Enter] to restart Scraps when you're done.");
-                Console.ReadLine();
-
-                LoadSettings();
-            }
-
-            if (Settings.Cookie.IsNullOrEmpty() || Settings.Cookie.Contains("cookie"))
-            {
-                Logger.Debug("User prompted to edit settings");
-
-                Console.WriteLine("Your cookie value is missing from your settings file, please fill it out.");
-                if (!Constants.IsUnix)
-                {
-                    Console.WriteLine("Press [Enter] to open your settings file.");
-                    Console.ReadLine();
-                    SelectFile(Paths.SettingsFile);
-                }
-                Console.WriteLine("Press [Enter] when you are done making modifications to your settings file.");
-                Console.ReadLine();
-
-                LoadSettings();
-            }
-
-            Client = InitializeHttpClient();
-
-            await Start();
+            await new Bot(_logger, _config, _http).Run();
         }
 
-        #region Setup
-        static void LoadSettings()
-        {
-            if(!Directory.Exists(Paths.StorePath))
-            {
-                Directory.CreateDirectory(Paths.StorePath);
-            }
+        static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
 
-            if(!File.Exists(Paths.SettingsFile))
+        static bool HasWritePermissions()
+        {
+            string str = new Random().Next(10000, 99999999).ToString();
+            try
             {
-                Settings = new Settings();
-                SaveSettings();
+                File.WriteAllText(str, str);
+                File.Delete(str);
+
+                return true;
             }
-            else
+            catch
             {
-                using(var sw = new StreamReader(Paths.SettingsFile))
+                return false;
+            }
+        }
+
+        static void CheckForNewReleases()
+        {
+            Console.WriteLine("Checking for new releases...");
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
+
+                string uri = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
+                string json = client.GetStringAsync(uri).GetAwaiter().GetResult();
+                var currentTag = new System.Version(Constants.Version.SemVer);
+
+                var release = JsonSerializer.Deserialize<LatestRelease>(json);
+                var latestTag = new System.Version(release.tag_name.Replace("v", ""));   //  In case I'm inconsistent in tagging
+
+                var compare = currentTag.CompareTo(latestTag);
+                if (compare < 0)
                 {
-                    var serializer = new XmlSerializer(typeof(Settings));
-                    Settings = serializer.Deserialize(sw) as Settings;
+                    Console.BackgroundColor = ConsoleColor.Yellow;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.WriteLine("A new version of Scraps ({0}) is available to download at {1}", latestTag.ToString(), release.html_url);
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
+                else
+                {
+                    Console.WriteLine("You are running the latest version of Scraps!");
+                }
+
+                Console.WriteLine();
             }
         }
 
@@ -164,71 +150,23 @@ namespace Scraps
             if (hasOpenConfigArgs)
             {
                 Console.WriteLine("Opening settings file...");
-                Process.Start("explorer.exe", Paths.SettingsFile);
+                Process.Start("explorer.exe", Files.ConfigFile);
                 Environment.Exit(0);
             }
 
-            Verbose = hasVerboseArgs;
+            _verbose = hasVerboseArgs;
         }
 
-        static HttpClient InitializeHttpClient()
-        {
-            var cookies = new CookieContainer();
-            var handler = new HttpClientHandler
-            {
-                CookieContainer = cookies,
-                UseCookies = true,
-            };
-
-            var client = new HttpClient(handler);
-                client.Timeout = TimeSpan.FromSeconds(5);
-                client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
-                client.DefaultRequestHeaders.Add("cookie", "scr_session=" + Settings.Cookie);
-
-            return client;
-        }
-
-        static async Task CheckForNewReleases()
-        {
-            Console.WriteLine("Checking for new releases...");
-
-            var client = new HttpClient();
-                client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
-
-            string uri = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
-            string json = await client.GetStringAsync(uri);
-            var currentTag = new Version(AppVersion.SemVer);
-
-            var release = JsonSerializer.Deserialize<LatestRelease>(json);
-            var latestTag = new Version(release.tag_name.Replace("v", ""));   //  In case I'm inconsistent in tagging
-
-            var compare = currentTag.CompareTo(latestTag);
-            if (compare < 0)
-            {
-                OnLatestRelease = false;
-                Console.BackgroundColor = ConsoleColor.Yellow;
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.WriteLine("A new version of Scraps ({0}) is available to download at {1}", latestTag.ToString(), release.html_url);
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-            else
-            {
-                Console.WriteLine("You are running the latest version of Scraps!");
-            }
-
-            client.Dispose();
-        }
-
-        static Logger InitializeLogger()
+        #region Initializers
+        static void InitializeLogger()
         {
             bool debug;
 #if DEBUG
             debug = true;
 #else
-            debug = Verbose;
+            debug = _verbose;
 #endif
-            return new LoggerConfiguration()
+            _logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console(
                     restrictedToMinimumLevel: debug ? LogEventLevel.Debug : LogEventLevel.Information,
@@ -241,610 +179,62 @@ namespace Scraps
                 .WriteTo.File(Path.Combine(Paths.LogsPath, "Verbose-.log"), rollingInterval: RollingInterval.Month)
                 .CreateLogger();
         }
-        #endregion
 
-        #region Operations
-        static async Task Start()
+        static void InitializeSettings()
         {
-            Console.CursorVisible = false;
-
-            int scanDelay = 5000;
-
-            try
+            var cm = new ConfigManager();
+            if (cm.FileExists())
             {
-                SetStatus("Logging in...");
-                await GetCsrf();
-                Logger.Information("Successfully logged in");
-            }
-            catch(Exception e)
-            {
-                Logger.Fatal(e.Message);
-                Helpers.ExitState();
-            }
+                _config = cm.Read();
 
-		    ScanRaffles:
-
-			await ScanRaffles();
-
-			if(RaffleQueue.Count > 0)
-			{
-				SetStatus("Joining raffles...");
-				Logger.Information("{Count} " + "raffle".Pluralize(RaffleQueue.Count) + " " + "is".Pluralize(RaffleQueue.Count, "are") + " available to enter", RaffleQueue.Count);
-
-				scanDelay = Settings.Delays.ScanDelay;
-
-				await JoinRaffles();
-			}
-			else
-			{
-				SetStatus("Waiting to scan...");
-				Logger.Debug("All raffles have been entered, scanning again after {Delay} seconds", (scanDelay / 1000));
-
-				await Task.Delay(scanDelay);
-
-				if(Settings.Delays.IncrementScanDelay)
-				{
-					scanDelay = scanDelay + 1000;
-				}
-			}
-
-			goto ScanRaffles;
-		}
-
-        static async Task ScanRaffles()
-        {
-            SetStatus("Starting scan...");
-
-            RaffleQueue.Clear();
-
-            Logger.Debug("Scanning raffles");
-
-            string html = await Client.GetStringAsync("https://scrap.tf/raffles");
-            string lastId = string.Empty;
-
-            ScanNext:
-
-            SetStatus("Scanning...");
-
-            string json = await Paginate(lastId);
-
-            if(json == null)
-            {
-                // Just wait a little bit
-                await Task.Delay(10000);
-            }
-            else
-            {
-                try
+                if (_config.Version != App.SettingsVersion)
                 {
-                    var resp = JsonSerializer.Deserialize<PaginateResponse>(json);
-                    if(resp.success)
+                    Console.WriteLine("Your settings file is outdated, press [Enter] to back up the old version so you may fill out the new one.");
+                    Console.ReadLine();
+                    cm.Save(_config, "Settings_OLD");
+                    cm.Save(new Config { Version = App.SettingsVersion });
+                    if (!Platform.IsUnix)
                     {
-                        html += resp.html;
-                        lastId = resp.lastid;
-
-                        if(!resp.done)
-                        {
-                            Logger.Debug("Scanning next page (apex = {Apex})", lastId);
-                            await Task.Delay(Settings.Delays.PaginateDelay);
-                            goto ScanNext;
-                        }
-
-                        Logger.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles...");
-
-                        SetStatus("Parsing scanned data...");
-
-                        Html.LoadHtml(html);
-
-                        var document = Html.DocumentNode;
-                        var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
-
-                        // Check if the Withdraw Items button appears on the listings page
-                        if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
-                        {
-                            // Add won raffles to EnteredRaffles and alert of the # of won raffles if we haven't already.
-                            await CheckForWonRaffles();
-                        }
-                        else
-                        {
-                            // Set to false if the button does not apper so that we may be alerted again when we win new raffles
-                            AlertedOfWonRaffles = false;
-                        }
-
-                        foreach (var el in raffleElements)
-                        {
-                            string elementHtml = el.InnerHtml.Trim();
-                            string raffleId = Regexes.RaffleEntryRegex.Match(elementHtml).Groups[1].Value.Trim();
-                            if(
-                                !raffleId.IsNullOrEmpty() &&    // For some reason `raffleId` will sometimes give us emptiness
-                                !RaffleQueue.Contains(raffleId) &&
-                                !EnteredRaffles.Contains(raffleId)
-                            )
-                            {
-                                SetStatus($"Adding raffle {raffleId} to queue...");
-                                RaffleQueue.Add(raffleId);
-                            }
-                        }
+                        SelectFile(Files.ConfigFile);
                     }
-                    else
-                    {
-                        if(resp.message != null)
-                        {
-                            if(resp.message.Contains("active site ban"))
-                            {
-                                DisplayTombstone();
-                            }
-                            else
-                            {
-                                Logger.Error("Encountered an error while paginating: {Message}", resp.message);
-                            }
-                        }
-                        else
-                        {
-                            Logger.Error("Paginate response for apex {Apex} was unsuccessful", lastId.IsNullOrEmpty() ? "<empty>" : lastId);
-                        }
-                    }
-                }
-                catch(JsonException ex)
-                {
-                    Logger.Error("Failed to read pagination data: {Error}", ex.Message);
-                }
-            }
-        }
+                    Console.WriteLine("Press [Enter] to continue.");
+                    Console.ReadLine();
+                    Console.WriteLine();
 
-        static async Task<string> Paginate(string apex = null)
-        {
-            SetStatus("Paginating...");
-            string url = "https://scrap.tf/ajax/raffles/Paginate";
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("start", apex),
-                new KeyValuePair<string, string>("sort", "1"),
-                new KeyValuePair<string, string>("puzzle", "0"),
-                new KeyValuePair<string, string>("csrf", Csrf),
-            });
-
-            var response = await Client.PostAsync(url, content);
-
-            if(response.StatusCode.ToString() == "OK")
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                Logger.Warning("Pagination returned a {Status} response instead of JSON. Waiting...", response.StatusCode);
-                return null;
-            }
-        }
-
-        static async Task JoinRaffles()
-        {
-            int entered = 0;
-            int total = RaffleQueue.Count;
-            int joinDelay = Settings.Delays.JoinDelay;
-
-            foreach (string raffle in EnteredRaffles)
-            {
-                if (RaffleQueue.Contains(raffle))
-                {
-                    Logger.Debug("Removing {Entered} from queue because it was found in EnteredRaffles", raffle);
-                    RaffleQueue.Remove(raffle);
-                }
-            }
-
-            foreach (string raffle in RaffleQueue)
-            {
-                SetStatus($"Attempting to join raffle {raffle}...");
-                string html = await Client.GetStringAsync($"https://scrap.tf/raffles/{raffle}");
-                var hash = Regexes.RaffleHashRegex.Match(html);
-                var limits = Regexes.RaffleLimitRegex.Match(html);
-                bool hasEnded = html.Contains("data-time=\"Raffle Ended\"");
-
-                if (IsHoneypotRaffle(html, out string honeypotInfo))
-                {
-                    Logger.Information("Raffle {Id} is very likely a honeypot and will be skipped: {Reason}", raffle, honeypotInfo);
-                    total--;
-                    EnteredRaffles.Add(raffle);
-                    continue;
-                }
-                else
-                {
-                    if(hasEnded)
-                    {
-                        total--;
-                        Logger.Information("Raffle {Id} has ended, skipping", raffle);
-                        EnteredRaffles.Add(raffle);
-                        continue;
-                    }
-
-                    if(limits.Success)
-                    {
-                        int num = int.Parse(limits.Groups[1].Value);
-                        int max = int.Parse(limits.Groups[2].Value);
-
-                        if(Settings.Paranoid && num < 2)
-                        {
-                            Logger.Information("{Prefix}: Raffle {Id} does not have at least 2 entries, skipping", "Paranoid", raffle);
-
-                            total--;
-                            continue;
-                        }
-
-                        if(num >= max)
-                        {
-                            Logger.Information("Raffle {Id} is full ({Num}/{Max}), skipping", raffle, num, max);
-
-                            total--;
-                            EnteredRaffles.Add(raffle);
-                            continue;
-                        }
-                    }
-
-                    if(hash.Success)
-                    {
-                        string url = "https://scrap.tf/ajax/viewraffle/EnterRaffle";
-                        var content = new FormUrlEncodedContent(new[]
-                        {
-                            new KeyValuePair<string, string>("raffle", raffle),
-                            new KeyValuePair<string, string>("captcha", ""),
-                            new KeyValuePair<string, string>("hash", hash.Groups[1].Value),
-                            new KeyValuePair<string, string>("flag", ""),
-                            new KeyValuePair<string, string>("csrf", Csrf),
-                        });
-
-                        var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
-                            httpRequest.Content = content;
-                            httpRequest.Headers.Referrer = new Uri("https://scrap.tf/raffles/" + raffle);
-
-                        var response = await Client.SendAsync(httpRequest);
-
-                        string json = await response.Content.ReadAsStringAsync();
-
-                        var resp = JsonSerializer.Deserialize<JoinRaffleResponse>(json);
-
-                        if(resp.success)
-                        {
-                            entered++;
-                            Logger.Information("[{Entered}/{Total}] Joined raffle {Id}", entered, total, raffle);
-                            EnteredRaffles.Add(raffle);
-                            RafflesJoined++;
-
-                            if (Settings.RaffleActions.VoteInPolls)
-                            {
-                                var poll = Regexes.RafflePollRegex.Match(html);
-                                if(poll.Success)
-                                {
-                                    string pollId = poll.Groups[1].Value;
-
-                                    Logger.Debug("Voting in poll {Poll}", pollId);
-
-                                    var optionsMatches = Regexes.RafflePollOptionRegex.Matches(html);
-                                    if (optionsMatches.Count > 0)
-                                    {
-                                        Logger.Debug("Found {OptionCount} "+"option".Pluralize(optionsMatches.Count)+" in poll", optionsMatches.Count);
-                                        await AnswerPoll(pollId, optionsMatches.Count);
-                                    }
-                                    else
-                                    {
-                                        Logger.Warning("Didn't find any options in poll");
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            total--;
-                            Logger.Information("Unable to join raffle {Id} with message {Message}", raffle, resp.message);
-                        }
-
-                        SetStatus("Waiting to join next raffle...");
-                        await Task.Delay(joinDelay);
-                    }
-                    else
-                    {
-                        total--;
-                        Logger.Warning("Could not obtain hash from raffle {Id}", raffle);
-                    }
-                }
-            }
-
-            if (entered > 0)
-            {
-                Logger.Information("Finished entering queued raffles");
-            }
-        }
-
-        static async Task AnswerPoll(string poll, int numChoices)
-        {
-            SetStatus($"Voting in poll {poll}");
-
-            string url = "https://scrap.tf/ajax/viewpoll/SubmitAnswer";
-            int choice = Rng.Next(0, numChoices);
-
-            Logger.Debug("Randomly chose poll option {Option}", choice + 1);
-
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("poll", poll),
-                new KeyValuePair<string, string>("answers[]", choice.ToString()),
-                new KeyValuePair<string, string>("csrf", Csrf),
-            });
-
-            var response = await Client.PostAsync(url, content);
-
-            if(response.StatusCode.ToString() == "OK")
-            {
-                string json = await response.Content.ReadAsStringAsync();
-                var data = JsonSerializer.Deserialize<SubmitAnswerResponse>(json);
-                if (!data.success || data.message != "Answered!")
-                {
-                    Logger.Error("Poll answer failed: {Message}", data.message);
-                }
-                else
-                {
-                    Logger.Debug("Successfully answered poll {Poll}", poll);
+                    _config = cm.Read();
                 }
             }
             else
             {
-                Logger.Error("Request to answer poll failed: {StatusCode}", response.StatusCode);
+                cm.Save(new Config { Version = App.SettingsVersion });
+
+                Console.WriteLine("A default config file has been created at {0}", Files.ConfigFile);
+                Console.WriteLine("Documentation for the settings file can be found at {0}", "https://github.com/depthbomb/Scraps/blob/master/SETTINGS.md");
+                Console.WriteLine("Please fill it out and press [Enter] to continue.");
+                Console.ReadLine();
+                Console.WriteLine();
+
+                _config = cm.Read();
             }
         }
 
-        static async Task CheckForEnteredRaffles()
+        static void InitializeHttpClient()
         {
-
-        }
-
-        static async Task CheckForWonRaffles()
-        {
-            string url = "https://scrap.tf/raffles/won";
-            string html = await Client.GetStringAsync(url);
-            var raffleIds = Regexes.RaffleEntryRegex.Matches(html);
-            int wonRaffles = raffleIds.Count;
-
-            foreach (Match id in raffleIds)
+            var cookies = new CookieContainer();
+            var handler = new HttpClientHandler
             {
-                string raffleId = id.Groups[1].Value;
-                
-                if (!EnteredRaffles.Contains(raffleId))
-                {
-                    Logger.Debug("Adding {Entered} to EnteredRaffles list because it is a won raffle", raffleId);
-                    EnteredRaffles.Add(raffleId);
-                }
-            }
-
-            if (!AlertedOfWonRaffles)
-            {
-                Logger.Information("You've won {Number} " + "raffle".Pluralize(wonRaffles) + " that " + "needs".Pluralize(wonRaffles, "need") + " to be withdrawn!", wonRaffles);
-
-                if (Settings.EnableToastNotifications && Common.Constants.Platform == "Win32NT")
-                {
-                    if (ToastNotificationManagerCompat.WasCurrentProcessToastActivated()) return;
-
-                    // Create a temporary file and download the Scrap.TF logo to use as the app logo override for the toast notification.
-                    string appLogoOverride = Path.GetTempFileName();
-                    byte[] data = await Client.GetByteArrayAsync("https://scrap.tf/apple-touch-icon.png?" + Guid.NewGuid().ToString());
-                    await File.WriteAllBytesAsync(appLogoOverride, data);
-
-                    var viewButton = new ToastButton();
-                        viewButton.AddArgument("action", "viewRafflesWonPage");
-                        viewButton.SetContent("View Won Raffles");
-
-                    var dismissButton = new ToastButton();
-                        dismissButton.SetContent("Dismiss");
-                        dismissButton.SetDismissActivation();
-
-                    var toast = new ToastContentBuilder();
-                        toast.AddAppLogoOverride(new Uri(appLogoOverride), ToastGenericAppLogoCrop.Circle, null, false);
-                        toast.AddAttributionText(string.Format("Scraps {0}", AppVersion.Full));
-                        toast.AddText("Items Need Withdrawing");
-                        toast.AddText(string.Format("You've won {0} {1} that {2} to be withdrawn!", wonRaffles, "raffle".Pluralize(wonRaffles), "needs".Pluralize(wonRaffles, "need")));
-                        toast.AddButton(viewButton);
-                        toast.AddButton(dismissButton);
-                        toast.Show();
-
-                    ToastNotificationManagerCompat.OnActivated += (args) =>
-                    {
-                        var parsed = ToastArguments.Parse(args.Argument);
-                        switch (parsed["action"])
-                        {
-                            case "viewRafflesWonPage":
-                                Process.Start("explorer.exe", "https://scrap.tf/raffles/won");
-                                break;
-                        }
-                    };
-                }
-
-                AlertedOfWonRaffles = true;
-            }
-        }
-
-/*        static async Task AcceptRules()
-        {
-            Logger.Debug("Attempting to accept site rules...");
-
-            string url = "https://scrap.tf/ajax/rules/Accept";
-
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("csrf", Csrf)
-            });
-
-            var response = await Client.PostAsync(url, content);
-
-            if(response.StatusCode.ToString() == "OK")
-            {
-                string json = await response.Content.ReadAsStringAsync();
-                var data = JsonSerializer.Deserialize<AcceptRulesResponse>(json);
-                if(data.success == "true")
-                {
-                    AcceptedRules = true;
-                    Logger.Information("Accepted site rules");
-                }
-                else
-                {
-                    Logger.Error("Failed to accept site rules: {Message}", data.message);
-                }
-            }
-            else
-            {
-                Logger.Error("Request to accept site rules failed: {StatusCode}", response.StatusCode);
-            }
-        }*/
-
-        static async Task GetCsrf()
-        {
-            TryLogin:
-            string html = await Client.GetStringAsync("https://scrap.tf");
-
-            if (html.Contains("You have recieved a site-ban"))
-            {
-                DisplayTombstone();
-            }
-            else
-            {
-                Match csrf = Regexes.CsrfRegex.Match(html);
-                if(csrf.Success)
-                {
-                    Csrf = csrf.Groups[1].Value;
-                    Logger.Debug("Obtained CSRF token ({Csrf})", Csrf);
-                    /*if(!AcceptedRules)
-                    {
-                        await AcceptRules();
-                    }*/
-                }
-                else
-                {
-                    if(html.Contains("<div class=\"dialog-title\">We're down!</div>"))
-                    {
-                        Logger.Error("Site appears to be down/under maintenance. Trying again after 1 minute.");
-                        await Task.Delay(60 * 1000);
-                        goto TryLogin;
-                    }
-					else
-					{
-                        throw new Exception("Unable to retreive CSRF token. Please check your cookie value.");
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region Helpers
-        static bool IsHoneypotRaffle(string html, out string info)
-        {
-            info = null;
-
-            //  The latest honeypot raffle included internal styles in the raffle message that hid the enter button so this checks for styles that modify the button.
-            //  This method appears to no longer work, but keeping it in just in case.
-            Match styleMatch = Regexes.HoneypotRaffleStyleRegex.Match(html);
-
-            //  Users can only set the max entries to 100,000 while staff can go above this number.
-            //  Latest honeypot raffle didn't utilize absurdly high max entries, but keeping this in because it is possible.
-            Match maxEntriesMatch = Regexes.HoneypotRaffleMaxEntriesRegex.Match(html);
-
-            //  Banned users appearing in the entries list is rare, this captures all banned user avatars
-            MatchCollection bannedEntries = Regexes.HoneypotRaffleBannedUsersRegex.Matches(html);
-
-            //  Checks for image elements using a specific domain
-            bool hasWarningImage = html.Contains("<img src=\"https://i.nikkigar.de");
-
-            //  The last two honeypots used this method where the display property is modified inline instead of internally
-            bool hasModifiedEnterButton2 = html.Contains("button style=\"display:none;\" rel=\"tooltip-free\" data-placement=\"top\" title=\"This public raffle is free to enter by anyone");
-
-            if(hasModifiedEnterButton2)
-            {
-                info = "Enter button is hidden via inline style";
-                return true;
-            }
-            else if(styleMatch.Success)
-            {
-                info = "Enter button style is modified: " + styleMatch.Groups[1].Value;
-                return true;
-            }
-            else if (hasWarningImage)
-            {
-                info = "Warning image found";
-                return true;
-            }
-            else if (bannedEntries.Count > 1)
-            {
-                info = $"{bannedEntries.Count} users who entered raffle are now banned";
-                return true;
-            }
-            else if (maxEntriesMatch.Success)
-            {
-                if (int.TryParse(maxEntriesMatch.Groups[1].Value, out int maxEntries) && maxEntries > 100_000)
-                {
-                    info = $"Impossible max entries value ({maxEntries} > 100,000)";
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        static void SaveSettings(Settings settings = null, string fileName = "Settings")
-        {
-            if (settings == null)
-            {
-                settings = Settings;
-            }
-
-            XmlWriterSettings xmlSettings = new XmlWriterSettings
-            {
-                Indent = true,
-                IndentChars = "\t",
-                OmitXmlDeclaration = true
+                CookieContainer = cookies,
+                UseCookies = true,
             };
 
-            string settingsFile = Paths.SettingsFile.Replace("Settings.xml", $"{fileName}.xml");
+            var client = new HttpClient(handler);
+                client.Timeout = TimeSpan.FromSeconds(5);
+                client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
+                client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _config.Cookie);
 
-            using (var sw = new StreamWriter(settingsFile))
-            using (var writer = XmlWriter.Create(sw, xmlSettings))
-            {
-                var serializer = new XmlSerializer(typeof(Settings));
-                serializer.Serialize(writer, settings);
-            }
+            _http = client;
         }
-
-        static void SetStatus(string status) => Console.Title = Title + (OnLatestRelease ? "" : " — OUTDATED") + $" — {RafflesJoined} {"Raffle".Pluralize(RafflesJoined)} joined this session" + $" — {status}";
-
-        static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
-
-        static void DisplayTombstone()
-        {
-            if(Settings.EnableToastNotifications)
-            {
-                ToastNotificationManagerCompat.OnActivated += (args) =>
-                {
-                    var parsed = ToastArguments.Parse(args.Argument);
-                    switch (parsed["action"])
-                    {
-                        case "openSettingsFile":
-                            Process.Start("explorer.exe", Paths.SettingsFile);
-                            break;
-                    }
-                };
-
-                if (ToastNotificationManagerCompat.WasCurrentProcessToastActivated()) return;
-
-                var openButton = new ToastButton();
-                    openButton.AddArgument("action", "openSettingsFile");
-                    openButton.SetContent("Open Settings File");
-
-                var toast = new ToastContentBuilder();
-                toast.AddText("Account Banned");
-                toast.AddButton(openButton);
-                toast.Show();
-            }
-
-            Console.Title = "R.I.P.";
-            Logger.Fatal("ACCOUNT HAS BEEN BANNED");
-            Logger.Fatal("You can use a different account with Scraps by changing your cookie value located in the settings file at {SettingsFolder}", Paths.SettingsFile);
-            Helpers.ExitState();
-        }
+        #endregion
 
         static void SelectFile(string path)
         {
@@ -858,22 +248,5 @@ namespace Scraps
 
             Process.Start(pInfo);
         }
-
-        static bool HasWritePermissions()
-        {
-            string str = Rng.Next(10000, 99999999).ToString();
-            try
-            {
-                File.WriteAllText(str, str);
-                File.Delete(str);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        #endregion
     }
 }

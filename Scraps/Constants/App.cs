@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2020  Caprine Logic
+/// Copyright(C) 2021  Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -16,18 +16,10 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.IO;
-
-namespace Scraps.Common
+namespace Scraps.Constants
 {
-    public class Paths
+    public static class App
     {
-        public static string InstallPath => AppDomain.CurrentDomain.BaseDirectory;
-        public static readonly string StorePath = Constants.IsUnix
-            ? "/var/lib/scraps"
-            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Caprine Logic", "Scraps");
-        public static readonly string LogsPath = Path.Combine(StorePath, "Logs");
-        public static readonly string SettingsFile = Path.Combine(StorePath, "Settings.xml");
+        public const int SettingsVersion = 9;
     }
 }

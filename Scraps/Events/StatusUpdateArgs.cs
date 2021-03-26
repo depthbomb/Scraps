@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2020  Caprine Logic
+/// Copyright(C) 2021  Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -16,10 +16,24 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Common
+using System;
+
+namespace Scraps.Events
 {
-	public static class Xpaths
-	{
-		public static readonly string UnenteredRaffles = "//*[contains(@class, 'panel-raffle') and not(contains(@class, 'raffle-entered'))]";
-	}
+    /// <summary>
+    /// An event that contains basic statistics throughout the bot's operation
+    /// </summary>
+    public class StatusUpdateArgs : EventArgs
+    {
+        /// <summary>
+        /// Current number of raffles joined
+        /// </summary>
+        public int RafflesJoined { get; set; }
+        public string Status { get; set; }
+        public StatusUpdateArgs(int rafflesJoined, string status)
+        {
+            RafflesJoined = rafflesJoined;
+            Status = status;
+        }
+    }
 }

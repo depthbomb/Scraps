@@ -16,13 +16,16 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Models
+using System;
+using System.IO;
+
+namespace Scraps.Constants
 {
-    public class JoinRaffleResponse
+    public static class Paths
     {
-        public string message { get; set; }
-        public string entered_message { get; set; }
-        public bool can_comment { get; set; }
-        public bool success { get; set; }
+        public static readonly string StorePath = Platform.IsUnix
+            ? "/var/lib/scraps"
+            : Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ), "Caprine Logic", "Scraps" );
+        public static readonly string LogsPath = Path.Combine( StorePath, "Logs" );
     }
 }

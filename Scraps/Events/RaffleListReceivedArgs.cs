@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2020  Caprine Logic
+/// Copyright(C) 2021  Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -17,12 +17,24 @@
 #endregion License
 
 using System;
+using System.Collections.Generic;
 
-namespace Scraps.Common
+namespace Scraps.Events
 {
-    public class Constants
+    /// <summary>
+    /// An event that contains a list of available raffle IDs
+    /// </summary>
+    public class RaffleListReceivedArgs : EventArgs
     {
-        public static string Platform = Environment.OSVersion.Platform.ToString();
-        public static bool IsUnix = Platform == "Unix";
+        public List<string> AvailableRaffles { get; set; }
+
+        /// <summary>
+        /// Raised when a list of available raffle IDs is received
+        /// </summary>
+        /// <param name="availableRaffles"></param>
+        public RaffleListReceivedArgs(List<string> availableRaffles)
+        {
+            AvailableRaffles = availableRaffles;
+        }
     }
 }

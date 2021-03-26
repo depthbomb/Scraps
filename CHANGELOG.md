@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 3.0.0.0
+- Scraps has undergone a complete rewrite that makes it easier to develop new features for
+  - Now running on .NET 5 and requires the runtime to be installed (see README for more info)
+  - Builds for Windows 7 are now available (untested)
+  - Settings file is now in JSON format
+    - You will need to edit your new settings file after running for the first time
+
 ## Version 2.15.0.0
 - Scraps is now supported on Linux
   - Only tested on ARM64 (Raspberry Pi 4, for example)
