@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 3.0.0.1
+- Added a 10 second delay after a pagination response returns an error to avoid spamming requests
+
 ## Version 3.0.0.0
 - Scraps has undergone a complete rewrite that makes it easier to develop new features for
   - Now running on .NET 5 and requires the runtime to be installed (see README for more info)
