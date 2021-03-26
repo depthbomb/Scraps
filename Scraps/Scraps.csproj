@@ -5,6 +5,12 @@
     <TargetFramework>net5.0</TargetFramework>
     <Version>3.0.0.0</Version>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <ApplicationIcon>Scraps.ico</ApplicationIcon>
+    <Authors>Caprine Logic</Authors>
+    <Copyright>(c) 2021 Caprine Logic</Copyright>
+    <Description>A Scrap.TF Raffle Bot</Description>
+    <RepositoryUrl>https://github.com/depthbomb/Scraps</RepositoryUrl>
+    <PackageIcon>Scraps.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +19,13 @@
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\Desktop\Scraps.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
