@@ -130,8 +130,7 @@ namespace Scraps
                     Console.BackgroundColor = ConsoleColor.Yellow;
                     Console.ForegroundColor = ConsoleColor.Black;
                     Console.WriteLine("A new version of Scraps ({0}) is available to download at {1}", latestTag.ToString(), release.html_url);
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ResetColor();
                 }
                 else
                 {
@@ -191,7 +190,7 @@ namespace Scraps
                 {
                     Console.WriteLine("Your settings file is outdated, press [Enter] to back up the old version so you may fill out the new one.");
                     Console.ReadLine();
-                    cm.Save(_config, "Settings_OLD");
+                    cm.Save(_config, "Config_OLD");
                     cm.Save(new Config { Version = App.SettingsVersion });
                     if (!Platform.IsUnix)
                     {
@@ -227,8 +226,23 @@ namespace Scraps
                 UseCookies = true,
             };
 
+            if (_config.Proxies.Length > 0)
+            {
+                string proxy = GetWorkingProxy();
+                if (proxy == null)
+                {
+                    _logger.Warning("Unable to find a working proxy from provided list of addresses.");
+                    _logger.Warning("Press [Enter] to continue without a proxy.");
+                    Console.ReadLine();
+                }
+                else
+                {
+                    handler.Proxy = new WebProxy(proxy, false);
+                }
+            }
+
             var client = new HttpClient(handler);
-                client.Timeout = TimeSpan.FromSeconds(5);
+                client.Timeout = TimeSpan.FromSeconds(30);
                 client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
                 client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _config.Cookie);
 
@@ -247,6 +261,41 @@ namespace Scraps
             };
 
             Process.Start(pInfo);
+        }
+
+        static string GetWorkingProxy()
+        {
+            string testUrl = "http://api.ipify.org/";
+            string userIp = new HttpClient().GetStringAsync(testUrl).GetAwaiter().GetResult();
+            string[] proxies = _config.Proxies;
+            foreach (string proxy in proxies)
+            {
+                using (var handler = new HttpClientHandler { Proxy = new WebProxy(proxy, false) })
+                using (var http = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) })
+                {
+                    _logger.Information("Testing proxy {Proxy}...", proxy);
+
+                    try
+                    {
+                        using (var testResponse = http.GetAsync(testUrl).GetAwaiter().GetResult())
+                        {
+                            if (testResponse.IsSuccessStatusCode)
+                            {
+                                string testedIp = testResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                                if (testedIp != userIp)
+                                {
+                                    _logger.Information("Proxy {Proxy} seems to work ({Ip1} != {Ip2})", proxy, testedIp, userIp);
+
+                                    return proxy;
+                                }
+                            }
+                        }
+                    }
+                    catch {}
+                }
+            }
+
+            return null;
         }
     }
 }

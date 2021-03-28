@@ -1,9 +1,20 @@
 # Changelog
 
+## Version 3.1.0.0
+- Added basic proxy support
+  - You can add a list of HTTPS/SSL proxy addresses to your config file and Scraps will test teach one on startup to see if they work
+  - If a working proxy could not be found then you will have the option to continue without using a proxy
+- Trailing commas are now allowed in the config file
+  - This may help users who are unfamiliar with JSON that may accidentally leave trailing commas
+- Fixed backup config not being properly created
+
+
 ## Version 3.0.0.1
+
 - Added a 10 second delay after a pagination response returns an error to avoid spamming requests
 
 ## Version 3.0.0.0
+
 - Scraps has undergone a complete rewrite that makes it easier to develop new features for
   - Now running on .NET 5 and requires the runtime to be installed (see README for more info)
   - Builds for Windows 7 are now available (untested)
@@ -11,6 +22,7 @@
     - You will need to edit your new settings file after running for the first time
 
 ## Version 2.15.0.0
+
 - Scraps is now supported on Linux
   - Only tested on ARM64 (Raspberry Pi 4, for example)
   - Application data is stored in `/var/lib/scraps`
@@ -19,6 +31,7 @@
 - Dropped support for Windows 7
 
 ## Version 2.14.0.0
+
 - Due to feature creep, the following features have been removed
   - Stats
   - Discord Rich Presence

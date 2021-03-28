@@ -17,6 +17,7 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 - Easy to set up and configure, simply extract and run
 - Detailed logging so you can see everything it does and makes it easier to report problems
 - Honeypot/trap raffle detection; avoids fake raffles created by staff members that will get you banned
+- Basic proxy support
 
 ## Requirements
 

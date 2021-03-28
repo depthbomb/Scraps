@@ -24,3 +24,5 @@ This page documents the Scraps settings file by describing each setting key's pu
 - `RaffleActions`
   - `VoteInPolls` = `false`
     - Whether to vote for a random answer in raffle polls.
+- `Proxies`
+  - A list of HTTPS/SSL proxy addresses, including port. Having at least 1 address in this setting key will make Scraps attempt to use the proxies.

@@ -29,6 +29,7 @@ namespace Scraps.Models
         public bool Paranoid { get; set; } = true;
         public Delays Delays { get; set; } = new Delays();
         public RaffleActions RaffleActions { get; set; } = new RaffleActions();
+        public string[] Proxies { get; set; } = new string[] { };
     }
 
     [Serializable]

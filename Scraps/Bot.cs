@@ -62,6 +62,7 @@ namespace Scraps
             catch (Exception ex)
             {
                 _logger.Fatal(ex.Message);
+                Console.ReadLine();
             }
         }
 

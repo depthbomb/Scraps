@@ -37,7 +37,7 @@ namespace Scraps
 
         public void Save(Config config, string filename = null)
         {
-            string settingsFile = filename != null ? Path.Combine(Paths.StorePath, filename + ".json") : _configFile;
+            string configFile = filename != null ? Path.Combine(Paths.StorePath, filename + ".json") : _configFile;
 
             var options = new JsonSerializerOptions
             {
@@ -46,7 +46,7 @@ namespace Scraps
 
             string json = JsonSerializer.Serialize(config, options);
 
-            File.WriteAllText(_configFile, json);
+            File.WriteAllText(configFile, json);
         }
 
         public Config Read()
