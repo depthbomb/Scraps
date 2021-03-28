@@ -55,7 +55,8 @@ namespace Scraps
             {
                 var options = new JsonSerializerOptions
                 {
-                    ReadCommentHandling = JsonCommentHandling.Skip
+                    ReadCommentHandling = JsonCommentHandling.Skip,
+                    AllowTrailingCommas = true,
                 };
 
                 using (var sr = File.OpenText(_configFile))
