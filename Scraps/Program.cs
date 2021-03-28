@@ -88,7 +88,7 @@ namespace Scraps
             Console.WriteLine("=".Repeat(Console.BufferWidth));
             Console.WriteLine();
 
-            await new Bot(_logger, _config, _http).Run();
+            await new Bot(_logger, _config, _http).RunAsync();
         }
 
         static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;

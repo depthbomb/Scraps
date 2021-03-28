@@ -44,7 +44,7 @@ namespace Scraps
             _manager = new BotManager(_config, _http);
         }
 
-        public async Task Run()
+        public async Task RunAsync()
         {
             Console.CursorVisible = false;
 
@@ -57,7 +57,7 @@ namespace Scraps
 
             try
             {
-                await _manager.StartLoop();
+                await _manager.StartLoopAsync();
             }
             catch (Exception ex)
             {
@@ -84,7 +84,11 @@ namespace Scraps
 
         private void OnAccountBanned(object sender, AccountBannedArgs e)
         {
-            _manager.Stop();
+            Console.Title = "R.I.P.";
+            _logger.Fatal("Your account has been banned. You will need to use a different account session cookie to continue using Scraps.");
+            _logger.Fatal("Press [Enter] to exit.");
+            Console.ReadLine();
+            Environment.Exit(0);
         }
 
         private void OnCsrfTokenObtained(object sender, CsrfTokenObtainedArgs e) => _logger.Debug("Obtained CSRF Token ({Token}}", e.CsrfToken);
