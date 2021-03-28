@@ -38,6 +38,10 @@ The default settings are set so as to avoid hitting any rate limits and drawing 
 
 If you need help with Scraps then send me a DM on Discord `depthbomb#0163`.
 
+## Known Issues
+
+- Windows notifications are currently not working because the official `Microsoft.Toolkit.Uwp.Notifications` library isn't supported on .NET 5 yet (lmao)
+
 ## Disclaimer
 
 This tool is in no way associated with Scrap.TF (obviously) and using this tool is against their community guidelines so there is always a risk your Scrap.TF account may get banned. Use this tool with caution or study it as a proof of concept.
