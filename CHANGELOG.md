@@ -1,6 +1,7 @@
 # Changelog
 
 ## Version 3.1.0.0
+
 - Added basic proxy support
   - You can add a list of HTTPS/SSL proxy addresses to your config file and Scraps will test teach one on startup to see if they work
   - If a working proxy could not be found then you will have the option to continue without using a proxy
