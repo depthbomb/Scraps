@@ -88,8 +88,6 @@ namespace Scraps
                 string assemblyRoot = AppDomain.CurrentDomain.BaseDirectory;
                 string altLocation = Path.Combine(assemblyRoot, "Config.json");
 
-                Console.WriteLine(altLocation);
-
                 if (File.Exists(altLocation))
                 {
                     _configFile = altLocation;
