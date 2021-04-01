@@ -46,24 +46,10 @@ namespace Scraps
         {
             if (!HasWritePermissions())
             {
-                if (Platform.IsUnix)
-                {
-                    Console.WriteLine("Scraps needs to be ran with elevated permissions.");
-                    Console.WriteLine("Please run Scraps with sudo.");
-                    Environment.Exit(1);
-                }
-                else
-                {
-                    string assembly = Process.GetCurrentProcess().MainModule.FileName;
-                    Console.WriteLine(assembly);
-                    var si = new ProcessStartInfo(assembly)
-                    {
-                        Arguments = "runas",
-                    };
-
-                    Process.Start(si);
-                    Environment.Exit(0);
-                }
+                Console.WriteLine("Scraps needs to be ran with elevated permissions.");
+                Console.WriteLine("Please run Scraps with {0}.", Platform.IsUnix ? "with sudo" : "as administrator");
+                Console.ReadKey();
+                Environment.Exit(1);
             }
 
             if (IsAlreadyRunning())
