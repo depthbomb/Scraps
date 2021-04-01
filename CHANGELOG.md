@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 3.2.0.0
+
+- Scraps will look for a config file in the assembly's path if it cannot be found in the usual storage path for whatever reason
+- An error message will be displayed on Windows if Scraps needs to be ran with administrator permissions instead of trying to restart with permissions
+
 ## Version 3.1.0.0
 
 - Added basic proxy support
