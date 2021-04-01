@@ -16,8 +16,8 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
+using System;
 using System.IO;
-using System.Text;
 using System.Text.Json;
 
 using Scraps.Models;
@@ -27,7 +27,7 @@ namespace Scraps
 {
     public class ConfigManager
     {
-        private readonly string _configFile = Files.ConfigFile;
+        private string _configFile = Files.ConfigFile;
 
         public Config Config;
 
@@ -77,6 +77,30 @@ namespace Scraps
 
         public T Get<T>(string key) => (T)Config.GetType().GetProperty(key).GetValue(Config);
 
-        public bool FileExists() => File.Exists(_configFile);
+        public bool FileExists()
+        {
+            if (File.Exists(_configFile))
+            {
+                return true;
+            }
+            else
+            {
+                string assemblyRoot = AppDomain.CurrentDomain.BaseDirectory;
+                string altLocation = Path.Combine(assemblyRoot, "Config.json");
+
+                Console.WriteLine(altLocation);
+
+                if (File.Exists(altLocation))
+                {
+                    _configFile = altLocation;
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
     }
 }

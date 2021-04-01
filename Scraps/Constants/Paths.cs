@@ -25,7 +25,7 @@ namespace Scraps.Constants
     {
         public static readonly string StorePath = Platform.IsUnix
             ? "/var/lib/scraps"
-            : Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ), "Caprine Logic", "Scraps" );
-        public static readonly string LogsPath = Path.Combine( StorePath, "Logs" );
+            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Caprine Logic", "Scraps");
+        public static readonly string LogsPath = Path.Combine(StorePath, "Logs");
     }
 }
