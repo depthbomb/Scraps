@@ -10,7 +10,6 @@ A Scrap.TF Raffle Bot
 [![GitHub stable release date](https://img.shields.io/github/release-date/depthbomb/Scraps.svg?label=Released&logo=github&style=flat-square)](https://github.com/depthbomb/Scraps/releases/latest)
 [![Github stable release downloads](https://img.shields.io/github/downloads/depthbomb/Scraps/latest/total.svg?label=Downloads&logo=github&style=flat-square)](https://github.com/depthbomb/Scraps/releases/latest)
 
-[![Become a GitHub Sponsor](https://img.shields.io/badge/Become%20a%20GitHub-Sponsor-EA4AAA.svg?logo=github-sponsors&style=flat-square)](https://github.com/sponsors/depthbomb)
 [![Become a Patron](https://img.shields.io/badge/Become%20a-Patron-F96854.svg?logo=patreon&style=flat-square)](https://patreon.com/depthbomb)
 [![Donate via Steam Trade Offer](https://img.shields.io/badge/Donate%20Items%20via-Steam-111111.svg?logo=steam&style=flat-square)](https://steamcommunity.com/tradeoffer/new/?partner=66133073&token=cFIlCTRq)
 
