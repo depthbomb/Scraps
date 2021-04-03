@@ -25,7 +25,7 @@ namespace Scraps.Models
     {
         public int Version { get; set; }
         public string Cookie { get; set; } = "scr_session cookie here!";
-        public bool EnableToastNotifications { get; set; } = true;
+        public bool EnableSoundNotification { get; set; } = true;
         public bool Paranoid { get; set; } = true;
         public Delays Delays { get; set; } = new Delays();
         public RaffleActions RaffleActions { get; set; } = new RaffleActions();

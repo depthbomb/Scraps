@@ -23,8 +23,11 @@ using System.Collections.Generic;
 
 using Serilog.Core;
 
+using NAudio.Wave;
+
 using Scraps.Models;
 using Scraps.Events;
+using Scraps.Constants;
 using Scraps.Extensions;
 
 namespace Scraps
@@ -101,6 +104,25 @@ namespace Scraps
 
             _logger.Information("You've won {Number} " + "raffle".Pluralize(numWonRaffles) + " that " + "needs".Pluralize(numWonRaffles, "need") + " to be withdrawn!", numWonRaffles);
 
+            if (_config.EnableSoundNotification && Platform.OS == "Win32NT")
+            {
+                Task.Run(async () =>
+                {
+                    string audioUrl = "https://scrap.tf/mp3/notification_alert.mp3";
+                    using (var mf = new MediaFoundationReader(audioUrl))
+                    using (var wo = new WaveOutEvent())
+                    {
+                        wo.Init(mf);
+                        wo.Play();
+                        while (wo.PlaybackState == PlaybackState.Playing)
+                        {
+                            await Task.Delay(1000);
+                        }
+                    }
+                });
+            }
+
+            #region Toast code
             //if (_config.EnableToastNotifications && Platform.OS == "Win32NT")
             //{
             //    if (ToastNotificationManagerCompat.WasCurrentProcessToastActivated()) return;
@@ -137,6 +159,7 @@ namespace Scraps
             //        }
             //    };
             //}
+            #endregion
         }
     }
 }

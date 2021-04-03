@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 3.3.0.0
+
+- Temporarily removed `Microsoft.Toolkit.Uwp.Notifications` package until it is supported
+- Added new setting to enable a sound notification for when raffles are won
+  - Windows only
+
 ## Version 3.2.0.0
 
 - Scraps will look for a config file in the assembly's path if it cannot be found in the usual storage path for whatever reason
