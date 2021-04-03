@@ -1,7 +1,5 @@
 # Instructions
 
----
-
 ## Disclaimer
 
 Scraps is in no way associated with _Scrap.TF_. Using this program is in violation of Scrap.TF's community guidelines. By using this program you risk getting banned from Scrap.TF.

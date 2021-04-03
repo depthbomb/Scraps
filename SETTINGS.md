@@ -8,8 +8,8 @@ This page documents the Scraps settings file by describing each setting key's pu
   - Used to force a backup of old settings while creating a new settings file if this version differs from the application's internal value. Its primary use is to make it easier to add or remove settings in future releases. **DO NOT** modify this yourself.
 - `Cookie`
   - Your Scrap.TF `scr_session` cookie
-- `EnableToastNotifications` = `true`
-  - Whether Windows toast notifications are enabled for certain events. Obviously only works on Windows.
+- `EnableSoundNotification` = `true`
+  - Whether to enable a sound to play when you have won any raffles (Windows only)
 - `Paranoid` = `false`
   - Whether to enable "Paranoid" mode which will make Scraps act stricter when checking raffles before entering as to avoid honeypots. May result in false positives but better safe than sorry.
 - `Delays`
