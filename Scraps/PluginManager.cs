@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using NLog;
 
 using Scraps.Constants;
-using Scraps.Interfaces;
 
 namespace Scraps
 {
@@ -56,8 +55,6 @@ namespace Scraps
                     assembly = Assembly.LoadFrom(assemblyPath);
 
                     var types = assembly.GetTypes();
-
-                    Console.WriteLine(types.First().FullName);
 
                     Assemblies.Add(assembly);
                 }

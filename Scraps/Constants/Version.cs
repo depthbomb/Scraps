@@ -29,9 +29,9 @@ namespace Scraps.Constants
 
         public static System.Version AsDotNetVersion() => new System.Version(Major, Minor, Patch, Hotfix);
         public static int Major => 3;
-        public static int Minor => 3;
+        public static int Minor => 4;
         public static int Patch => 0;
-        public static int Hotfix => 0;
+        public static int Hotfix => 1;
         public static ReleaseTypes ReleaseType => ReleaseTypes.Release;
         public static string SemVer => $"{Major}.{Minor}.{Patch}.{Hotfix}";
         public static string Full => $"{SemVer}-{ReleaseType}";
