@@ -22,16 +22,15 @@ namespace Scraps.Constants
 {
     public static class RegexPatterns
     {
-        public static readonly Regex CsrfRegex = new Regex( @"ScrapTF\.User\.Hash = ""([a-f0-9]{64})"";" );
-        public static readonly Regex RaffleEntryRegex = new Regex( @"ScrapTF\.Raffles\.RedirectToRaffle\('([A-Z0-9]{6,})'\)" );
-        public static readonly Regex RaffleHashRegex = new Regex( @"EnterRaffle\('[A-Z0-9]{6,}', '([a-f0-9]{64})'" );
-        public static readonly Regex RafflePollRegex = new Regex( @"ScrapTF\.Polls\.SubmitAnswer\('([A-Z0-9]{6,})'\)" );
-        public static readonly Regex RaffleLimitRegex = new Regex( @"total=""(\d+)"" data-max=""(\d+)" );
-        public static readonly Regex RaffleQualityRegex = new Regex( @"class=""item hoverable (?:quality(\d{1,2}))?\s*(?:rarity([a-z]{3,}))?\s*app\d{3,} "" style" );
-        public static readonly Regex RaffleWithdrawRegex = new Regex( @"ScrapTF\.Raffles\.WithdrawRaffle\('([A-Z0-9]{6,})'\)" );
-        public static readonly Regex RafflePollOptionRegex = new Regex( @"<input name=""optionsRadios"" type=""(radio|checkbox)"" data-toggle=""(radio|checkbox)"" value=""(.*)"" id=""radio(.*)"" required>" );
-        public static readonly Regex HoneypotRaffleStyleRegex = new Regex( @"<style>\.enter-raffle-btns \.btn{(.*)}<\/style>" );
-        public static readonly Regex HoneypotRaffleMaxEntriesRegex = new Regex( @"data-max=""(\d{1,})""" );
-        public static readonly Regex HoneypotRaffleBannedUsersRegex = new Regex( @"<img class='tiny-raffle-avatar\s?' style='border-color:\s?#CC1100;?' src='(.*)' loading=""lazy""\s?\/>" );
+        public static readonly Regex CsrfRegex = new Regex(@"ScrapTF\.User\.Hash = ""([a-f0-9]{64})"";");
+        public static readonly Regex RaffleEntryRegex = new Regex(@"ScrapTF\.Raffles\.RedirectToRaffle\('([A-Z0-9]{6,})'\)");
+        public static readonly Regex RaffleHashRegex = new Regex(@"EnterRaffle\('[A-Z0-9]{6,}', '([a-f0-9]{64})'");
+
+        public static readonly Regex RaffleLimitRegex = new Regex(@"total=""(\d+)"" data-max=""(\d+)");
+        public static readonly Regex RaffleQualityRegex = new Regex(@"class=""item hoverable (?:quality(\d{1,2}))?\s*(?:rarity([a-z]{3,}))?\s*app\d{3,} "" style");
+        public static readonly Regex RaffleWithdrawRegex = new Regex(@"ScrapTF\.Raffles\.WithdrawRaffle\('([A-Z0-9]{6,})'\)");
+        public static readonly Regex HoneypotRaffleStyleRegex = new Regex(@"<style>\.enter-raffle-btns \.btn{(.*)}<\/style>");
+        public static readonly Regex HoneypotRaffleMaxEntriesRegex = new Regex(@"data-max=""(\d{1,})""");
+        public static readonly Regex HoneypotRaffleBannedUsersRegex = new Regex(@"<img class='tiny-raffle-avatar\s?' style='border-color:\s?#CC1100;?' src='(.*)' loading=""lazy""\s?\/>");
     }
 }

@@ -28,7 +28,6 @@ namespace Scraps.Models
         public bool EnableSoundNotification { get; set; } = true;
         public bool Paranoid { get; set; } = true;
         public Delays Delays { get; set; } = new Delays();
-        public RaffleActions RaffleActions { get; set; } = new RaffleActions();
         public string[] Proxies { get; set; } = new string[] { };
     }
 
@@ -39,11 +38,5 @@ namespace Scraps.Models
         public int ScanDelay { get; set; } = 5000;
         public int PaginateDelay { get; set; } = 500;
         public int JoinDelay { get; set; } = 4000;
-    }
-
-    [Serializable]
-    public class RaffleActions
-    {
-        public bool VoteInPolls { get; set; } = false;
     }
 }

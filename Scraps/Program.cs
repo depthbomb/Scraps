@@ -20,14 +20,15 @@ using System;
 using System.IO;
 using System.Net;
 using System.Linq;
+using System.Text;
 using System.Net.Http;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-using Serilog;
-using Serilog.Core;
-using Serilog.Events;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 using Scraps.Models;
 using Scraps.Constants;
@@ -38,7 +39,7 @@ namespace Scraps
     class Program
     {
         static bool _verbose;
-        static Logger _logger;
+        static Logger _log;
         static Config _config;
         static HttpClient _http;
 
@@ -74,7 +75,11 @@ namespace Scraps
             Console.WriteLine("=".Repeat(Console.BufferWidth));
             Console.WriteLine();
 
-            await new Bot(_logger, _config, _http).RunAsync();
+            Console.CursorVisible = false;
+
+            var bot = new Bot(_config, _http);
+            await bot.LoadPluginsAsync();
+            await bot.RunAsync();
         }
 
         static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
@@ -145,24 +150,37 @@ namespace Scraps
         #region Initializers
         static void InitializeLogger()
         {
-            bool debug;
-#if DEBUG
-            debug = true;
-#else
-            debug = _verbose;
-#endif
-            _logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.Console(
-                    restrictedToMinimumLevel: debug ? LogEventLevel.Debug : LogEventLevel.Information,
-                    outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] {Message:l}{NewLine}{Exception}"
-                 )
-                .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Fatal).WriteTo.File(Path.Combine(Paths.LogsPath, "Fatal-.log"), rollingInterval: RollingInterval.Month))
-                .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Error).WriteTo.File(Path.Combine(Paths.LogsPath, "Errors-.log"), rollingInterval: RollingInterval.Month))
-                .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Warning).WriteTo.File(Path.Combine(Paths.LogsPath, "Warning-.log"), rollingInterval: RollingInterval.Month))
-                .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Information).WriteTo.File(Path.Combine(Paths.LogsPath, "Info-.log"), rollingInterval: RollingInterval.Month))
-                .WriteTo.File(Path.Combine(Paths.LogsPath, "Verbose-.log"), rollingInterval: RollingInterval.Month)
-                .CreateLogger();
+            #if DEBUG
+            _verbose = true;
+            #endif
+
+            var config = new LoggingConfiguration();
+            var consoleTarget = new ColoredConsoleTarget
+            {
+                Layout = @"${date:format=HH\:mm\:ss} | ${pad:padding=5:inner=${level:uppercase=true}} | [${logger:shortName=true}] ${message}${exception}",
+                Encoding = Encoding.UTF8,
+            };
+            var fileTarget = new FileTarget
+            {
+                Layout = @"${longdate} | ${pad:padding=5:inner=${level:uppercase=true}} | [${logger:shortName=true}] ${message}${exception}",
+                ArchiveEvery = FileArchivePeriod.Month,
+                ArchiveFileName = "backup.{#}.zip",
+                ArchiveNumbering = ArchiveNumberingMode.Date,
+                ArchiveDateFormat = "yyyyMMddHHmm",
+                EnableArchiveFileCompression = true,
+                FileName = Path.Combine(Paths.LogsPath, "Scraps.${date:format=yyyy-MM}.log"),
+                CreateDirs = true,
+                MaxArchiveFiles = 5,
+            };
+
+            config.AddTarget("Console", consoleTarget);
+            config.AddTarget("File", fileTarget);
+            config.LoggingRules.Add(new LoggingRule("*", _verbose ? LogLevel.Trace : LogLevel.Info, consoleTarget));
+            config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
+
+            LogManager.Configuration = config;
+
+            _log = LogManager.GetCurrentClassLogger();
         }
 
         static void InitializeSettings()
@@ -217,8 +235,8 @@ namespace Scraps
                 string proxy = GetWorkingProxy();
                 if (proxy == null)
                 {
-                    _logger.Warning("Unable to find a working proxy from provided list of addresses.");
-                    _logger.Warning("Press [Enter] to continue without a proxy.");
+                    _log.Warn("Unable to find a working proxy from provided list of addresses.");
+                    _log.Warn("Press [Enter] to continue without a proxy.");
                     Console.ReadLine();
                 }
                 else
@@ -252,14 +270,14 @@ namespace Scraps
         static string GetWorkingProxy()
         {
             string testUrl = "http://api.ipify.org/";
-            string userIp = new HttpClient().GetStringAsync(testUrl).GetAwaiter().GetResult();
+            string userIp = new HttpClient().GetStringAsync(testUrl).Result;
             string[] proxies = _config.Proxies;
             foreach (string proxy in proxies)
             {
                 using (var handler = new HttpClientHandler { Proxy = new WebProxy(proxy, false) })
                 using (var http = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) })
                 {
-                    _logger.Information("Testing proxy {Proxy}...", proxy);
+                    _log.Info("Testing proxy {Proxy}...", proxy);
 
                     try
                     {
@@ -267,10 +285,10 @@ namespace Scraps
                         {
                             if (testResponse.IsSuccessStatusCode)
                             {
-                                string testedIp = testResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                                string testedIp = testResponse.Content.ReadAsStringAsync().Result;
                                 if (testedIp != userIp)
                                 {
-                                    _logger.Information("Proxy {Proxy} seems to work ({Ip1} != {Ip2})", proxy, testedIp, userIp);
+                                    _log.Info("Proxy {Proxy} seems to work ({Ip1} != {Ip2})", proxy, testedIp, userIp);
 
                                     return proxy;
                                 }

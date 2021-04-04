@@ -23,6 +23,7 @@ namespace Scraps.Events
     public class CsrfTokenObtainedArgs : EventArgs
     {
         public string CsrfToken { get; set; }
+
         public CsrfTokenObtainedArgs(string csrfToken)
         {
             CsrfToken = csrfToken;

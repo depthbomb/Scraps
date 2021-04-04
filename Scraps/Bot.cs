@@ -17,16 +17,18 @@
 #endregion License
 
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using Serilog.Core;
+using NLog;
 
 using NAudio.Wave;
 
 using Scraps.Models;
 using Scraps.Events;
+using Scraps.Abtract;
 using Scraps.Constants;
 using Scraps.Extensions;
 
@@ -34,14 +36,14 @@ namespace Scraps
 {
     public class Bot
     {
-        private Logger _logger;
+        private Logger _log;
         private Config _config;
         private HttpClient _http;
         private BotManager _manager;
 
-        public Bot(Logger logger, Config config, HttpClient http)
+        public Bot(Config config, HttpClient http)
         {
-            _logger = logger;
+            _log = LogManager.GetCurrentClassLogger();
             _config = config;
             _http = http;
             _manager = new BotManager(_config, _http);
@@ -51,12 +53,11 @@ namespace Scraps
         {
             Console.CursorVisible = false;
 
-            _manager.OnLogger += OnLogger;
             _manager.OnStatusUpdate += OnStatusUpdate;
             _manager.OnAccountBanned += OnAccountBanned;
-            _manager.OnCsrfTokenObtained += OnCsrfTokenObtained;
 
             _manager.OnRafflesWon += OnRafflesWon;
+            _manager.OnRaffleJoined += OnRaffleJoined;
 
             try
             {
@@ -64,12 +65,38 @@ namespace Scraps
             }
             catch (Exception ex)
             {
-                _logger.Fatal(ex.Message);
+                _log.Fatal(ex.Message);
                 Console.ReadLine();
             }
         }
 
-        private void OnLogger(object sender, LoggerArgs e) => _logger.Write(e.Level, e.Template, e.Properties);
+        public async Task LoadPluginsAsync()
+        {
+            if (!Directory.Exists(Paths.PluginsPath))
+            {
+                Directory.CreateDirectory(Paths.PluginsPath);
+
+                _log.Debug("Created missing plugins folder {Path}", Paths.PluginsPath);
+            }
+            else
+            {
+                PluginManager.LoadPlugins();
+
+                var plugins = PluginManager.Assemblies;
+
+                foreach (var plugin in plugins)
+                {
+                    var types = plugin.GetTypes();
+                    var type = types[0];
+                    var loadedPlugin = (PluginBase)Activator.CreateInstance(type, _config, _http, _manager);
+                        loadedPlugin.Initialize();
+
+                    _log.Info("Loaded plugin {Plugin} {Version}", type.Name, plugin.GetName().Version);
+                }
+            }
+
+            await Task.CompletedTask;
+        }
 
         private void OnStatusUpdate(object sender, StatusUpdateArgs e)
         {
@@ -89,20 +116,18 @@ namespace Scraps
         private void OnAccountBanned(object sender, AccountBannedArgs e)
         {
             Console.Title = "R.I.P.";
-            _logger.Fatal("Your account has been banned. You will need to use a different account session cookie to continue using Scraps.");
-            _logger.Fatal("Press [Enter] to exit.");
+            _log.Fatal("Your account has been banned. You will need to use a different account session cookie to continue using Scraps.");
+            _log.Fatal("Press [Enter] to exit.");
             Console.ReadLine();
             Environment.Exit(0);
         }
-
-        private void OnCsrfTokenObtained(object sender, CsrfTokenObtainedArgs e) => _logger.Debug("Obtained CSRF Token ({Token}}", e.CsrfToken);
 
         private void OnRafflesWon(object sender, RafflesWonArgs e)
         {
             List<string> wonRaffles = e.RaffleIds;
             int numWonRaffles = wonRaffles.Count;
 
-            _logger.Information("You've won {Number} " + "raffle".Pluralize(numWonRaffles) + " that " + "needs".Pluralize(numWonRaffles, "need") + " to be withdrawn!", numWonRaffles);
+            _log.Info("You've won {Number} " + "raffle".Pluralize(numWonRaffles) + " that " + "needs".Pluralize(numWonRaffles, "need") + " to be withdrawn!", numWonRaffles);
 
             if (_config.EnableSoundNotification && Platform.OS == "Win32NT")
             {
@@ -161,5 +186,7 @@ namespace Scraps
             //}
             #endregion
         }
+
+        private void OnRaffleJoined(object sender, RaffleJoinedArgs e) => _log.Info("[{Entered}/{Total}] Joined raffle {Id}", e.Entered, e.Total, e.RaffleId);
     }
 }

@@ -42,6 +42,14 @@ Unix builds are self-contained and do not require a runtime to be installed.
 
 See [INSTRUCTIONS.md](https://github.com/depthbomb/Scraps/blob/master/INSTRUCTIONS.md)
 
+## Plugins
+
+As of 3.4.0.0, Scraps now utilizes a plugins system where you can optionally add extra functionality through share-able assemblies. A list of official plugins can be found below.
+
+- [VoteInPolls](https://github.com/depthbomb/Scraps/tree/master/Scraps.Plugins.VoteInPolls)
+
+Simply drop the plugin's .DLL file into the new **Plugins** folder located in the app's store folder.
+
 ## Avoiding Bans
 
 The default settings are set so as to avoid hitting any rate limits and drawing suspicion. Since staff can see if you are using the same IP for multiple accounts, it is highly recommended that you run a VPN alongside Scraps to hide your IP if you are to use multiple accounts.

@@ -22,10 +22,32 @@ namespace Scraps.Events
 {
     public class RaffleJoinedArgs : EventArgs
     {
+        /// <summary>
+        /// Number of queued raffles entered at this point
+        /// </summary>
+        public int Entered { get; set; }
+        
+        /// <summary>
+        /// Total number of raffles in queue
+        /// </summary>
+        public int Total { get; set; }
+
+        /// <summary>
+        /// ID of the raffle that was entered
+        /// </summary>
         public string RaffleId { get; set; }
-        public RaffleJoinedArgs(string raffleId)
+
+        /// <summary>
+        /// The HTML of the raffle page
+        /// </summary>
+        public string PageHtml { get; set; }
+
+        public RaffleJoinedArgs(string raffleId, string pageHtml, int entered, int total)
         {
             RaffleId = raffleId;
+            PageHtml = pageHtml;
+            Entered = entered;
+            Total = total;
         }
     }
 }

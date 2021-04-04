@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 3.4.0.0
+
+- Added plugins system
+- Poll voting via RaffleActions has been replaced with an official plugin
+- Replaced logger library with NLog
+
 ## Version 3.3.0.0
 
 - Temporarily removed `Microsoft.Toolkit.Uwp.Notifications` package until it is supported

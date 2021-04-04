@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-using Serilog.Events;
+using NLog;
 
 using HtmlAgilityPack;
 
@@ -38,12 +38,13 @@ namespace Scraps
 {
     public class BotManager
     {
+        public string CsrfToken;
+
+        private Logger _log;
         private Config _config;
         private HttpClient _http;
         private Random _rng;
         private HtmlDocument _html;
-
-        private string _csrfToken;
 
         private int _scanDelay;
         private int _joinDelay;
@@ -55,22 +56,20 @@ namespace Scraps
         private List<string> _enteredRaffles = new List<string>();
 
         #region Events
-        public event EventHandler<LoggerArgs> OnLogger;
-
         /// <summary>
         /// Raised when the account has been banned from Scrap.TF
         /// </summary>
         public event EventHandler<AccountBannedArgs> OnAccountBanned;
 
         /// <summary>
-        /// Raised when the website CSRF token has been obtained
-        /// </summary>
-        public event EventHandler<CsrfTokenObtainedArgs> OnCsrfTokenObtained;
-
-        /// <summary>
         /// Raised when the bot's displayed status is updated
         /// </summary>
         public event EventHandler<StatusUpdateArgs> OnStatusUpdate;
+
+        /// <summary>
+        /// Raised when a raffle has been successfully joined
+        /// </summary>
+        public event EventHandler<RaffleJoinedArgs> OnRaffleJoined;
 
         /// <summary>
         /// Raised when one or more raffles have been won
@@ -80,6 +79,7 @@ namespace Scraps
 
         public BotManager(Config config, HttpClient http)
         {
+            _log = LogManager.GetCurrentClassLogger();
             _config = config;
             _http = http;
             _rng = new Random();
@@ -92,7 +92,7 @@ namespace Scraps
         /// </summary>
         public async Task StartLoopAsync()
         {
-            if (_csrfToken.IsNullOrEmpty())
+            if (CsrfToken.IsNullOrEmpty())
             {
                 await GetCsrfTokenAsync();
             }
@@ -119,7 +119,7 @@ namespace Scraps
                 {
                     SendStatus("Waiting to scan...");
 
-                    Log("All raffles have been entered, scanning again after {Delay} seconds", _scanDelay / 1000);
+                    _log.Debug("All raffles have been entered, scanning again after {Delay} seconds", _scanDelay / 1000);
 
                     await Task.Delay(_scanDelay);
 
@@ -155,15 +155,18 @@ namespace Scraps
                     var csrf = RegexPatterns.CsrfRegex.Match(html);
                     if (csrf.Success)
                     {
-                        _csrfToken = csrf.Groups[1].Value;
-                        OnCsrfTokenObtained?.Invoke(this, new CsrfTokenObtainedArgs(_csrfToken));
+                        CsrfToken = csrf.Groups[1].Value;
+
+                        _log.Debug("Obtained CSRF Token ({Token})", CsrfToken);
+
                         tokenObtained = true;
                     }
                     else
                     {
                         if (html.Contains(Strings.SiteDown))
                         {
-                            Log(LogEventLevel.Error, "Site appears to be down/under maintenance. Trying again after 1 minute.");
+                            _log.Error("Site appears to be down/under maintenance. Trying again after 1 minute.");
+
                             await Task.Delay(60 * 1000);
                         }
                         else
@@ -179,7 +182,7 @@ namespace Scraps
         {
             _raffleQueue.Clear();
 
-            Log("Scanning raffles");
+            _log.Debug("Scanning raffles");
 
             bool doneScanning = false;
             string html = await _http.GetStringAsync("https://scrap.tf/raffles");
@@ -191,7 +194,7 @@ namespace Scraps
 
                 if (json == null)
                 {
-                    Log(LogEventLevel.Error, "Pagination returned an invalid response instead of JSON. Waiting 10 seconds...");
+                    _log.Error("Pagination returned an invalid response instead of JSON. Waiting 10 seconds...");
                     await Task.Delay(10_000);
                 }
                 else
@@ -206,7 +209,7 @@ namespace Scraps
 
                             if (!paginateResponse.done)
                             {
-                                Log("Scanning next page (apex = {Apex})", lastId);
+                                _log.Debug("Scanning next page (apex = {Apex})", lastId);
 
                                 await Task.Delay(_config.Delays.PaginateDelay);
 
@@ -217,7 +220,7 @@ namespace Scraps
                                 doneScanning = true;
                             }
 
-                            Log("Done scanning all raffles, grabbing IDs of un-entered raffles...");
+                            _log.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles...");
 
                             SendStatus("Parsing scanned data...");
 
@@ -260,20 +263,21 @@ namespace Scraps
                                 }
                                 else
                                 {
-                                    Log(LogEventLevel.Error, "Encountered an error while paginating: {Message} - Waiting 10 seconds", paginateResponse.message);
+                                    _log.Error("Encountered an error while paginating: {Message} - Waiting 10 seconds", paginateResponse.message);
 
                                     await Task.Delay(10_000);
                                 }
                             }
                             else
                             {
-                                Log(LogEventLevel.Error, "Paginate response for apex {Apex} was unsuccessful", lastId.IsNullOrEmpty() ? "<empty>" : lastId);
+                                _log.Error("Paginate response for apex {Apex} was unsuccessful", lastId.IsNullOrEmpty() ? "<empty>" : lastId);
                             }
                         }
                     }
                     catch (JsonException ex)
                     {
-                        Log(LogEventLevel.Error, "Failed to read pagination data: {Error}", ex.Message);
+                        _log.Error("Failed to read pagination data");
+                        _log.Trace(ex);
                     }
                 }
             }
@@ -289,7 +293,7 @@ namespace Scraps
                 new KeyValuePair<string, string>("start", apex),
                 new KeyValuePair<string, string>("sort", "1"),
                 new KeyValuePair<string, string>("puzzle", "0"),
-                new KeyValuePair<string, string>("csrf", _csrfToken),
+                new KeyValuePair<string, string>("csrf", CsrfToken),
             });
 
             var response = await _http.PostAsync(url, content);
@@ -316,7 +320,7 @@ namespace Scraps
                 string raffleId = id.Groups[1].Value;
                 if (!_enteredRaffles.Contains(raffleId))
                 {
-                    Log("Adding {Entered} to won raffles list", raffleId);
+                    _log.Debug("Adding {Entered} to won raffles list", raffleId);
 
                     _enteredRaffles.Add(raffleId);
 
@@ -358,7 +362,7 @@ namespace Scraps
                     hp.Check();
                 if (hp.IsHoneypot)
                 {
-                    Log(LogEventLevel.Information, "Raffle {Id} is likely a honeypot: {Reason}", raffle, hp.Reason);
+                    _log.Info("Raffle {Id} is likely a honeypot: {Reason}", raffle, hp.Reason);
 
                     total--;
                     _enteredRaffles.Add(raffle);
@@ -368,7 +372,7 @@ namespace Scraps
 
                 if (hasEnded)
                 {
-                    Log(LogEventLevel.Information, "Raffle {Id} has ended", raffle);
+                    _log.Info("Raffle {Id} has ended", raffle);
 
                     total--;
                     _enteredRaffles.Add(raffle);
@@ -383,7 +387,7 @@ namespace Scraps
 
                     if (_config.Paranoid && num < 2)
                     {
-                        Log(LogEventLevel.Information, "Raffle {Id} has too few entries", raffle);
+                        _log.Info("Raffle {Id} has too few entries", raffle);
 
                         total--;
 
@@ -392,7 +396,7 @@ namespace Scraps
 
                     if (num >= max)
                     {
-                        Log(LogEventLevel.Information, "Raffle {Id} is full ({Num}/{Max})", raffle, num, max);
+                        _log.Info("Raffle {Id} is full ({Num}/{Max})", raffle, num, max);
 
                         total--;
                         _enteredRaffles.Add(raffle);
@@ -410,7 +414,7 @@ namespace Scraps
                         new KeyValuePair<string, string>("captcha", ""),
                         new KeyValuePair<string, string>("hash", hash.Groups[1].Value),
                         new KeyValuePair<string, string>("flag", ""),
-                        new KeyValuePair<string, string>("csrf", _csrfToken),
+                        new KeyValuePair<string, string>("csrf", CsrfToken),
                     });
 
                     var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
@@ -425,37 +429,14 @@ namespace Scraps
                     {
                         entered++;
 
-                        Log(LogEventLevel.Information, "[{Entered}/{Total}] Joined raffle {Id}", entered, total, raffle);
+                        OnRaffleJoined?.Invoke(this, new RaffleJoinedArgs(raffle, html, entered, total));
 
                         _enteredRaffles.Add(raffle);
                         _rafflesJoined++;
-
-                        if (_config.RaffleActions.VoteInPolls)
-                        {
-                            var poll = RegexPatterns.RafflePollRegex.Match(html);
-                            if (poll.Success)
-                            {
-                                string pollId = poll.Groups[1].Value;
-
-                                Log("Voting in poll {Poll}", pollId);
-
-                                var optionsMatches = RegexPatterns.RafflePollOptionRegex.Matches(html);
-                                if (optionsMatches.Count > 0)
-                                {
-                                    Log("Found {OptionCount} " + "option".Pluralize(optionsMatches.Count) + " in poll", optionsMatches.Count);
-
-                                    await Task.Run(async() => await AnswerPollAsync(pollId, optionsMatches.Count));
-                                }
-                                else
-                                {
-                                    Log(LogEventLevel.Warning, "Didn't find any options for poll");
-                                }
-                            }
-                        }
                     }
                     else
                     {
-                        Log(LogEventLevel.Error, "Unable to join raffle {Id}: {Message}", raffle, joinRaffleResponse.message);
+                        _log.Error("Unable to join raffle {Id}: {Message}", raffle, joinRaffleResponse.message);
                     }
 
                     SendStatus("Waiting...");
@@ -464,48 +445,13 @@ namespace Scraps
                 }
                 else
                 {
-                    Log(LogEventLevel.Error, "Could not obtain hash from raffle {id}", raffle);
+                    _log.Error("Could not obtain hash from raffle {Id}", raffle);
                 }
             }
 
             if (entered > 0)
             {
-                Log(LogEventLevel.Information, "Finished raffle queue");
-            }
-        }
-
-        private async Task AnswerPollAsync(string pollId, int numOptions)
-        {
-            SendStatus($"Voting in poll {pollId}");
-
-            string url = "https://scrap.tf/ajax/viewpoll/SubmitAnswer";
-            int choice = _rng.Next(0, numOptions);
-
-            Log("Chose poll option index {Option}", choice);
-
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("poll", pollId),
-                new KeyValuePair<string, string>("answers[]", choice.ToString()),
-                new KeyValuePair<string, string>("csrf", _csrfToken),
-            });
-
-            var response = await _http.PostAsync(url, content);
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                string json = await response.Content.ReadAsStringAsync();
-                var data = JsonSerializer.Deserialize<SubmitAnswerResponse>(json);
-                if (!data.success || data.message != "Answered!")
-                {
-                    Log(LogEventLevel.Error, "Poll answer failed: {Message}", data.message);
-                }
-
-                Log("Successfully answered poll {Poll}", pollId);
-            }
-            else
-            {
-                Log(LogEventLevel.Error, "Request to answer poll failed: {StatusCode}", response.StatusCode);
+                _log.Info("Finished raffle queue");
             }
         }
         #endregion
@@ -515,25 +461,7 @@ namespace Scraps
         /// Shortcut method to raise a <see cref="OnStatusUpdate"/> event
         /// </summary>
         /// <param name="message">Message to send with the event</param>
-        private void SendStatus(string message)
-            => OnStatusUpdate?.Invoke(this, new StatusUpdateArgs(_rafflesJoined, message));
-
-        /// <summary>
-        /// Shortcut method to raise a <see cref="OnLogger"/> event
-        /// </summary>
-        /// <param name="level"></param>
-        /// <param name="template"></param>
-        /// <param name="properties"></param>
-        private void Log(LogEventLevel level, string template, params object[] properties)
-            => OnLogger?.Invoke(this, new LoggerArgs(level, template, properties));
-
-        /// <summary>
-        /// Shortcut method to raise a <see cref="OnLogger"/> event with <see cref="LogEventLevel.Debug"/>
-        /// </summary>
-        /// <param name="template"></param>
-        /// <param name="properties"></param>
-        private void Log(string template, params object[] properties)
-            => OnLogger?.Invoke(this, new LoggerArgs(LogEventLevel.Debug, template, properties));
+        private void SendStatus(string message) => OnStatusUpdate?.Invoke(this, new StatusUpdateArgs(_rafflesJoined, message));
         #endregion
         #endregion
     }

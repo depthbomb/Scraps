@@ -16,27 +16,24 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using Serilog.Events;
+using System;
 
-namespace Scraps.Events
+namespace Scraps.Abtract
 {
-    public class LoggerArgs
+    public abstract class PluginBase
     {
-        public LogEventLevel Level { get; set; }
-        public string Template { get; set; }
-        public object[] Properties { get; set; }
+        /// <summary>
+        /// The name of the plugin
+        /// </summary>
+        string Name { get; set; }
 
-        public LoggerArgs(LogEventLevel level, string template, params object[] properties)
-        {
-            Level = level;
-            Template = template;
-            Properties = properties;
-        }
+        /// <summary>
+        /// The plugin's version
+        /// </summary>
+        Version Version { get; set; }
 
-        public LoggerArgs(LogEventLevel level, string template)
-        {
-            Level = level;
-            Template = template;
-        }
+        internal void Initialize() => OnInitialized();
+
+        protected abstract void OnInitialized();
     }
 }

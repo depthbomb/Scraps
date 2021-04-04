@@ -21,8 +21,5 @@ This page documents the Scraps settings file by describing each setting key's pu
     - The delay between scanning each page of raffle results in milliseconds. Setting this below the default may result in the "refreshing too much" error page. However, that does not affect operation but it may appear suspicious.
   - `JoinDelay` = `4000`
     - The delay between joining queued raffles in milliseconds. Setting this below the default may result in captchas appearing due to rate-limiting.
-- `RaffleActions`
-  - `VoteInPolls` = `false`
-    - Whether to vote for a random answer in raffle polls.
 - `Proxies`
   - A list of HTTPS/SSL proxy addresses, including port. Having at least 1 address in this setting key will make Scraps attempt to use the proxies.
