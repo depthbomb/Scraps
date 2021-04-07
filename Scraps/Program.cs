@@ -53,10 +53,7 @@ namespace Scraps
                 Environment.Exit(1);
             }
 
-            if (IsAlreadyRunning())
-            {
-                Environment.Exit(1);
-            }
+            if (IsAlreadyRunning()) Environment.Exit(1);
 
             Console.WriteLine();
             Console.WriteLine("Scraps - Scrap.TF Raffle Bot");
@@ -65,6 +62,7 @@ namespace Scraps
             Console.WriteLine();
 
             CheckForNewReleases();
+            CreateRequiredDirectories();
 
             ParseArguments(args);
 
@@ -129,6 +127,22 @@ namespace Scraps
                 }
 
                 Console.WriteLine();
+            }
+        }
+
+        static void CreateRequiredDirectories()
+        {
+            foreach (string path in new string[]
+            {
+                Paths.LogsPath,
+                Paths.DataPath,
+                Paths.PluginsPath,
+            })
+            {
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
             }
         }
 

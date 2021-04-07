@@ -18,7 +18,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 
@@ -67,12 +66,7 @@ namespace Scraps
                 }
             }
 
-            if (Assemblies.Count > 0)
-            {
-                return true;
-            }
-
-            return false;
+            return Assemblies.Count > 0;
         }
     }
 }
