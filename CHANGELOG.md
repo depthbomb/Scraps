@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 3.4.1.0
+
+- Added CommentOnRaffles optional plugin
+- Required directories will now be created when needed, possibly fixes #4
+
 ## Version 3.4.0.0
 
 - Added plugins system
