@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scraps", "Scraps\Scraps.csproj", "{E0CEE374-D38F-4C95-8C66-E3905613AD54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraps.Plugins.VoteInPolls", "Scraps.Plugins.VoteInPolls\Scraps.Plugins.VoteInPolls.csproj", "{AEA314F8-B2D7-44AF-9F5C-DE873AB8D130}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scraps.Plugins.VoteInPolls", "Scraps.Plugins.VoteInPolls\Scraps.Plugins.VoteInPolls.csproj", "{AEA314F8-B2D7-44AF-9F5C-DE873AB8D130}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraps.Plugins.CommentOnRaffles", "Scraps.Plugins.CommentOnRaffles\Scraps.Plugins.CommentOnRaffles.csproj", "{D1355FD9-024E-49E2-9065-2A7EDF14F80F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{AEA314F8-B2D7-44AF-9F5C-DE873AB8D130}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEA314F8-B2D7-44AF-9F5C-DE873AB8D130}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEA314F8-B2D7-44AF-9F5C-DE873AB8D130}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1355FD9-024E-49E2-9065-2A7EDF14F80F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1355FD9-024E-49E2-9065-2A7EDF14F80F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1355FD9-024E-49E2-9065-2A7EDF14F80F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1355FD9-024E-49E2-9065-2A7EDF14F80F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
