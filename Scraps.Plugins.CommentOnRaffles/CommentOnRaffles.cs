@@ -24,7 +24,7 @@ using System.Text.Json;
 using System.Collections.Generic;
 
 using Scraps.Events;
-using Scraps.Abtract;
+using Scraps.Abstractions;
 
 using NLog;
 

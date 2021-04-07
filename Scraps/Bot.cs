@@ -28,9 +28,9 @@ using NAudio.Wave;
 
 using Scraps.Models;
 using Scraps.Events;
-using Scraps.Abtract;
 using Scraps.Constants;
 using Scraps.Extensions;
+using Scraps.Abstractions;
 
 namespace Scraps
 {

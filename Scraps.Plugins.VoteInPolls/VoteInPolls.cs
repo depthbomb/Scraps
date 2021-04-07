@@ -27,7 +27,7 @@ using NLog;
 
 using Scraps.Events;
 using Scraps.Models;
-using Scraps.Abtract;
+using Scraps.Abstractions;
 
 using Scraps.Plugins.VoteInPolls.Models;
 

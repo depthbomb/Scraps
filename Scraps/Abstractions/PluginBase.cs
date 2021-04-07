@@ -18,7 +18,7 @@
 
 using System;
 
-namespace Scraps.Abtract
+namespace Scraps.Abstractions
 {
     public abstract class PluginBase
     {
