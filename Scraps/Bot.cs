@@ -42,6 +42,8 @@ namespace Scraps
         private HttpClient _http;
         private RaffleRunner _runner;
 
+        public static DateTime StartTime;
+
         public Bot(Config config, HttpClient http)
         {
             _log = LogManager.GetCurrentClassLogger();
@@ -102,6 +104,8 @@ namespace Scraps
                     }
                 }
             }
+
+            StartTime = DateTime.UtcNow;
 
             await Task.CompletedTask;
         }

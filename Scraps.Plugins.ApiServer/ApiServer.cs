@@ -108,7 +108,8 @@ namespace Scraps.Plugins.ApiServer
                     res = CreateResponse(new StatsResponse
                     {
                         RafflesJoined = _rafflesJoined,
-                        OutstandingRafflesWon = _rafflesWon
+                        OutstandingRafflesWon = _rafflesWon,
+                        StartTime = Bot.StartTime,
                     });
                     break;
                 default:

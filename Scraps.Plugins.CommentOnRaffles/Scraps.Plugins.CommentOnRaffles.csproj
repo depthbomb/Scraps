@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\Scraps\Scraps.licenseheader" Link="Scraps.licenseheader" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Scraps\Scraps.csproj" />
   </ItemGroup>
 

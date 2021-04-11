@@ -16,11 +16,14 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
+using System;
+
 namespace Scraps.Plugins.ApiServer.Models
 {
     public class StatsResponse
     {
         public int RafflesJoined { get; set; }
         public int OutstandingRafflesWon { get; set; }
+        public DateTime StartTime { get; set; }
     }
 }
