@@ -41,27 +41,27 @@ namespace Scraps.Plugins.VoteInPolls
         private Logger _log;
         private Random _rng;
         private HttpClient _http;
-        private BotManager _manager;
+        private RaffleRunner _runner;
 
         private readonly Regex _rafflePollPattern = new Regex(@"ScrapTF\.Polls\.SubmitAnswer\('([A-Z0-9]{6,})'\)");
         private readonly Regex _rafflePollOptionPattern = new Regex(@"<input name=""optionsRadios"" type=""(radio|checkbox)"" data-toggle=""(radio|checkbox)"" value=""(.*)"" id=""radio(.*)"" required>");
 
-        public VoteInPolls(Config config, HttpClient http, BotManager manager)
+        public VoteInPolls(Config config, HttpClient http, RaffleRunner runner)
         {
             _log = LogManager.GetCurrentClassLogger();
             _rng = new();
             _http = http;
-            _manager = manager;
+            _runner = runner;
         }
 
         protected override void OnInitialized()
         {
-            _manager.OnRaffleJoined += OnRaffleJoined;
+            _runner.OnRaffleJoined += OnRaffleJoined;
         }
 
         private void OnRaffleJoined(object sender, RaffleJoinedArgs e)
         {
-            string csrfToken = _manager.CsrfToken;
+            string csrfToken = _runner.CsrfToken;
             string html = e.PageHtml;
 
             var poll = _rafflePollPattern.Match(html);

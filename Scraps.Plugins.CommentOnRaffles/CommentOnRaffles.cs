@@ -43,7 +43,7 @@ namespace Scraps.Plugins.CommentOnRaffles
         private Logger _log;
         private Random _rng;
         private HttpClient _http;
-        private BotManager _manager;
+        private RaffleRunner _runner;
         private List<string> _comments = new();
 
         private PluginConfig _config;
@@ -52,12 +52,12 @@ namespace Scraps.Plugins.CommentOnRaffles
         private string _pluginConfigFile = Path.Combine(Constants.Paths.StorePath, "CommentOnRaffles.json");
         private string _acceptRulesRule = Path.Combine(Constants.Paths.DataPath, "RulesAccepted");
 
-        public CommentOnRaffles(Config config, HttpClient http, BotManager manager)
+        public CommentOnRaffles(Config config, HttpClient http, RaffleRunner runner)
         {
             _log = LogManager.GetCurrentClassLogger();
             _rng = new();
             _http = http;
-            _manager = manager;
+            _runner = runner;
         }
 
         protected override void OnInitialized()
@@ -70,7 +70,7 @@ namespace Scraps.Plugins.CommentOnRaffles
                 string url = "https://scrap.tf/ajax/rules/Accept";
                 var content = new FormUrlEncodedContent(new[]
                 {
-                    new KeyValuePair<string, string>("csrf", _manager.CsrfToken),
+                    new KeyValuePair<string, string>("csrf", _runner.CsrfToken),
                 });
                 var response = _http.PostAsync(url, content).Result;
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -126,12 +126,12 @@ namespace Scraps.Plugins.CommentOnRaffles
 
             _comments.AddRange(_config.Comments);
 
-            _manager.OnRaffleJoined += OnRaffleJoined;
+            _runner.OnRaffleJoined += OnRaffleJoined;
         }
 
         private void OnRaffleJoined(object sender, RaffleJoinedArgs e)
         {
-            string csrfToken = _manager.CsrfToken;
+            string csrfToken = _runner.CsrfToken;
             string raffleId = e.RaffleId;
             var now = DateTime.UtcNow;
             if (now >= _nextComment)

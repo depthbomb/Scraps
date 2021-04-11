@@ -30,6 +30,7 @@ using Scraps.Models;
 using Scraps.Events;
 using Scraps.Constants;
 using Scraps.Extensions;
+using Scraps.Exceptions;
 using Scraps.Abstractions;
 
 namespace Scraps
@@ -39,29 +40,29 @@ namespace Scraps
         private Logger _log;
         private Config _config;
         private HttpClient _http;
-        private BotManager _manager;
+        private RaffleRunner _runner;
 
         public Bot(Config config, HttpClient http)
         {
             _log = LogManager.GetCurrentClassLogger();
             _config = config;
             _http = http;
-            _manager = new BotManager(_config, _http);
+            _runner = new RaffleRunner(_config, _http);
         }
 
         public async Task RunAsync()
         {
             Console.CursorVisible = false;
 
-            _manager.OnStatusUpdate += OnStatusUpdate;
-            _manager.OnAccountBanned += OnAccountBanned;
+            _runner.OnStatusUpdate += OnStatusUpdate;
+            _runner.OnAccountBanned += OnAccountBanned;
 
-            _manager.OnRafflesWon += OnRafflesWon;
-            _manager.OnRaffleJoined += OnRaffleJoined;
+            _runner.OnRafflesWon += OnRafflesWon;
+            _runner.OnRaffleJoined += OnRaffleJoined;
 
             try
             {
-                await _manager.StartLoopAsync();
+                await _runner.StartLoopAsync();
             }
             catch (Exception ex)
             {
@@ -86,12 +87,19 @@ namespace Scraps
 
                 foreach (var plugin in plugins)
                 {
-                    var types = plugin.GetTypes();
-                    var type = types[0];
-                    var loadedPlugin = (PluginBase)Activator.CreateInstance(type, _config, _http, _manager);
-                        loadedPlugin.Initialize();
+                    try
+                    {
+                        var types = plugin.GetTypes();
+                        var type = types[0];
+                        var loadedPlugin = (PluginBase)Activator.CreateInstance(type, _config, _http, _runner);
+                            loadedPlugin.Initialize();
 
-                    _log.Info("Loaded plugin {Plugin} {Version}", type.Name, plugin.GetName().Version);
+                        _log.Info("Initialized plugin {Plugin} {Version}", type.Name, plugin.GetName().Version);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Error("Failed to load plugin {Plugin}: {Exception}", plugin.FullName, ex);
+                    }
                 }
             }
 

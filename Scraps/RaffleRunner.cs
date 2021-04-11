@@ -36,7 +36,7 @@ using Scraps.Extensions;
 
 namespace Scraps
 {
-    public class BotManager
+    public class RaffleRunner
     {
         public string CsrfToken;
 
@@ -77,7 +77,7 @@ namespace Scraps
         public event EventHandler<RafflesWonArgs> OnRafflesWon;
         #endregion
 
-        public BotManager(Config config, HttpClient http)
+        public RaffleRunner(Config config, HttpClient http)
         {
             _log = LogManager.GetCurrentClassLogger();
             _config = config;
