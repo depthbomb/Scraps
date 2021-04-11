@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 3.5.0.0
+
+- Added ApiServer optional plugin
+
 ## Version 3.4.1.0
 
 - Added CommentOnRaffles optional plugin

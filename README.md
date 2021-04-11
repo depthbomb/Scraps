@@ -47,6 +47,8 @@ See [INSTRUCTIONS.md](https://github.com/depthbomb/Scraps/blob/master/INSTRUCTIO
 As of 3.4.0.0, Scraps now utilizes a plugins system where you can optionally add extra functionality through share-able assemblies. A list of official plugins can be found below.
 
 - [VoteInPolls](https://github.com/depthbomb/Scraps/tree/master/Scraps.Plugins.VoteInPolls)
+- [CommentOnRaffles](https://github.com/depthbomb/Scraps/tree/master/Scraps.Plugins.CommentOnRaffles)
+- [ApiServer](https://github.com/depthbomb/Scraps/tree/master/Scraps.Plugins.ApiServer)
 
 Simply drop the plugin's .DLL file into the new **Plugins** folder located in the app's store folder.
 
