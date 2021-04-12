@@ -26,6 +26,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 using Scraps.Events;
 using Scraps.Models;
@@ -37,9 +39,6 @@ namespace Scraps.Plugins.ApiServer
 {
     public class ApiServer : PluginBase
     {
-        public string Name = "HttpServer";
-        public Version Version = new Version(1, 0, 0, 0);
-
         private Logger _log;        
         private Thread _thread;
         private RaffleRunner _runner;
@@ -51,9 +50,19 @@ namespace Scraps.Plugins.ApiServer
 
         private readonly int _port;
 
+        private const string _logTarget = "ApiServer Plugin";
+
         public ApiServer(Config config, HttpClient http, RaffleRunner runner)
         {
-            _log = LogManager.GetCurrentClassLogger();
+            var target = new ColoredConsoleTarget
+            {
+                Layout = @"${date:format=HH\:mm\:ss} | ${pad:padding=5:inner=${level:uppercase=true}} | [${logger:shortName=true}] ${message}${exception}"
+            };
+
+            LogManager.Configuration.AddTarget(_logTarget, target);
+            LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", Shared.Debug ? LogLevel.Trace : LogLevel.Info, target));
+
+            _log = LogManager.GetLogger(_logTarget);
             _runner = runner;
             _port = 19318;
         }

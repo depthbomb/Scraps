@@ -96,7 +96,7 @@ namespace Scraps
                         var loadedPlugin = (PluginBase)Activator.CreateInstance(type, _config, _http, _runner);
                             loadedPlugin.Initialize();
 
-                        _log.Info("Initialized plugin {Plugin} {Version}", type.Name, plugin.GetName().Version);
+                        _log.Info("Initialized plugin {Plugin}", type.Name);
                     }
                     catch (Exception ex)
                     {

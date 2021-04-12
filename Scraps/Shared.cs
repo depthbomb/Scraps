@@ -16,12 +16,23 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Abstractions
-{
-    public abstract class PluginBase
-    {
-        internal void Initialize() => OnInitialized();
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-        protected abstract void OnInitialized();
+namespace Scraps
+{
+    public static class Shared
+    {
+        public static bool Debug = false;
+
+        static Shared()
+        {
+#if DEBUG
+            Debug = true;
+#endif
+        }
     }
 }

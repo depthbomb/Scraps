@@ -20,7 +20,6 @@ using System;
 using System.IO;
 using System.Net;
 using System.Linq;
-using System.Text;
 using System.Net.Http;
 using System.Text.Json;
 using System.Diagnostics;
@@ -38,7 +37,6 @@ namespace Scraps
 {
     class Program
     {
-        static bool _verbose;
         static Logger _log;
         static Config _config;
         static HttpClient _http;
@@ -158,21 +156,16 @@ namespace Scraps
                 Environment.Exit(0);
             }
 
-            _verbose = hasVerboseArgs;
+            Shared.Debug = hasVerboseArgs;
         }
 
         #region Initializers
         static void InitializeLogger()
         {
-            #if DEBUG
-            _verbose = true;
-            #endif
-
             var config = new LoggingConfiguration();
             var consoleTarget = new ColoredConsoleTarget
             {
-                Layout = @"${date:format=HH\:mm\:ss} | ${pad:padding=5:inner=${level:uppercase=true}} | [${logger:shortName=true}] ${message}${exception}",
-                Encoding = Encoding.UTF8,
+                Layout = @"${date:format=HH\:mm\:ss} | ${pad:padding=5:inner=${level:uppercase=true}} | [${logger:shortName=true}] ${message}${exception}"
             };
             var fileTarget = new FileTarget
             {
@@ -189,7 +182,7 @@ namespace Scraps
 
             config.AddTarget("Console", consoleTarget);
             config.AddTarget("File", fileTarget);
-            config.LoggingRules.Add(new LoggingRule("*", _verbose ? LogLevel.Trace : LogLevel.Info, consoleTarget));
+            config.LoggingRules.Add(new LoggingRule("*", Shared.Debug ? LogLevel.Trace : LogLevel.Info, consoleTarget));
             config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
 
             LogManager.Configuration = config;

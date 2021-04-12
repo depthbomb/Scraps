@@ -27,6 +27,8 @@ using Scraps.Events;
 using Scraps.Abstractions;
 
 using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 using Scraps.Plugins.CommentOnRaffles.Models;
 
@@ -37,9 +39,6 @@ namespace Scraps.Plugins.CommentOnRaffles
 {
     public class CommentOnRaffles : PluginBase
     {
-        public string Name = "CommentOnRaffles";
-        public Version Version = new Version(1, 0, 0, 0);
-
         private Logger _log;
         private Random _rng;
         private HttpClient _http;
@@ -52,9 +51,19 @@ namespace Scraps.Plugins.CommentOnRaffles
         private string _pluginConfigFile = Path.Combine(Constants.Paths.StorePath, "CommentOnRaffles.json");
         private string _acceptRulesRule = Path.Combine(Constants.Paths.DataPath, "RulesAccepted");
 
+        private const string _logTarget = "CommentOnRaffles Plugin";
+
         public CommentOnRaffles(Config config, HttpClient http, RaffleRunner runner)
         {
-            _log = LogManager.GetCurrentClassLogger();
+            var target = new ColoredConsoleTarget
+            {
+                Layout = @"${date:format=HH\:mm\:ss} | ${pad:padding=5:inner=${level:uppercase=true}} | [${logger:shortName=true}] ${message}${exception}"
+            };
+
+            LogManager.Configuration.AddTarget(_logTarget, target);
+            LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", Shared.Debug ? LogLevel.Trace : LogLevel.Info, target));
+
+            _log = LogManager.GetLogger(_logTarget);
             _rng = new();
             _http = http;
             _runner = runner;

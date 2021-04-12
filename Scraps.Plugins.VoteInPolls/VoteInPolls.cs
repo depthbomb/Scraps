@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 using Scraps.Events;
 using Scraps.Models;
@@ -35,9 +37,6 @@ namespace Scraps.Plugins.VoteInPolls
 {
     public class VoteInPolls : PluginBase
     {
-        public string Name = "VoteInPolls";
-        public Version Version = new Version(1, 0, 0, 0);
-
         private Logger _log;
         private Random _rng;
         private HttpClient _http;
@@ -46,9 +45,19 @@ namespace Scraps.Plugins.VoteInPolls
         private readonly Regex _rafflePollPattern = new Regex(@"ScrapTF\.Polls\.SubmitAnswer\('([A-Z0-9]{6,})'\)");
         private readonly Regex _rafflePollOptionPattern = new Regex(@"<input name=""optionsRadios"" type=""(radio|checkbox)"" data-toggle=""(radio|checkbox)"" value=""(.*)"" id=""radio(.*)"" required>");
 
+        private const string _logTarget = "VoteInPolls Plugin";
+
         public VoteInPolls(Config config, HttpClient http, RaffleRunner runner)
         {
-            _log = LogManager.GetCurrentClassLogger();
+            var target = new ColoredConsoleTarget
+            {
+                Layout = @"${date:format=HH\:mm\:ss} | ${pad:padding=5:inner=${level:uppercase=true}} | [${logger:shortName=true}] ${message}${exception}"
+            };
+
+            LogManager.Configuration.AddTarget(_logTarget, target);
+            LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", Shared.Debug ? LogLevel.Trace : LogLevel.Info, target));
+
+            _log = LogManager.GetLogger(_logTarget);
             _rng = new();
             _http = http;
             _runner = runner;
