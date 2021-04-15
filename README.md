@@ -2,16 +2,16 @@
 
 A Scrap.TF Raffle Bot
 
-[![Github last commit date](https://img.shields.io/github/last-commit/depthbomb/Scraps.svg?label=Updated&logo=github&style=flat-square&cacheSeconds=3600)](https://github.com/depthbomb/Scraps/commits)
-[![Total downloads](https://img.shields.io/github/downloads/depthbomb/Scraps/total.svg?label=Downloads&logo=github&style=flat-square&cacheSeconds=3600)](https://github.com/depthbomb/Scraps/releases)
-[![License](https://img.shields.io/github/license/depthbomb/Scraps.svg?label=License&logo=apache&style=flat-square&cacheSeconds=3600)](https://github.com/depthbomb/Scraps/blob/main/LICENSE)
+[![Github last commit date](https://img.shields.io/github/last-commit/depthbomb/Scraps.svg?label=Updated&logo=github&style=flat-square&cacheSeconds=300)](https://github.com/depthbomb/Scraps/commits)
+[![Total downloads](https://img.shields.io/github/downloads/depthbomb/Scraps/total.svg?label=Downloads&logo=github&style=flat-square&cacheSeconds=300)](https://github.com/depthbomb/Scraps/releases)
+[![License](https://img.shields.io/github/license/depthbomb/Scraps.svg?label=License&logo=apache&style=flat-square&cacheSeconds=300)](https://github.com/depthbomb/Scraps/blob/main/LICENSE)
 
-[![GitHub stable release version](https://img.shields.io/github/release/depthbomb/Scraps.svg?label=Stable&logo=github&style=flat-square&cacheSeconds=3600)](https://github.com/depthbomb/Scraps/releases/latest)
-[![GitHub stable release date](https://img.shields.io/github/release-date/depthbomb/Scraps.svg?label=Released&logo=github&style=flat-square&cacheSeconds=3600)](https://github.com/depthbomb/Scraps/releases/latest)
-[![Github stable release downloads](https://img.shields.io/github/downloads/depthbomb/Scraps/latest/total.svg?label=Downloads&logo=github&style=flat-square&cacheSeconds=3600)](https://github.com/depthbomb/Scraps/releases/latest)
+[![GitHub stable release version](https://img.shields.io/github/release/depthbomb/Scraps.svg?label=Stable&logo=github&style=flat-square&cacheSeconds=300)](https://github.com/depthbomb/Scraps/releases/latest)
+[![GitHub stable release date](https://img.shields.io/github/release-date/depthbomb/Scraps.svg?label=Released&logo=github&style=flat-square&cacheSeconds=300)](https://github.com/depthbomb/Scraps/releases/latest)
+[![Github stable release downloads](https://img.shields.io/github/downloads/depthbomb/Scraps/latest/total.svg?label=Downloads&logo=github&style=flat-square&cacheSeconds=300)](https://github.com/depthbomb/Scraps/releases/latest)
 
-[![Become a Patron](https://img.shields.io/badge/Become%20a-Patron-F96854.svg?logo=patreon&style=flat-square&cacheSeconds=3600)](https://patreon.com/depthbomb)
-[![Donate via Steam Trade Offer](https://img.shields.io/badge/Donate%20Items%20via-Steam-111111.svg?logo=steam&style=flat-square&cacheSeconds=3600)](https://steamcommunity.com/tradeoffer/new/?partner=66133073&token=cFIlCTRq)
+[![Become a Patron](https://img.shields.io/badge/Become%20a-Patron-F96854.svg?logo=patreon&style=flat-square&cacheSeconds=300)](https://patreon.com/depthbomb)
+[![Donate via Steam Trade Offer](https://img.shields.io/badge/Donate%20Items%20via-Steam-111111.svg?logo=steam&style=flat-square&cacheSeconds=300)](https://steamcommunity.com/tradeoffer/new/?partner=66133073&token=cFIlCTRq)
 
 ---
 
