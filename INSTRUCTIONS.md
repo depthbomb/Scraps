@@ -19,7 +19,6 @@ In order for Scraps to work, it needs your Scrap.TF cookie. Scraps will then use
 
 If you need to give Scraps a new cookie value, you can
 
-- Run Scraps with the `--config` flag to open your settings file so you may change the cookie
 - Delete your **Config.json** file and restart the program
   - This will reset _all_ of your settings in the process
 
@@ -29,10 +28,7 @@ See [SETTINGS.md](https://github.com/depthbomb/Scraps/blob/master/SETTINGS.md)
 
 ## Command line usage
 
-There are a few options that can be passed to Scraps when you run it
-
 * `--verbose`/`-v` - Log debug info to the console window, not really any use to the normal user unless you just want to see more of what's going on
-* `--config`/`-c` - Opens your settings file in your OS's default program and closes Scraps
 
 ## Updating Scraps
 

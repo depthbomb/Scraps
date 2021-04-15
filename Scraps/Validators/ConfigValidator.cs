@@ -16,24 +16,20 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Constants
-{
-    public static class Version
-    {
-        public enum ReleaseTypes
-        {
-            Development,
-            PreRelease,
-            Release
-        }
+using FluentValidation;
 
-        public static System.Version AsDotNetVersion() => new System.Version(Major, Minor, Patch, Hotfix);
-        public static int Major => 3;
-        public static int Minor => 6;
-        public static int Patch => 0;
-        public static int Hotfix => 0;
-        public static ReleaseTypes ReleaseType => ReleaseTypes.Release;
-        public static string SemVer => $"{Major}.{Minor}.{Patch}.{Hotfix}";
-        public static string Full => $"{SemVer}-{ReleaseType}";
+using Scraps.Models;
+
+namespace Scraps.Validators
+{
+    public class ConfigValidator : AbstractValidator<Config>
+    {
+        public ConfigValidator()
+        {
+            RuleFor(c => c.Cookie).NotEmpty().NotNull().NotEqual("scr_session cookie here!");
+            RuleFor(c => c.Delays.ScanDelay).GreaterThan(0);
+            RuleFor(c => c.Delays.PaginateDelay).GreaterThan(0);
+            RuleFor(c => c.Delays.JoinDelay).GreaterThan(0);
+        }
     }
 }

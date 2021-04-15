@@ -30,7 +30,6 @@ using Scraps.Models;
 using Scraps.Events;
 using Scraps.Constants;
 using Scraps.Extensions;
-using Scraps.Exceptions;
 using Scraps.Abstractions;
 
 namespace Scraps
@@ -100,7 +99,7 @@ namespace Scraps
                     }
                     catch (Exception ex)
                     {
-                        _log.Error("Failed to load plugin {Plugin}: {Exception}", plugin.FullName, ex);
+                        _log.Error("Failed to load plugin {Plugin}: {Exception}", plugin.FullName, ex.Message);
                     }
                 }
             }

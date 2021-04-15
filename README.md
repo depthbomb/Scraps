@@ -32,7 +32,7 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Requirements
 
-Windows 7+ platforms require the .NET 5 Runtime to be installed which you can download from [here.](https://dotnet.microsoft.com/download/dotnet/5.0)
+For Windows you can either download the self-contained builds (suffixed with -scd) or the framework-dependent builds that require the .NET 5 Runtime to be installed, which you can download from [here.](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 ![Clicky click](https://i.imgur.com/yDF2FpF.png)
 
@@ -45,6 +45,8 @@ See [INSTRUCTIONS.md](https://github.com/depthbomb/Scraps/blob/master/INSTRUCTIO
 ## Plugins
 
 As of 3.4.0.0, Scraps now utilizes a plugins system where you can optionally add extra functionality through share-able assemblies. A list of official plugins can be found below.
+
+Plugins are currently not supported for non-Windows systems because idk how to get them to work lol.
 
 - [VoteInPolls](https://github.com/depthbomb/Scraps/tree/master/Scraps.Plugins.VoteInPolls)
 - [CommentOnRaffles](https://github.com/depthbomb/Scraps/tree/master/Scraps.Plugins.CommentOnRaffles)

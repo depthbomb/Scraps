@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 3.6.0.0
+
+- Removed `-c`/`--config` launch switch
+- Added config validation
+- Dropped support for Windows 7
+  - It's time to move on, Windows 10 really isn't that bad
+- Self-contained Windows builds (`winX-<arch>-scd`) are now available
+  - These include the .NET 5 runtime assemblies with them so you do not need to install it onto your system
+  - However, this does mean that the file size of the binary will be quite larger
+
 ## Version 3.5.0.0
 
 - Added ApiServer optional plugin

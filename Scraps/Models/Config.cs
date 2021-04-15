@@ -31,7 +31,6 @@ namespace Scraps.Models
         public string[] Proxies { get; set; } = new string[] { };
     }
 
-    [Serializable]
     public class Delays
     {
         public bool IncrementScanDelay { get; set; } = true;

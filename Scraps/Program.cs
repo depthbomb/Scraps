@@ -32,6 +32,7 @@ using NLog.Targets;
 using Scraps.Models;
 using Scraps.Constants;
 using Scraps.Extensions;
+using Scraps.Validators;
 
 namespace Scraps
 {
@@ -51,7 +52,7 @@ namespace Scraps
                 Environment.Exit(1);
             }
 
-            if (IsAlreadyRunning()) Environment.Exit(1);
+            if (IsAlreadyRunning()) Environment.Exit(0);
 
             Console.WriteLine();
             Console.WriteLine("Scraps - Scrap.TF Raffle Bot");
@@ -147,14 +148,6 @@ namespace Scraps
         static void ParseArguments(string[] args)
         {
             bool hasVerboseArgs = args.Contains("-v") || args.Contains("--verbose");
-            bool hasOpenConfigArgs = args.Contains("-c") || args.Contains("--config");
-
-            if (hasOpenConfigArgs)
-            {
-                Console.WriteLine("Opening settings file...");
-                Process.Start("explorer.exe", Files.ConfigFile);
-                Environment.Exit(0);
-            }
 
             Shared.Debug = hasVerboseArgs;
         }
@@ -212,6 +205,25 @@ namespace Scraps
                     Console.WriteLine();
 
                     _config = cm.Read();
+                }
+
+                var validator = new ConfigValidator();
+                var results = validator.Validate(_config);
+                if (!results.IsValid)
+                {
+                    Console.WriteLine("Your config file is not valid:");
+                    foreach (var error in results.Errors)
+                    {
+                        string message = error.ErrorMessage;
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine(" - {0}", message);
+                        Console.ResetColor();
+                    }
+                    Console.WriteLine("Please fix the above errors.");
+                    Console.WriteLine("Press [Enter] to exit.");
+                    Console.ReadLine();
+                    Environment.Exit(0);
                 }
             }
             else
