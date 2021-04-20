@@ -20,6 +20,6 @@ namespace Scraps.Constants
 {
     public static class App
     {
-        public const int SettingsVersion = 12;
+        public const int SettingsVersion = 13;
     }
 }

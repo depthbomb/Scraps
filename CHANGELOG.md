@@ -1,9 +1,18 @@
 # Changelog
 
+## Version 3.7.0.0
+
+- CSRF token will no longer be logged to make sharing of logs for debugging easier
+- Replaced sound notification setting with toast notification setting
+- Added option to change the sorting of raffles to scan
+- Discontinued self-contained builds because I couldn't be bothered
+  - Installing the runtime isn't that bad anyways
+
 ## Version 3.6.0.0
 
 - Removed `-c`/`--config` launch switch
 - Added config validation
+- Improved how backup configs are created
 - Dropped support for Windows 7
   - It's time to move on, Windows 10 really isn't that bad
 - Self-contained Windows builds (`winX-<arch>-scd`) are now available

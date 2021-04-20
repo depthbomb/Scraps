@@ -4,11 +4,7 @@ $profiles = "linux-arm64",
             "win10-x64",
             "win10-x86",
             "win81-x64",
-            "win81-x86",
-			"win10-x64-scd",
-            "win10-x86-scd",
-            "win81-x64-scd",
-            "win81-x86-scd"
+            "win81-x86"
 
 iex "cd $($proj_dir)"
 

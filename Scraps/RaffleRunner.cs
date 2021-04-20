@@ -157,7 +157,7 @@ namespace Scraps
                     {
                         CsrfToken = csrf.Groups[1].Value;
 
-                        _log.Debug("Obtained CSRF Token ({Token})", CsrfToken);
+                        _log.Debug("Obtained CSRF Token");
 
                         tokenObtained = true;
                     }
@@ -287,11 +287,12 @@ namespace Scraps
         {
             SendStatus("Paginating...");
 
+            string sort = _config.JoinNewestFirst ? "1" : "0";
             string url = "https://scrap.tf/ajax/raffles/Paginate";
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("start", apex),
-                new KeyValuePair<string, string>("sort", "1"),
+                new KeyValuePair<string, string>("sort", sort),
                 new KeyValuePair<string, string>("puzzle", "0"),
                 new KeyValuePair<string, string>("csrf", CsrfToken),
             });

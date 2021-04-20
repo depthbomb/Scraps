@@ -5,11 +5,7 @@ $runtimes = "linux-arm",
             "win10-x64",
             "win10-x86",
             "win81-x64",
-            "win81-x86",
-            "win10-x64-scd",
-            "win10-x86-scd",
-            "win81-x64-scd",
-            "win81-x86-scd"
+            "win81-x86"
 
 Foreach ($r in $runtimes)
 {
@@ -23,10 +19,6 @@ Foreach ($r in $runtimes)
     {
         # Windows 10 supports the tar command as of 17063, so just use that instead
         iex "tar -cvzf $($runtime_dir).tar.gz $($assembly_name)"
-    }
-    elseif ($r.EndsWith("-scd"))
-    {
-        iex "7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=1024m -ms=on $($runtime_dir).7z $($runtime_dir)\*"
     }
     else
     {
