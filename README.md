@@ -32,7 +32,7 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Requirements
 
-For Windows you can either download the self-contained builds (suffixed with -scd) or the framework-dependent builds that require the .NET 5 Runtime to be installed, which you can download from [here.](https://dotnet.microsoft.com/download/dotnet/5.0)
+Windows platforms require the .NET 5 Runtime to be installed which you can download from [here.](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 ![Clicky click](https://i.imgur.com/yDF2FpF.png)
 
