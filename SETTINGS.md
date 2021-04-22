@@ -8,6 +8,8 @@ This page documents the Scraps settings file by describing each setting key's pu
   - Used to force a backup of old settings while creating a new settings file if this version differs from the application's internal value. Its primary use is to make it easier to add or remove settings in future releases. **DO NOT** modify this yourself.
 - `Cookie`
   - Your Scrap.TF `scr_session` cookie
+- `JoinNewestFirst` = `true`
+  - Setting to `false` will make Scraps load raffles by time remaining instead of by time created
 - `EnableToastNotification` = `true`
   - Whether to display a toast notification when you have won any raffles (Windows only)
 - `Paranoid` = `false`
