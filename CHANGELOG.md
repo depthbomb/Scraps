@@ -3,7 +3,7 @@
 ## Version 3.7.1.0
 
 - Added a build for `linux-x64` which should work on most distros
-- Scraps's data folder is now created at a new location that does not require elevated permissions to write to
+- Scraps's data folder on Linux is now created at a new location that does not require elevated permissions to write to
 
 ## Version 3.7.0.0
 
