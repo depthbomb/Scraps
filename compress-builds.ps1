@@ -1,7 +1,6 @@
 $publish_dir = "$($PSScriptRoot)\Scraps\bin\Publish"
 $assembly_name = "Scraps"
 $runtimes = "linux-x64",
-            "linux-x86",
             "linux-arm",
             "linux-arm64",
             "win10-x64",

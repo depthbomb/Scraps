@@ -1,6 +1,5 @@
 ﻿$proj_dir = "$($PSScriptRoot)\Scraps"
 $profiles = "linux-x64",
-            "linux-x86",
             "linux-arm",
             "linux-arm64",
             "win10-x64",
