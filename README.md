@@ -30,6 +30,10 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 - Honeypot/trap raffle detection; avoids fake raffles created by staff members that will get you banned
 - Basic proxy support
 
+## Planned Features
+
+- GUI app
+
 ## Requirements
 
 Windows platforms require the .NET 5 Runtime to be installed which you can download from [here.](https://dotnet.microsoft.com/download/dotnet/5.0)
