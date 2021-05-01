@@ -33,6 +33,7 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 ## Planned Features
 
 - GUI app
+- Auto-updating functionality
 
 ## Requirements
 
