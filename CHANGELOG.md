@@ -7,8 +7,7 @@
   - Scraps is now installed to `Program Files (x86)`
   - Official plugins may also be installed through this process
 - Windows 8.1 and x86 releases are discontinued in favor of Windows 10 x64
-- Improved update process by introducing a dedicated updater application
-  - This is a separate program that sits alongside Scraps that will check for updates when Scraps is ran and automatically download a new installer if available
+- Improved update process
 
 ## Version 3.7.1.0
 
