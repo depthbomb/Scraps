@@ -113,6 +113,10 @@ namespace Scraps.Plugins.ApiServer
             Response res;
             switch (endpoint)
             {
+                case "/Stop":
+                    _runner.Stop();
+                    res = CreateResponse(null, message: "Stopping bot as soon as possible");
+                    break;
                 case "/Stats":
                     res = CreateResponse(new StatsResponse
                     {

@@ -4,7 +4,7 @@
 #include "buttons.iss"
 
 #define MyAppName "Scraps"
-#define MyAppVersion "3.7.2.1"
+#define MyAppVersion "3.7.3.0"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "Scraps.exe"
 #define PluginsPath "{userdocs}\" + MyAppPublisher + "\" + MyAppName + "\Plugins"

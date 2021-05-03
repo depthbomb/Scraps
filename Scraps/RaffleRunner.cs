@@ -20,6 +20,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -55,6 +56,9 @@ namespace Scraps
         private List<string> _raffleQueue = new List<string>();
         private List<string> _enteredRaffles = new List<string>();
 
+        private CancellationToken _cancelToken;
+        private CancellationTokenSource _cancelTokenSource;
+
         #region Events
         /// <summary>
         /// Raised when the account has been banned from Scrap.TF
@@ -62,9 +66,19 @@ namespace Scraps
         public event EventHandler<AccountBannedArgs> OnAccountBanned;
 
         /// <summary>
+        /// Raised when the CSRF token has been parsed from the site
+        /// </summary>
+        public event EventHandler<CsrfTokenObtainedArgs> OnCsrfTokenObtainedArgs;
+
+        /// <summary>
         /// Raised when the bot's displayed status is updated
         /// </summary>
         public event EventHandler<StatusUpdateArgs> OnStatusUpdate;
+
+        /// <summary>
+        /// Raised when the bot receives a response from paginating the raffle index
+        /// </summary>
+        public event EventHandler<PaginateArgs> OnPaginate;
 
         /// <summary>
         /// Raised when a raffle has been successfully joined
@@ -84,6 +98,9 @@ namespace Scraps
             _http = http;
             _rng = new Random();
             _html = new HtmlDocument();
+
+            _cancelTokenSource = new CancellationTokenSource();
+            _cancelToken = _cancelTokenSource.Token;
         }
 
         #region Public Methods
@@ -102,6 +119,8 @@ namespace Scraps
 
             while (true)
             {
+                if (_cancelToken.IsCancellationRequested) _cancelToken.ThrowIfCancellationRequested();
+
                 SendStatus("Scanning raffles...");
 
                 await ScanRafflesAsync();
@@ -130,14 +149,16 @@ namespace Scraps
                 }
             }
         }
+
+        public void Stop()
+        {
+            _log.Info("Cancel signal received, stopping raffle runner as soon as possible. Press CTRL+C again to terminate immediately.");
+            _cancelTokenSource.Cancel();
+        }
         #endregion
 
         #region Private Methods
         #region Operations
-        /// <summary>
-        /// Attempts to obtain the account CSRF token required to perform AJAX requests
-        /// </summary>
-        /// <returns></returns>
         private async Task GetCsrfTokenAsync()
         {
             bool tokenObtained = false;
@@ -156,8 +177,7 @@ namespace Scraps
                     if (csrf.Success)
                     {
                         CsrfToken = csrf.Groups[1].Value;
-
-                        _log.Debug("Obtained CSRF Token");
+                        OnCsrfTokenObtainedArgs?.Invoke(this, new CsrfTokenObtainedArgs(CsrfToken));
 
                         tokenObtained = true;
                     }
@@ -301,7 +321,11 @@ namespace Scraps
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                return await response.Content.ReadAsStringAsync();
+                string html = await response.Content.ReadAsStringAsync();
+
+                OnPaginate?.Invoke(this, new PaginateArgs(apex, html));
+
+                return html;
             }
             else
             {
@@ -352,6 +376,9 @@ namespace Scraps
 
             foreach (string raffle in _raffleQueue)
             {
+                // Check if we need to cancel here as well since this is the spot that would delay the cancellation the most
+                if (_cancelToken.IsCancellationRequested) _cancelToken.ThrowIfCancellationRequested();
+
                 SendStatus($"Joining raffle {raffle}...");
 
                 string html = await _http.GetStringAsync($"https://scrap.tf/raffles/{raffle}");

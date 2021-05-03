@@ -43,6 +43,8 @@ namespace Scraps
 
         public static DateTime StartTime;
 
+        private bool _terminateImmediately = false;
+
         public Bot(Config config, HttpClient http)
         {
             _log = LogManager.GetCurrentClassLogger();
@@ -53,23 +55,33 @@ namespace Scraps
 
         public async Task RunAsync()
         {
-            Console.CursorVisible = false;
-
             _runner.OnStatusUpdate += OnStatusUpdate;
+            _runner.OnCsrfTokenObtainedArgs += OnCsrfTokenObtainedArgs;
             _runner.OnAccountBanned += OnAccountBanned;
 
             _runner.OnRafflesWon += OnRafflesWon;
             _runner.OnRaffleJoined += OnRaffleJoined;
 
+            Console.CancelKeyPress += OnCancelKeyPress;
+
             try
             {
                 await _runner.StartLoopAsync();
             }
+            catch (OperationCanceledException ex)
+            {
+                _log.Info("Bot successfully stopped");
+                _log.Trace(ex);
+
+                Console.WriteLine();
+                Console.WriteLine("Press [Enter] to exit.");
+            }
             catch (Exception ex)
             {
                 _log.Fatal(ex.Message);
-                Console.ReadLine();
             }
+
+            Console.ReadLine();
         }
 
         public async Task LoadPluginsAsync()
@@ -109,6 +121,21 @@ namespace Scraps
             await Task.CompletedTask;
         }
 
+        private void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            if (!_terminateImmediately)
+            {
+                e.Cancel = true;
+
+                _terminateImmediately = true;
+                _runner.Stop();
+            }
+            else
+            {
+                Environment.Exit(0);
+            }
+        }
+
         private void OnStatusUpdate(object sender, StatusUpdateArgs e)
         {
             string appTitle = string.Format("Scraps - {0}", Constants.Version.Full);
@@ -124,11 +151,14 @@ namespace Scraps
             Console.Title = title;
         }
 
+        private void OnCsrfTokenObtainedArgs(object sender, CsrfTokenObtainedArgs e) => _log.Info("Received CSRF token");
+
         private void OnAccountBanned(object sender, AccountBannedArgs e)
         {
             Console.Title = "R.I.P.";
             _log.Fatal("Your account has been banned. You will need to use a different account session cookie to continue using Scraps.");
             _log.Fatal("Press [Enter] to exit.");
+            Console.CursorVisible = true;
             Console.ReadLine();
             Environment.Exit(0);
         }

@@ -31,7 +31,6 @@ using NLog.Targets;
 using Scraps.Models;
 using Scraps.Services;
 using Scraps.Constants;
-using Scraps.Extensions;
 using Scraps.Validators;
 
 namespace Scraps
@@ -67,8 +66,7 @@ namespace Scraps
                 await us.CheckForUpdates();
             }
 
-            Console.WriteLine("=".Repeat(Console.BufferWidth));
-            Console.WriteLine();
+            Console.CursorVisible = false;
 
             var bot = new Bot(_config, _http);
             await bot.LoadPluginsAsync();

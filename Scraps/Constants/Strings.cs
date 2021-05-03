@@ -21,7 +21,7 @@ namespace Scraps.Constants
     public static class Strings
     {
         public const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36";
-        public const string AccountBanned = "You have recieved a site-ban";
+        public const string AccountBanned = "You have received a site-ban";
         public const string SiteDown = "<div class=\"dialog-title\">We're down!</div>";
     }
 }

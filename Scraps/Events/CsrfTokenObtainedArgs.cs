@@ -22,6 +22,9 @@ namespace Scraps.Events
 {
     public class CsrfTokenObtainedArgs : EventArgs
     {
+        /// <summary>
+        /// The parsed CSRF token
+        /// </summary>
         public string CsrfToken { get; set; }
 
         public CsrfTokenObtainedArgs(string csrfToken)

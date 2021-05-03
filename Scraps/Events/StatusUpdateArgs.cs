@@ -29,7 +29,12 @@ namespace Scraps.Events
         /// Current number of raffles joined
         /// </summary>
         public int RafflesJoined { get; set; }
+
+        /// <summary>
+        /// Message to display
+        /// </summary>
         public string Status { get; set; }
+
         public StatusUpdateArgs(int rafflesJoined, string status)
         {
             RafflesJoined = rafflesJoined;

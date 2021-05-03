@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 3.7.3.0
+
+- Scraps will now stop operation gracefully upon pressing <kbd>CTRL</kbd>+<kbd>C</kbd>
+- Re-added the _OnCsrfTokenObtained_ event and added a new _OnPaginate_ event
+- Updated third-party libraries
+
+##### ApiServer Plugin
+
+- Scraps can now be stopped by sending a GET request to the `/Stop` endpoint
+
 ## Version 3.7.2.1
 
 - Various bug fixes involving updating

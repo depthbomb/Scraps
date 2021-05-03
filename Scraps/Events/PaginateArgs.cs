@@ -16,24 +16,26 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Constants
-{
-    public static class Version
-    {
-        public enum ReleaseTypes
-        {
-            Development,
-            PreRelease,
-            Release
-        }
+using System;
 
-        public static System.Version AsDotNetVersion() => new System.Version(Major, Minor, Patch, Hotfix);
-        public static int Major => 3;
-        public static int Minor => 7;
-        public static int Patch => 3;
-        public static int Hotfix => 0;
-        public static ReleaseTypes ReleaseType => ReleaseTypes.Release;
-        public static string SemVer => $"{Major}.{Minor}.{Patch}.{Hotfix}";
-        public static string Full => $"{SemVer}-{ReleaseType}";
+namespace Scraps.Events
+{
+    public class PaginateArgs : EventArgs
+    {
+        /// <summary>
+        /// The raffle ID used to paginate
+        /// </summary>
+        public string Apex { get; set; }
+        
+        /// <summary>
+        /// The HTML content of the pagination response
+        /// </summary>
+        public string Html { get; set; }
+
+        public PaginateArgs(string apex, string html)
+        {
+            Apex = apex;
+            Html = html.Trim();
+        }
     }
 }

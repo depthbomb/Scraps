@@ -23,7 +23,11 @@ namespace Scraps.Events
 {
     public class RafflesWonArgs : EventArgs
     {
+        /// <summary>
+        /// IDs of raffles that the account has won
+        /// </summary>
         public List<string> RaffleIds { get; set; }
+
         public RafflesWonArgs(List<string> raffleIds)
         {
             RaffleIds = raffleIds;
