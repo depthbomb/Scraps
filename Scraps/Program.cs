@@ -21,7 +21,6 @@ using System.IO;
 using System.Net;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -30,6 +29,7 @@ using NLog.Config;
 using NLog.Targets;
 
 using Scraps.Models;
+using Scraps.Services;
 using Scraps.Constants;
 using Scraps.Extensions;
 using Scraps.Validators;
@@ -44,14 +44,6 @@ namespace Scraps
 
         static async Task Main(string[] args)
         {
-            if (!HasWritePermissions())
-            {
-                Console.WriteLine("Scraps needs to be ran with elevated permissions.");
-                Console.WriteLine("Please run Scraps with {0}.", Platform.IsUnix ? "with sudo" : "as administrator");
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
-
             if (IsAlreadyRunning()) Environment.Exit(0);
 
             Console.WriteLine();
@@ -60,7 +52,6 @@ namespace Scraps
             Console.WriteLine("Changelog available at https://github.com/depthbomb/Scraps/blob/master/CHANGELOG.md");
             Console.WriteLine();
 
-            CheckForNewReleases();
             CreateRequiredDirectories();
 
             ParseArguments(args);
@@ -68,6 +59,11 @@ namespace Scraps
             InitializeLogger();
             InitializeSettings();
             InitializeHttpClient();
+
+            using (var us = new UpdateService(_log))
+            {
+                await us.CheckForUpdates();
+            }
 
             Console.WriteLine("=".Repeat(Console.BufferWidth));
             Console.WriteLine();
@@ -80,54 +76,6 @@ namespace Scraps
         }
 
         static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
-
-        static bool HasWritePermissions()
-        {
-            string str = new Random().Next(10000, 99999999).ToString();
-            try
-            {
-                File.WriteAllText(str, str);
-                File.Delete(str);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        static void CheckForNewReleases()
-        {
-            Console.WriteLine("Checking for new releases...");
-
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
-
-                string uri = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
-                string json = client.GetStringAsync(uri).GetAwaiter().GetResult();
-                var currentTag = new System.Version(Constants.Version.SemVer);
-
-                var release = JsonSerializer.Deserialize<LatestRelease>(json);
-                var latestTag = new System.Version(release.tag_name.Replace("v", ""));   //  In case I'm inconsistent in tagging
-
-                var compare = currentTag.CompareTo(latestTag);
-                if (compare < 0)
-                {
-                    Console.BackgroundColor = ConsoleColor.Yellow;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.WriteLine("A new version of Scraps ({0}) is available to download at {1}", latestTag.ToString(), release.html_url);
-                    Console.ResetColor();
-                }
-                else
-                {
-                    Console.WriteLine("You are running the latest version of Scraps!");
-                }
-
-                Console.WriteLine();
-            }
-        }
 
         static void CreateRequiredDirectories()
         {

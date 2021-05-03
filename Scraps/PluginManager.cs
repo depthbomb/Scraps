@@ -59,8 +59,7 @@ namespace Scraps
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Failed to load plugin {Path}", assemblyPath);
-                    log.Trace(ex);
+                    log.Error("Failed to load plugin {Path}: {Error}", assemblyPath, ex);
 
                     continue;
                 }

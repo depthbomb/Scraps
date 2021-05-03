@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 3.7.2.0
+
+- Scraps for Windows is now installed via an installer
+  - This makes it easier for the new updater system
+  - Scraps is now installed to `Program Files (x86)`
+  - Official plugins may also be installed through this process
+- Windows 8.1 and x86 releases are discontinued in favor of Windows 10 x64
+- Improved update process by introducing a dedicated updater application
+  - This is a separate program that sits alongside Scraps that will check for updates when Scraps is ran and automatically download a new installer if available
+
 ## Version 3.7.1.0
 
 - Added a build for `linux-x64` which should work on most distros
