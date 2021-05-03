@@ -4,7 +4,7 @@
 #include "buttons.iss"
 
 #define MyAppName "Scraps"
-#define MyAppVersion "3.7.2.0"
+#define MyAppVersion "3.7.2.1"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "Scraps.exe"
 #define PluginsPath "{userdocs}\" + MyAppPublisher + "\" + MyAppName + "\Plugins"
@@ -18,6 +18,8 @@ AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL=https://github.com/depthbomb
+AppSupportURL=https://github.com/depthbomb/Scraps
+AppUpdatesURL=https://github.com/depthbomb/Scraps/releases
 AppCopyright=Copyright (C) 2021 Caprine Logic
 VersionInfoVersion={#MyAppVersion}
 DefaultDirName={autopf}\{#MyAppPublisher}\{#MyAppName}
@@ -34,6 +36,8 @@ Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=classic
 ArchitecturesAllowed=x64
+UninstallDisplayIcon={app}\{#MyAppExeName}
+UninstallDisplayName=Scraps - Scrap.TF Raffle Bot
 
 [Code]
 function ShowRun: Boolean;

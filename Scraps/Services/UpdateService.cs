@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using NLog;
 
 using Scraps.Models;
+using Scraps.Constants;
 
 namespace Scraps.Services
 {
@@ -51,16 +52,19 @@ namespace Scraps.Services
             string json = await _http.GetStringAsync(uri);
 
             var release = JsonSerializer.Deserialize<LatestRelease>(json);
-            var latestVersion = new Version(release.tag_name.Replace("v", ""));
+            var latestVersion = new System.Version(release.tag_name.Replace("v", ""));
             var compare = Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
             if (compare < 0)
             {
-                Console.WriteLine("Scraps {0} is available. Would you like to download and run the installer?");
+                Console.WriteLine("Scraps {0} is available. Would you like to download and run the installer?", latestVersion);
                 Console.WriteLine("Press Y to proceed or press N to continue without updating");
                 var keyPressed = Console.ReadKey().Key;
                 if (keyPressed == ConsoleKey.Y)
                 {
-                    string tempLocation = Path.GetTempFileName();
+                    Console.CursorVisible = false;
+                    Console.Clear();
+
+                    string tempLocation = Path.Combine(Path.GetTempPath(), "scraps_setup.exe");
 
                     _log.Info("Downloading installer...");
 

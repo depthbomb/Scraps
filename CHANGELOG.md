@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 3.7.2.1
+
+- Various bug fixes involving updating
+
 ## Version 3.7.2.0
 
 - Scraps for Windows is now installed via an installer

@@ -36,7 +36,7 @@ using Scraps.Validators;
 
 namespace Scraps
 {
-    class Program
+    class Bootstrapper
     {
         static Logger _log;
         static Config _config;
@@ -46,13 +46,15 @@ namespace Scraps
         {
             if (IsAlreadyRunning()) Environment.Exit(0);
 
+            Console.Title = string.Format("Scraps - {0}", Constants.Version.Full);
+
             Console.WriteLine();
             Console.WriteLine("Scraps - Scrap.TF Raffle Bot");
             Console.WriteLine("By depthbomb - https://s.team/p/fwc-crhc");
             Console.WriteLine("Changelog available at https://github.com/depthbomb/Scraps/blob/master/CHANGELOG.md");
             Console.WriteLine();
 
-            CreateRequiredDirectories();
+            EnsureFileSystem();
 
             ParseArguments(args);
 
@@ -68,8 +70,6 @@ namespace Scraps
             Console.WriteLine("=".Repeat(Console.BufferWidth));
             Console.WriteLine();
 
-            Console.CursorVisible = false;
-
             var bot = new Bot(_config, _http);
             await bot.LoadPluginsAsync();
             await bot.RunAsync();
@@ -77,7 +77,7 @@ namespace Scraps
 
         static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
 
-        static void CreateRequiredDirectories()
+        static void EnsureFileSystem()
         {
             foreach (string path in new string[]
             {
