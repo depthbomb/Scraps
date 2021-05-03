@@ -57,7 +57,7 @@ Plugins are currently not supported for non-Windows systems because idk how to g
 - [CommentOnRaffles](https://github.com/depthbomb/Scraps/tree/master/Scraps.Plugins.CommentOnRaffles)
 - [ApiServer](https://github.com/depthbomb/Scraps/tree/master/Scraps.Plugins.ApiServer)
 
-Simply drop the plugin's .DLL file into the new **Plugins** folder located in the app's store folder.
+As of 3.7.2.0, official plugins may be installed directly from the installer. Other plugins may be dropped in the plugins folder in the app's store folder.
 
 ## Avoiding Bans
 
