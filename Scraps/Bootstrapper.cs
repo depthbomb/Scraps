@@ -61,7 +61,7 @@ namespace Scraps
             InitializeSettings();
             InitializeHttpClient();
 
-            using (var us = new UpdateService(_log))
+            using (var us = new UpdateService())
             {
                 await us.CheckForUpdates();
             }

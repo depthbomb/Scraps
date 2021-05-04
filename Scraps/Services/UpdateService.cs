@@ -27,7 +27,6 @@ using System.Threading.Tasks;
 using NLog;
 
 using Scraps.Models;
-using Scraps.Constants;
 
 namespace Scraps.Services
 {
@@ -37,9 +36,9 @@ namespace Scraps.Services
         private readonly Logger _log;
         private readonly HttpClient _http;
 
-        public UpdateService(Logger log)
+        public UpdateService()
         {
-            _log = log;
+            _log = LogManager.GetCurrentClassLogger();
             _http = new HttpClient();
             _http.DefaultRequestHeaders.Add("user-agent", "Scraps - depthbomb/Scraps");
         }
@@ -77,7 +76,11 @@ namespace Scraps.Services
 
                     _log.Info("Running installer...");
 
-                    Process.Start(tempLocation);
+                    var psi = new ProcessStartInfo();
+                        psi.FileName = tempLocation;
+                        psi.Arguments = "/update=yes";
+
+                    Process.Start(psi);
 
                     Environment.Exit(0);
                 }

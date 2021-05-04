@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 3.7.4.0
+
+- TODO
+
 ## Version 3.7.3.0
 
 - Scraps will now stop operation gracefully upon pressing <kbd>CTRL</kbd>+<kbd>C</kbd>
