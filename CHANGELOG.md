@@ -2,7 +2,9 @@
 
 ## Version 3.7.4.0
 
-- TODO
+- Update icon
+- Fixed UpdateService using wrong class logger
+- The installer executed from updating will now have _Launch Scraps_ checked by default on the finish screen
 
 ## Version 3.7.3.0
 
