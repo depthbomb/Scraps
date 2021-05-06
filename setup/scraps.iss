@@ -1,7 +1,7 @@
 #include "buttons.iss"
 
 #define MyAppName "Scraps"
-#define MyAppVersion "4.0.0.0"
+#define MyAppVersion "4.0.0.1"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "Scraps.GUI.exe"
 #define PluginsPath "{userdocs}\" + MyAppPublisher + "\" + MyAppName + "\Plugins"
@@ -50,7 +50,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
-Source: "..\Scraps.GUI\bin\Publish\Scraps.GUI.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Publish\win10-x64\Scraps.GUI.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Scraps\bin\Publish\win-x64\Scraps.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\license.txt"; DestDir: "{app}"; Flags: ignoreversion
 

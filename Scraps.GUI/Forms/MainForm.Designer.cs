@@ -38,7 +38,7 @@ namespace Scraps.GUI.Forms
             this._LogWindow = new System.Windows.Forms.RichTextBox();
             this._SettingsButton = new System.Windows.Forms.Button();
             this._InfoButton = new System.Windows.Forms.Button();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this._TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this._StatusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -119,10 +119,11 @@ namespace Scraps.GUI.Forms
             this._InfoButton.UseVisualStyleBackColor = true;
             this._InfoButton.Click += new System.EventHandler(this.InfoButton_OnClick);
             // 
-            // notifyIcon1
+            // _TrayIcon
             // 
-            this.notifyIcon1.Text = "notifyIcon1";
-            this.notifyIcon1.Visible = true;
+            this._TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("_TrayIcon.Icon")));
+            this._TrayIcon.Text = "Scraps";
+            this._TrayIcon.Visible = true;
             // 
             // MainForm
             // 
@@ -157,7 +158,7 @@ namespace Scraps.GUI.Forms
         private System.Windows.Forms.RichTextBox _LogWindow;
         private System.Windows.Forms.Button _SettingsButton;
         private System.Windows.Forms.Button _InfoButton;
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.NotifyIcon _TrayIcon;
     }
 }
 

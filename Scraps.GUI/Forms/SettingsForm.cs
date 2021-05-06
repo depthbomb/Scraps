@@ -47,6 +47,9 @@ namespace Scraps.GUI.Forms
             _ParanoidToggle.HelpRequested += (object s, HelpEventArgs h)
                 => Utils.ShowInfo("Help", "Enabling this will make Scraps be extra strict when checking raffles as to avoid honeypots.");
 
+            _ToastToggle.HelpRequested += (object s, HelpEventArgs h)
+                => Utils.ShowInfo("Help", "Enabling this will enable toast notifications for various events.");
+
             _ScanDelayInput.HelpRequested += (object s, HelpEventArgs h)
                 => Utils.ShowInfo("Help", "This is where you can change the delay between scan operations (in milliseconds).");
 
@@ -68,6 +71,7 @@ namespace Scraps.GUI.Forms
             _CookieInput.Text                 = Properties.UserConfig.Default.Cookie;
             _SortNewToggle.Checked            = Properties.UserConfig.Default.SortByNew;
             _ParanoidToggle.Checked           = Properties.UserConfig.Default.Paranoid;
+            _ToastToggle.Checked              = Properties.UserConfig.Default.ToastNotifications;
             _ScanDelayInput.Value             = Properties.UserConfig.Default.ScanDelay;
             _PaginateDelayInput.Value         = Properties.UserConfig.Default.PaginateDelay;
             _JoinDelayInput.Value             = Properties.UserConfig.Default.JoinDelay;
@@ -79,6 +83,7 @@ namespace Scraps.GUI.Forms
             string cookie           = _CookieInput.Text.Trim();
             bool sortByNew          = _SortNewToggle.Checked;
             bool paranoid           = _ParanoidToggle.Checked;
+            bool toast              = _ToastToggle.Checked;
             int scanDelay           = (int)_ScanDelayInput.Value;
             int paginateDelay       = (int)_PaginateDelayInput.Value;
             int joinDelay           = (int)_JoinDelayInput.Value;
@@ -89,6 +94,7 @@ namespace Scraps.GUI.Forms
                 Properties.UserConfig.Default.Cookie = cookie;
                 Properties.UserConfig.Default.SortByNew = sortByNew;
                 Properties.UserConfig.Default.Paranoid = paranoid;
+                Properties.UserConfig.Default.ToastNotifications = toast;
                 Properties.UserConfig.Default.ScanDelay = scanDelay;
                 Properties.UserConfig.Default.PaginateDelay = paginateDelay;
                 Properties.UserConfig.Default.JoinDelay = joinDelay;

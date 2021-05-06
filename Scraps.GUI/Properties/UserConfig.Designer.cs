@@ -9,8 +9,6 @@
 //------------------------------------------------------------------------------
 
 namespace Scraps.GUI.Properties {
-    
-    
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
     internal sealed partial class UserConfig : global::System.Configuration.ApplicationSettingsBase {
@@ -23,6 +21,18 @@ namespace Scraps.GUI.Properties {
             }
         }
         
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UpgradeRequired {
+            get {
+                return ((bool)(this["UpgradeRequired"]));
+            }
+            set {
+                this["UpgradeRequired"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -56,6 +66,18 @@ namespace Scraps.GUI.Properties {
             }
             set {
                 this["IncrementScanDelay"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ToastNotifications {
+            get {
+                return ((bool)(this["ToastNotifications"]));
+            }
+            set {
+                this["ToastNotifications"] = value;
             }
         }
         
@@ -92,18 +114,6 @@ namespace Scraps.GUI.Properties {
             }
             set {
                 this["JoinDelay"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UpgradeRequired {
-            get {
-                return ((bool)(this["UpgradeRequired"]));
-            }
-            set {
-                this["UpgradeRequired"] = value;
             }
         }
         

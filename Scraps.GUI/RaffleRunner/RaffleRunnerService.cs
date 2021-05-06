@@ -412,7 +412,11 @@ namespace Scraps.GUI.RaffleRunner
 
             if (!_alertedOfWonRaffles)
             {
+                int numWonRaffles = wonRaffles.Count;
+
                 OnRafflesWon?.Invoke(this, new RafflesWonArgs(wonRaffles));
+
+                _log.Info("You've won {Number} " + "raffle".Pluralize(numWonRaffles) + " that " + "needs".Pluralize(numWonRaffles, "need") + " to be withdrawn!", numWonRaffles);
 
                 _alertedOfWonRaffles = true;
             }

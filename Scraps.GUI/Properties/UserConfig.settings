@@ -2,6 +2,9 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Scraps.GUI.Properties" GeneratedClassName="UserConfig">
   <Profiles />
   <Settings>
+    <Setting Name="UpgradeRequired" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="Cookie" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
@@ -9,6 +12,9 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="IncrementScanDelay" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ToastNotifications" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="ScanDelay" Type="System.Int32" Scope="User">
@@ -19,9 +25,6 @@
     </Setting>
     <Setting Name="JoinDelay" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4000</Value>
-    </Setting>
-    <Setting Name="UpgradeRequired" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="SortByNew" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

@@ -1,5 +1,24 @@
-﻿using System;
+﻿#region License
+/// Scraps - Scrap.TF Raffle Bot
+/// Copyright(C) 2021  Caprine Logic
+
+/// This program is free software: you can redistribute it and/or modify
+/// it under the terms of the GNU General Public License as published by
+/// the Free Software Foundation, either version 3 of the License, or
+/// (at your option) any later version.
+
+/// This program is distributed in the hope that it will be useful,
+/// but WITHOUT ANY WARRANTY; without even the implied warranty of
+/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+/// GNU General Public License for more details.
+
+/// You should have received a copy of the GNU General Public License
+/// along with this program. If not, see <https://www.gnu.org/licenses/>.
+#endregion License
+
+using System;
 using System.IO;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 using NLog;
@@ -8,6 +27,7 @@ using NLog.Targets;
 
 using Scraps.GUI.Logging;
 using Scraps.GUI.Constants;
+using Scraps.GUI.Extensions;
 using Scraps.GUI.RaffleRunner;
 using Scraps.GUI.RaffleRunner.Events;
 
@@ -115,6 +135,7 @@ namespace Scraps.GUI.Forms
             _StartStopButton.Image = Icons.Stop;
             _StartStopButton.Enabled = true;
             _StartStopButton.Text = "Stop";
+            _TrayIcon.Text = "Scraps is running";
         }
 
         private void OnAccountBanned(object sender, AccountBannedArgs e) => _runner.Cancel();
@@ -125,7 +146,15 @@ namespace Scraps.GUI.Forms
 
         private void OnRafflesWon(object sender, RafflesWonArgs e)
         {
-            
+            var wonRaffles = e.RaffleIds;
+            int numWonRaffles = wonRaffles.Count;
+
+            bool enableToast = Properties.UserConfig.Default.ToastNotifications;
+            if (enableToast)
+            {
+                _TrayIcon.ShowBalloonTip(60_000, "Items Need Withdrawing", string.Format("You've won {0} {1} that {2} to be withdrawn!", numWonRaffles, "raffle".Pluralize(numWonRaffles), "needs".Pluralize(numWonRaffles, "need")), ToolTipIcon.Info);
+                _TrayIcon.BalloonTipClicked += (object sender, EventArgs e) => Process.Start("explorer", "https://scrap.tf/raffles/won");
+            }
         }
 
         private void OnRaffleJoined(object sender, RaffleJoinedArgs e)
@@ -160,6 +189,7 @@ namespace Scraps.GUI.Forms
             _StartStopButton.Image = Icons.Start;
             _StartStopButton.Enabled = true;
             _StartStopButton.Text = "Start";
+            _TrayIcon.Text = "Scraps";
 
             if (_exitOnCancel)
             {

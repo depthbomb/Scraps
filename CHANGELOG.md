@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 4.0.0.0
+## Version 4.0.0.1
 
 **Scraps is now available as a Windows GUI desktop application.** The cross-platform console application version will remain.
 
@@ -8,7 +8,6 @@
 
 - Settings are now entirely managed through the application
 - Added ability to stop and start operations
-- Added tray icon functionality
 
 #### Plugins
 

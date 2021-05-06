@@ -42,6 +42,7 @@ namespace Scraps.GUI.Forms
             this._ScanDelayInput = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this._SaveButton = new System.Windows.Forms.Button();
+            this._ToastToggle = new System.Windows.Forms.CheckBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._JoinDelayInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._PaginateDelayInput)).BeginInit();
@@ -217,11 +218,22 @@ namespace Scraps.GUI.Forms
             this._SaveButton.UseVisualStyleBackColor = true;
             this._SaveButton.Click += new System.EventHandler(this.SaveButton_OnClick);
             // 
+            // _ToastToggle
+            // 
+            this._ToastToggle.AutoSize = true;
+            this._ToastToggle.Location = new System.Drawing.Point(232, 122);
+            this._ToastToggle.Name = "_ToastToggle";
+            this._ToastToggle.Size = new System.Drawing.Size(162, 19);
+            this._ToastToggle.TabIndex = 5;
+            this._ToastToggle.Text = "Enable Toast Notifications";
+            this._ToastToggle.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(406, 331);
+            this.Controls.Add(this._ToastToggle);
             this.Controls.Add(this._ParanoidToggle);
             this.Controls.Add(this._SortNewToggle);
             this.Controls.Add(this._SaveButton);
@@ -260,5 +272,6 @@ namespace Scraps.GUI.Forms
         private System.Windows.Forms.CheckBox _IncrementScanDelayToggle;
         private System.Windows.Forms.Button _SaveButton;
         private System.Windows.Forms.CheckBox _SortNewToggle;
+        private System.Windows.Forms.CheckBox _ToastToggle;
     }
 }
