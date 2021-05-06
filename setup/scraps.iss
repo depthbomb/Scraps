@@ -1,9 +1,9 @@
 #include "buttons.iss"
 
 #define MyAppName "Scraps"
-#define MyAppVersion "3.7.4.0"
+#define MyAppVersion "4.0.0.0"
 #define MyAppPublisher "Caprine Logic"
-#define MyAppExeName "Scraps.exe"
+#define MyAppExeName "Scraps.GUI.exe"
 #define PluginsPath "{userdocs}\" + MyAppPublisher + "\" + MyAppName + "\Plugins"
 
 [Setup]
@@ -49,29 +49,15 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
-[Types]
-Name: "full"; Description: "Full installation"
-Name: "compact"; Description: "Compact installation"
-Name: "custom"; Description: "Custom installation";  Flags: iscustom
-
-[Components]
-Name: "scraps"; Description: "Scraps"; Types: full compact custom; Flags: fixed
-Name: "scraps\docs"; Description: "Document links"; Types: full
-Name: "scraps\plugin1"; Description: "ApiServer plugin"; Types: full
-Name: "scraps\plugin2"; Description: "CommentOnRaffles plugin"; Types: full
-Name: "scraps\plugin3"; Description: "VoteInPolls plugin"; Types: full
-
 [Files]
-Source: "..\Scraps\bin\Publish\win-x64\Scraps.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: scraps
-Source: ".\license.txt"; DestDir: "{app}"; Flags: ignoreversion; Components: scraps
-Source: "..\Scraps.Plugins.ApiServer\bin\Release\net5.0-windows10.0.17763.0\Scraps.Plugins.ApiServer.dll"; DestDir: "{#PluginsPath}"; Flags: ignoreversion; Components: scraps\plugin1
-Source: "..\Scraps.Plugins.CommentOnRaffles\bin\Release\net5.0-windows10.0.17763.0\Scraps.Plugins.CommentOnRaffles.dll"; DestDir: "{#PluginsPath}"; Flags: ignoreversion; Components: scraps\plugin2
-Source: "..\Scraps.Plugins.VoteInPolls\bin\Release\net5.0-windows10.0.17763.0\Scraps.Plugins.VoteInPolls.dll"; DestDir: "{#PluginsPath}"; Flags: ignoreversion; Components: scraps\plugin3
+Source: "..\Scraps.GUI\bin\Publish\Scraps.GUI.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps\bin\Publish\win-x64\Scraps.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\license.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [INI]
-Filename: "{app}\Instructions.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://bit.ly/scraps-instructions"; Components: scraps\docs
-Filename: "{app}\Changelog.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://bit.ly/scraps-changelog"; Components: scraps\docs 
-Filename: "{app}\Source Code.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://bit.ly/scraps-repo"; Components: scraps\docs 
+Filename: "{app}\Instructions.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://bit.ly/scraps-instructions"
+Filename: "{app}\Changelog.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://bit.ly/scraps-changelog"
+Filename: "{app}\Source Code.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://bit.ly/scraps-repo"
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

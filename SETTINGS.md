@@ -2,6 +2,8 @@
 
 This page documents the Scraps settings file by describing each setting key's purpose.
 
+<u>These instructions are for the console version of Scraps.</u>
+
 ---
 
 - `Version`
@@ -10,8 +12,6 @@ This page documents the Scraps settings file by describing each setting key's pu
   - Your Scrap.TF `scr_session` cookie
 - `JoinNewestFirst` = `true`
   - Setting to `false` will make Scraps load raffles by time remaining instead of by time created
-- `EnableToastNotification` = `true`
-  - Whether to display a toast notification when you have won any raffles (Windows only)
 - `Paranoid` = `false`
   - Whether to enable "Paranoid" mode which will make Scraps act stricter when checking raffles before entering as to avoid honeypots. May result in false positives but better safe than sorry.
 - `Delays`

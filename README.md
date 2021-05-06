@@ -15,7 +15,7 @@ A Scrap.TF Raffle Bot
 
 ---
 
-![In Action](https://i.imgur.com/KRWbtbl.png)
+![In Action](https://i.imgur.com/zFZq9hk.png)
 
 The idea for Scraps was conceived during one of my periods of "devious programming".
 
@@ -45,18 +45,6 @@ Unix builds are self-contained and do not require a runtime to be installed.
 ## Usage
 
 See [INSTRUCTIONS.md](https://github.com/depthbomb/Scraps/blob/master/INSTRUCTIONS.md)
-
-## Plugins
-
-As of 3.4.0.0, Scraps now utilizes a plugins system where you can optionally add extra functionality through share-able assemblies. A list of official plugins can be found below.
-
-Plugins are currently not supported for non-Windows systems because idk how to get them to work lol.
-
-- [VoteInPolls](https://github.com/depthbomb/Scraps/tree/master/Scraps.Plugins.VoteInPolls)
-- [CommentOnRaffles](https://github.com/depthbomb/Scraps/tree/master/Scraps.Plugins.CommentOnRaffles)
-- [ApiServer](https://github.com/depthbomb/Scraps/tree/master/Scraps.Plugins.ApiServer)
-
-As of 3.7.2.0, official plugins may be installed directly from the installer. Other plugins may be dropped in the plugins folder in the app's store folder.
 
 ## Avoiding Bans
 

@@ -44,7 +44,6 @@ namespace Scraps
         private Logger _log;
         private Config _config;
         private HttpClient _http;
-        private Random _rng;
         private HtmlDocument _html;
 
         private int _scanDelay;
@@ -96,7 +95,6 @@ namespace Scraps
             _log = LogManager.GetCurrentClassLogger();
             _config = config;
             _http = http;
-            _rng = new Random();
             _html = new HtmlDocument();
 
             _cancelTokenSource = new CancellationTokenSource();
@@ -446,8 +444,8 @@ namespace Scraps
                     });
 
                     var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
-                    httpRequest.Content = content;
-                    httpRequest.Headers.Referrer = new Uri($"https://scrap.tf/raffles/{raffle}");
+                        httpRequest.Content = content;
+                        httpRequest.Headers.Referrer = new Uri($"https://scrap.tf/raffles/{raffle}");
                     var response = await _http.SendAsync(httpRequest);
 
                     string json = await response.Content.ReadAsStringAsync();

@@ -31,8 +31,6 @@ namespace Scraps
 
         public Config Config;
 
-        public ConfigManager() { }
-
         public void Create() => Save(new Config());
 
         public void Save(Config config, string filename = null)

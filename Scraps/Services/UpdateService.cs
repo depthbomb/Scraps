@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using NLog;
 
 using Scraps.Models;
+using Scraps.Constants;
 
 namespace Scraps.Services
 {
@@ -55,34 +56,45 @@ namespace Scraps.Services
             var compare = Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
             if (compare < 0)
             {
-                Console.WriteLine("Scraps {0} is available. Would you like to download and run the installer?", latestVersion);
-                Console.WriteLine("Press Y to proceed or press N to continue without updating");
-                var keyPressed = Console.ReadKey().Key;
-                if (keyPressed == ConsoleKey.Y)
+                if (!Platform.IsUnix)
                 {
-                    Console.CursorVisible = false;
-                    Console.Clear();
+                    Console.WriteLine("Scraps {0} is available. Would you like to download and run the installer?", latestVersion);
+                    Console.WriteLine("Press Y to proceed or press N to continue without updating");
 
-                    string tempLocation = Path.Combine(Path.GetTempPath(), "scraps_setup.exe");
-
-                    _log.Info("Downloading installer...");
-
-                    string windowsAsset = release.assets.Where(a => a.name.StartsWith("scraps_setup")).First().browser_download_url;
-                    byte[] data = await _http.GetByteArrayAsync(windowsAsset);
-                    using (var fs = new FileStream(tempLocation, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
+                    var keyPressed = Console.ReadKey().Key;
+                    if (keyPressed == ConsoleKey.Y)
                     {
-                        fs.Write(data, 0, data.Length);
+                        Console.CursorVisible = false;
+                        Console.Clear();
+
+                        string tempLocation = Path.Combine(Path.GetTempPath(), "scraps_setup.exe");
+
+                        _log.Info("Downloading installer...");
+
+                        string windowsAsset = release.assets.Where(a => a.name.StartsWith("scraps_setup")).First().browser_download_url;
+                        byte[] data = await _http.GetByteArrayAsync(windowsAsset);
+                        using (var fs = new FileStream(tempLocation, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
+                        {
+                            fs.Write(data, 0, data.Length);
+                        }
+
+                        _log.Info("Running installer...");
+
+                        var psi = new ProcessStartInfo();
+                            psi.FileName = tempLocation;
+                            psi.Arguments = "/update=yes";
+
+                        Process.Start(psi);
+
+                        Environment.Exit(0);
                     }
-
-                    _log.Info("Running installer...");
-
-                    var psi = new ProcessStartInfo();
-                        psi.FileName = tempLocation;
-                        psi.Arguments = "/update=yes";
-
-                    Process.Start(psi);
-
-                    Environment.Exit(0);
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Scraps {0} is available. You can download the latest release at https://github.com/depthbomb/Scraps/releases/latest", latestVersion);
+                    Console.ResetColor();
                 }
             }
         }

@@ -8,6 +8,8 @@ Scraps is in no way associated with _Scrap.TF_. Using this program is in violati
 
 ---
 
+<u>These instructions are for the console version of Scraps.</u>
+
 ## Before you start
 
 In order for Scraps to work, it needs your Scrap.TF cookie. Scraps will then use this cookie to "log in" as you so it may enter raffles on your behalf.
