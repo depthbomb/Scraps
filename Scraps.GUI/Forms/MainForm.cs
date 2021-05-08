@@ -101,21 +101,12 @@ namespace Scraps.GUI.Forms
             _runner.OnStarting += OnStarting;
             _runner.OnRunning += OnRunning;
             _runner.OnAccountBanned += OnAccountBanned;
-            _runner.OnPaginate += OnPaginate;
-            _runner.OnPaginateDone += OnPaginateDone;
             _runner.OnRafflesWon += OnRafflesWon;
-            _runner.OnRaffleJoined += OnRaffleJoined;
             _runner.OnStopping += OnStopping;
             _runner.OnStopped += OnStopped;
         }
 
-        private void ResetProgressBar()
-        {
-            _ProgressBar.Value = 0;
-            _ProgressBar.Style = ProgressBarStyle.Continuous;
-        }
-
-        private void ResetStatus() => _Status.Text = null;
+        private void ResetStatus() => _Status.Text = " "; // Set text to a space rather than null/empty so the status strip doesn't collapse
 
         #region Event Subscriptions
         private void OnStatus(object sender, StatusArgs e) => _Status.Text = e.Message;
@@ -123,14 +114,11 @@ namespace Scraps.GUI.Forms
         private void OnStarting(object sender, StartingArgs e)
         {
             _StartStopButton.Enabled = false;
-            _ProgressBar.Style = ProgressBarStyle.Marquee;
             _StartStopButton.Text = "Starting...";
         }
 
         private void OnRunning(object sender, RunningArgs e)
         {
-            ResetProgressBar();
-
             _running = true;
             _StartStopButton.Image = Icons.Stop;
             _StartStopButton.Enabled = true;
@@ -139,10 +127,6 @@ namespace Scraps.GUI.Forms
         }
 
         private void OnAccountBanned(object sender, AccountBannedArgs e) => _runner.Cancel();
-
-        private void OnPaginate(object sender, PaginateArgs e) => _ProgressBar.Style = ProgressBarStyle.Marquee;
-
-        private void OnPaginateDone(object sender, PaginateDoneArgs e) => ResetProgressBar();
 
         private void OnRafflesWon(object sender, RafflesWonArgs e)
         {
@@ -157,34 +141,14 @@ namespace Scraps.GUI.Forms
             }
         }
 
-        private void OnRaffleJoined(object sender, RaffleJoinedArgs e)
-        {
-            _ProgressBar.Minimum = 0;
-            _ProgressBar.Maximum = e.Total;
-
-            // A dumb fix because visual changes to the bar's value are delayed.
-            if (_ProgressBar.Value <= _ProgressBar.Maximum - 2)
-            {
-                _ProgressBar.Value += 2;
-                _ProgressBar.Value--;
-            }
-            else if (_ProgressBar.Value <= _ProgressBar.Maximum)
-            {
-                _ProgressBar.Maximum--;
-            }
-        }
-
         private void OnStopping(object sender, StoppingArgs e)
         {
-            _ProgressBar.Style = ProgressBarStyle.Marquee;
             _StartStopButton.Enabled = false;
             _StartStopButton.Text = "Stopping...";
         }
 
         private void OnStopped(object sender, StoppedArgs e)
         {
-            ResetProgressBar();
-
             _running = false;
             _StartStopButton.Image = Icons.Start;
             _StartStopButton.Enabled = true;
@@ -228,7 +192,6 @@ namespace Scraps.GUI.Forms
                 catch(Exception ex)
                 {
                     ResetStatus();
-                    ResetProgressBar();
 
                     _runner.Cancel();
 

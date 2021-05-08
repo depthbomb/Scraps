@@ -33,7 +33,6 @@ namespace Scraps.GUI.Forms
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this._StartStopButton = new System.Windows.Forms.Button();
             this._StatusStrip = new System.Windows.Forms.StatusStrip();
-            this._ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this._Status = new System.Windows.Forms.ToolStripStatusLabel();
             this._LogWindow = new System.Windows.Forms.RichTextBox();
             this._SettingsButton = new System.Windows.Forms.Button();
@@ -58,28 +57,20 @@ namespace Scraps.GUI.Forms
             // _StatusStrip
             // 
             this._StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._ProgressBar,
             this._Status});
             this._StatusStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-            this._StatusStrip.Location = new System.Drawing.Point(0, 335);
+            this._StatusStrip.Location = new System.Drawing.Point(0, 352);
             this._StatusStrip.Name = "_StatusStrip";
-            this._StatusStrip.Size = new System.Drawing.Size(627, 22);
+            this._StatusStrip.Size = new System.Drawing.Size(627, 5);
             this._StatusStrip.SizingGrip = false;
             this._StatusStrip.TabIndex = 5;
             this._StatusStrip.Text = "statusStrip1";
-            // 
-            // _ProgressBar
-            // 
-            this._ProgressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this._ProgressBar.MarqueeAnimationSpeed = 33;
-            this._ProgressBar.Name = "_ProgressBar";
-            this._ProgressBar.Size = new System.Drawing.Size(100, 16);
-            this._ProgressBar.Step = 1;
             // 
             // _Status
             // 
             this._Status.Name = "_Status";
             this._Status.Size = new System.Drawing.Size(0, 0);
+            this._Status.Text = " ";
             // 
             // _LogWindow
             // 
@@ -154,7 +145,6 @@ namespace Scraps.GUI.Forms
         private System.Windows.Forms.Button _StartStopButton;
         private System.Windows.Forms.StatusStrip _StatusStrip;
         private System.Windows.Forms.ToolStripStatusLabel _Status;
-        private System.Windows.Forms.ToolStripProgressBar _ProgressBar;
         private System.Windows.Forms.RichTextBox _LogWindow;
         private System.Windows.Forms.Button _SettingsButton;
         private System.Windows.Forms.Button _InfoButton;

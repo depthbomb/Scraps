@@ -1,8 +1,14 @@
 # Changelog
 
+## Version 4.0.1.0
+
+- Removed progress bar from status strip
+
 ## Version 4.0.0.1
 
 **Scraps is now available as a Windows GUI desktop application.** The cross-platform console application version will remain.
+
+From here on, changes in the changelog will be for the GUI app unless stated otherwise.
 
 #### Desktop
 
