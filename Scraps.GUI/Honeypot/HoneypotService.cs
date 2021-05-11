@@ -22,7 +22,7 @@ namespace Scraps.GUI.Honeypot
 {
     public class HoneypotService
     {
-        private string _html;
+        private readonly string _html;
 
         public bool IsHoneypot { get; set; } = false;
         public string Reason { get; set; }

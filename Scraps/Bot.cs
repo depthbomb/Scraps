@@ -19,7 +19,6 @@
 using System;
 using System.IO;
 using System.Net.Http;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -27,20 +26,16 @@ using NLog;
 
 using Scraps.Models;
 using Scraps.Events;
-using Scraps.Constants;
 using Scraps.Extensions;
-using Scraps.Abstractions;
 
 namespace Scraps
 {
     public class Bot
     {
-        private Logger _log;
-        private Config _config;
-        private HttpClient _http;
-        private RaffleRunner _runner;
-
-        public static DateTime StartTime;
+        private readonly Logger _log;
+        private readonly Config _config;
+        private readonly HttpClient _http;
+        private readonly RaffleRunner _runner;
 
         private bool _terminateImmediately = false;
 
@@ -83,43 +78,6 @@ namespace Scraps
             Console.ReadLine();
         }
 
-        public async Task LoadPluginsAsync()
-        {
-            if (!Directory.Exists(Paths.PluginsPath))
-            {
-                Directory.CreateDirectory(Paths.PluginsPath);
-
-                _log.Debug("Created missing plugins folder {Path}", Paths.PluginsPath);
-            }
-            else
-            {
-                PluginManager.LoadPlugins();
-
-                var plugins = PluginManager.Assemblies;
-
-                foreach (var plugin in plugins)
-                {
-                    try
-                    {
-                        var types = plugin.GetTypes();
-                        var type = types[0];
-                        var loadedPlugin = (PluginBase)Activator.CreateInstance(type, _config, _http, _runner);
-                            loadedPlugin.Initialize();
-
-                        _log.Info("Initialized plugin {Plugin}", type.Name);
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Error("Failed to load plugin {Plugin}: {Exception}", plugin.FullName, ex.Message);
-                    }
-                }
-            }
-
-            StartTime = DateTime.UtcNow;
-
-            await Task.CompletedTask;
-        }
-
         private void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             if (!_terminateImmediately)
@@ -137,7 +95,7 @@ namespace Scraps
 
         private void OnStatusUpdate(object sender, StatusUpdateArgs e)
         {
-            string appTitle = string.Format("Scraps - {0}", Constants.Version.Full);
+            string appTitle = string.Format("Scraps - {0}", Common.Constants.Version.Full);
             int rafflesJoined = e.RafflesJoined;
             string status = e.Status;
             string title = string.Format("{0} — {1} {2} joined this session — {3}",

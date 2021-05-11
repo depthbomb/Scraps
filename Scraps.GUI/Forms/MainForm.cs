@@ -26,8 +26,8 @@ using NLog.Config;
 using NLog.Targets;
 
 using Scraps.GUI.Logging;
-using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
+using Scraps.Common.Constants;
 using Scraps.GUI.RaffleRunner;
 using Scraps.GUI.RaffleRunner.Events;
 
@@ -51,7 +51,7 @@ namespace Scraps.GUI.Forms
             var updater = new UpdaterForm();
                 updater.ShowDialog(this);
 
-            this.Text = string.Format("Scraps - {0}", Constants.Version.Full);
+            this.Text = string.Format("Scraps - {0}", Common.Constants.Version.Full);
             this.FormClosing += MainForm_OnClosing;
         }
 
@@ -108,7 +108,7 @@ namespace Scraps.GUI.Forms
 
         private void ResetStatus() => _Status.Text = " "; // Set text to a space rather than null/empty so the status strip doesn't collapse
 
-        #region Event Subscriptions
+        #region Raffle Runner Event Subscriptions
         private void OnStatus(object sender, StatusArgs e) => _Status.Text = e.Message;
 
         private void OnStarting(object sender, StartingArgs e)
@@ -213,7 +213,7 @@ namespace Scraps.GUI.Forms
         private void InfoButton_OnClick(object sender, EventArgs e)
         {
             var aboutWindow = new AboutForm();
-            aboutWindow.ShowDialog(this);
+                aboutWindow.ShowDialog(this);
         }
         #endregion
     }

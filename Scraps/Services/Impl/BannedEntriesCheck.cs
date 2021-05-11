@@ -18,14 +18,14 @@
 
 using System.Text.RegularExpressions;
 
-using Scraps.Constants;
 using Scraps.Interfaces;
+using Scraps.Common.Constants;
 
 namespace Scraps.Services.Impl
 {
     public class BannedEntriesCheck : IHoneypotCheck
     {
-        private string _html;
+        private readonly string _html;
 
         public bool Detected { get; set; }
         public string DetectReason { get; set; }

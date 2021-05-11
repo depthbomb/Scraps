@@ -16,18 +16,24 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.IO;
-
-namespace Scraps.Constants
+namespace Scraps.Common.Constants
 {
-    public static class Paths
+    public class Version
     {
-        public static readonly string StorePath = Platform.IsUnix
-            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.DoNotVerify), "Scraps")
-            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Caprine Logic", "Scraps");
-        public static readonly string LogsPath = Path.Combine(StorePath, "Logs");
-        public static readonly string DataPath = Path.Combine(StorePath, "Data");
-        public static readonly string PluginsPath = Path.Combine(StorePath, "Plugins");
+        public enum ReleaseTypes
+        {
+            Development,
+            PreRelease,
+            Release
+        }
+
+        public static System.Version AsDotNetVersion() => new(Major, Minor, Patch, Hotfix);
+        public static int Major => 4;
+        public static int Minor => 0;
+        public static int Patch => 2;
+        public static int Hotfix => 0;
+        public static ReleaseTypes ReleaseType => ReleaseTypes.Release;
+        public static string SemVer => $"{Major}.{Minor}.{Patch}.{Hotfix}";
+        public static string Full => $"{SemVer}-{ReleaseType}";
     }
 }

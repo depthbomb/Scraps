@@ -16,12 +16,10 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Plugins.ApiServer.Models
+namespace Scraps.Common.Constants
 {
-    public class Response
+    public class Xpaths
     {
-        public bool Success { get; set; }
-        public string Message { get; set; } = null;
-        public object Results { get; set; }
+        public const string UnenteredRaffles = "//*[contains(@class, 'panel-raffle') and not(contains(@class, 'raffle-entered'))]";
     }
 }

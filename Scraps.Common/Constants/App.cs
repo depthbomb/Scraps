@@ -16,23 +16,10 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-
-namespace Scraps.Plugins.CommentOnRaffles.Models
+namespace Scraps.Common.Constants
 {
-    [Serializable]
-    public class Config
+    public class App
     {
-        public int PostDelayMinutes { get; set; } = 5;
-        public int PreviousCommentsToExclude { get; set; } = 2;
-        public string[] Comments { get; set; } = new string[]
-        {
-            "thank you!",
-            "thanks for the raffle i hope i win",
-            "thanks for raffle!",
-            "ty!!",
-            "ty",
-            ":D"
-        };
+        public const int SettingsVersion = 13;
     }
 }

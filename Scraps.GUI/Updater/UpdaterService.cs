@@ -87,7 +87,7 @@ namespace Scraps.GUI.Updater
 
             _latestRelease = JsonSerializer.Deserialize<LatestRelease>(json);
             var latestVersion = new Version(_latestRelease.tag_name.Replace("v", ""));
-            var compare = Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
+            var compare = Common.Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
             if (compare < 0)
             {
                 OnUpdateAvailable?.Invoke(this, new(latestVersion));

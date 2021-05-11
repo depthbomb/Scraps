@@ -25,7 +25,7 @@ namespace Scraps.Extensions
     {
         public static void Shuffle<T>(this IList<T> list)
         {
-            RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
+            RNGCryptoServiceProvider provider = new();
             int n = list.Count;
             while (n > 1)
             {

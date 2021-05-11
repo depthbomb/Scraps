@@ -16,16 +16,13 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System.Text.RegularExpressions;
-
-using Scraps.Constants;
 using Scraps.Interfaces;
 
 namespace Scraps.Services.Impl
 {
     public class WarningImageCheck : IHoneypotCheck
     {
-        private string _html;
+        private readonly string _html;
 
         public bool Detected { get; set; }
         public string DetectReason { get; set; }

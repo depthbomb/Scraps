@@ -19,6 +19,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 using Scraps.GUI.Updater;
 using Scraps.GUI.Updater.Events;
@@ -69,10 +70,12 @@ namespace Scraps.GUI.Forms
             _UpdateProgressBar.Increment(75);
         }
 
-        private void OnInstallerDownloaded(object sender, InstallerDownloadedArgs e)
+        private async void OnInstallerDownloaded(object sender, InstallerDownloadedArgs e)
         {
             _UpdateStatusLabel.Text = "Running installer...";
             _UpdateProgressBar.Increment(100);
+
+            await Task.Delay(500);
 
             string installerPath = e.DownloadPath;
             var psi = new ProcessStartInfo();

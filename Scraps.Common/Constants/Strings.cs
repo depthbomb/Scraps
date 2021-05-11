@@ -16,7 +16,7 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Constants
+namespace Scraps.Common.Constants
 {
     public class Strings
     {

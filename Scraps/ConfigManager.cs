@@ -21,7 +21,7 @@ using System.IO;
 using System.Text.Json;
 
 using Scraps.Models;
-using Scraps.Constants;
+using Scraps.Common.Constants;
 
 namespace Scraps
 {

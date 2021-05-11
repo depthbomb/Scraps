@@ -30,8 +30,8 @@ using NLog.Targets;
 
 using Scraps.Models;
 using Scraps.Services;
-using Scraps.Constants;
 using Scraps.Validators;
+using Scraps.Common.Constants;
 
 namespace Scraps
 {
@@ -45,7 +45,7 @@ namespace Scraps
         {
             if (IsAlreadyRunning()) Environment.Exit(0);
 
-            Console.Title = string.Format("Scraps - {0}", Constants.Version.Full);
+            Console.Title = string.Format("Scraps - {0}", Common.Constants.Version.Full);
 
             Console.WriteLine();
             Console.WriteLine("Scraps - Scrap.TF Raffle Bot");
@@ -69,7 +69,6 @@ namespace Scraps
             Console.CursorVisible = false;
 
             var bot = new Bot(_config, _http);
-            await bot.LoadPluginsAsync();
             await bot.RunAsync();
         }
 
@@ -210,10 +209,12 @@ namespace Scraps
                 }
             }
 
-            var client = new HttpClient(handler);
-                client.Timeout = TimeSpan.FromSeconds(30);
-                client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
-                client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _config.Cookie);
+            var client = new HttpClient(handler)
+            {
+                Timeout = TimeSpan.FromSeconds(30)
+            };
+            client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
+            client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _config.Cookie);
 
             _http = client;
         }

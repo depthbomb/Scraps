@@ -32,8 +32,8 @@ using HtmlAgilityPack;
 using Scraps.Models;
 using Scraps.Events;
 using Scraps.Services;
-using Scraps.Constants;
 using Scraps.Extensions;
+using Scraps.Common.Constants;
 
 namespace Scraps
 {
@@ -41,19 +41,18 @@ namespace Scraps
     {
         public string CsrfToken;
 
-        private Logger _log;
-        private Config _config;
-        private HttpClient _http;
-        private HtmlDocument _html;
+        private readonly Logger _log;
+        private readonly Config _config;
+        private readonly HttpClient _http;
+        private readonly HtmlDocument _html;
+        private readonly List<string> _raffleQueue = new();
+        private readonly List<string> _enteredRaffles = new();
 
         private int _scanDelay;
         private int _joinDelay;
         private int _rafflesJoined = 0;
 
         private bool _alertedOfWonRaffles = false;
-
-        private List<string> _raffleQueue = new List<string>();
-        private List<string> _enteredRaffles = new List<string>();
 
         private CancellationToken _cancelToken;
         private CancellationTokenSource _cancelTokenSource;
@@ -95,9 +94,9 @@ namespace Scraps
             _log = LogManager.GetCurrentClassLogger();
             _config = config;
             _http = http;
-            _html = new HtmlDocument();
+            _html = new();
 
-            _cancelTokenSource = new CancellationTokenSource();
+            _cancelTokenSource = new();
             _cancelToken = _cancelTokenSource.Token;
         }
 
@@ -336,7 +335,7 @@ namespace Scraps
             string url = "https://scrap.tf/raffles/won";
             string html = await _http.GetStringAsync(url);
             var raffleIds = RegexPatterns.RaffleEntryRegex.Matches(html);
-            List<string> wonRaffles = new List<string>();
+            List<string> wonRaffles = new();
 
             foreach (Match id in raffleIds)
             {

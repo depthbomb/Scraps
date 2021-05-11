@@ -23,7 +23,7 @@ namespace Scraps.Services
 {
     public class HoneypotChecker
     {
-        private string _html;
+        private readonly string _html;
 
         public bool IsHoneypot { get; set; }
         public string Reason { get; set; }

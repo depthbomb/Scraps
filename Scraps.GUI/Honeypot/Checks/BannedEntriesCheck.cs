@@ -16,13 +16,13 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using Scraps.GUI.Constants;
+using Scraps.Common.Constants;
 
 namespace Scraps.GUI.Honeypot.Checks
 {
     public class BannedEntriesCheck : IHoneypotCheck
     {
-        private string _html;
+        private readonly string _html;
 
         public bool Detected { get; set; } = false;
         public string DetectReason { get; set; }

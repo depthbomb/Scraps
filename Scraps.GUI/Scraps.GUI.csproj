@@ -24,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Scraps.Common\Scraps.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Icons.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

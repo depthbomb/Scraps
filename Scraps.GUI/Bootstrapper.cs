@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 
 using Scraps.GUI.Forms;
-using Scraps.GUI.Constants;
+using Scraps.Common.Constants;
 
 namespace Scraps.GUI
 {

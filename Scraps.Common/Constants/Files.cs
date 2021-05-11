@@ -16,11 +16,12 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Plugins.CommentOnRaffles.Models
+using System.IO;
+
+namespace Scraps.Common.Constants
 {
-    public class AcceptRulesResponse
+    public class Files
     {
-        public bool success { get; set; }
-        public string message { get; set; }
+        public static readonly string ConfigFile = Path.Combine(Paths.StorePath, "Config.json");
     }
 }

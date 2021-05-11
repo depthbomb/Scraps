@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.2.0
+
+- Common values between the Console and GUI app are now stored in the new **Scraps.Common** library
+- Added a small delay after the updater downloads the installer before it will execute it to fix a UI bug
+
 ## Version 4.0.1.0
 
 - Removed progress bar from status strip

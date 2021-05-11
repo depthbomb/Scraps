@@ -31,9 +31,10 @@ using HtmlAgilityPack;
 
 using Scraps.GUI.Models;
 using Scraps.GUI.Honeypot;
-using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
 using Scraps.GUI.RaffleRunner.Events;
+
+using Scraps.Common.Constants;
 
 namespace Scraps.GUI.RaffleRunner
 {
@@ -41,6 +42,8 @@ namespace Scraps.GUI.RaffleRunner
     {
         private readonly Logger _log;
         private readonly HtmlDocument _html;
+        private readonly List<string> _raffleQueue = new();
+        private readonly List<string> _enteredRaffles = new();
 
         private HttpClient _http;
         private int _scanDelay;
@@ -52,9 +55,6 @@ namespace Scraps.GUI.RaffleRunner
         private string _cookie;
 
         private bool _alertedOfWonRaffles = false;
-
-        private List<string> _raffleQueue = new List<string>();
-        private List<string> _enteredRaffles = new List<string>();
 
         public bool Running = false;
 
@@ -124,7 +124,7 @@ namespace Scraps.GUI.RaffleRunner
         #region Public Methods
         public async Task StartAsync()
         {
-            _cancelTokenSource = new CancellationTokenSource();
+            _cancelTokenSource = new();
             _cancelToken = _cancelTokenSource.Token;
 
             SendStatus("Starting");
@@ -395,7 +395,7 @@ namespace Scraps.GUI.RaffleRunner
             string url = "https://scrap.tf/raffles/won";
             string html = await _http.GetStringAsync(url);
             var raffleIds = RegexPatterns.RaffleEntryRegex.Matches(html);
-            List<string> wonRaffles = new List<string>();
+            List<string> wonRaffles = new();
 
             foreach (Match id in raffleIds)
             {

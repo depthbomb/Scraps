@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 using NLog;
 
 using Scraps.Models;
-using Scraps.Constants;
+using Scraps.Common.Constants;
 
 namespace Scraps.Services
 {
@@ -53,7 +53,7 @@ namespace Scraps.Services
 
             var release = JsonSerializer.Deserialize<LatestRelease>(json);
             var latestVersion = new System.Version(release.tag_name.Replace("v", ""));
-            var compare = Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
+            var compare = Common.Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
             if (compare < 0)
             {
                 if (!Platform.IsUnix)

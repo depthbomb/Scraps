@@ -17,14 +17,12 @@
 #endregion License
 
 using System;
-using System.IO;
 
-namespace Scraps.GUI.Constants
+namespace Scraps.Common.Constants
 {
-    public class Paths
+    public static class Platform
     {
-        public static readonly string StorePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Caprine Logic", "Scraps");
-        public static readonly string LogsPath = Path.Combine(StorePath, "Logs");
-        public static readonly string DataPath = Path.Combine(StorePath, "Data");
+        public static readonly string OS = Environment.OSVersion.Platform.ToString();
+        public static readonly bool IsUnix = OS == "Unix";
     }
 }
