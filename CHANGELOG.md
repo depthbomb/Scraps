@@ -5,6 +5,10 @@
 - Common values between the Console and GUI app are now stored in the new **Scraps.Common** library
 - Added a small delay after the updater downloads the installer before it will execute it to fix a UI bug
 
+#### Console
+
+- Removed operations related to plugins
+
 ## Version 4.0.1.0
 
 - Removed progress bar from status strip
