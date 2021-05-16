@@ -41,10 +41,6 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 - Honeypot/trap raffle detection; avoids fake raffles created by staff members that will get you banned
 - Basic proxy support
 
-## Planned Features
-
-- GUI app
-
 ## Requirements
 
 The **.NET Desktop Runtime 5.0.x** is required to run both the GUI and Console application on Windows. The runtime installer can be downloaded [here.](https://dotnet.microsoft.com/download/dotnet/5.0)
