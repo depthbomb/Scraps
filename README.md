@@ -47,9 +47,7 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Requirements
 
-Windows platforms require the .NET 5 Runtime to be installed which you can download from [here.](https://dotnet.microsoft.com/download/dotnet/5.0)
-
-![Clicky click](https://i.imgur.com/yDF2FpF.png)
+The **.NET Desktop Runtime 5.0.x** is required to run both the GUI and Console application on Windows. The runtime installer can be downloaded [here.](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 Unix builds are self-contained and do not require a runtime to be installed.
 
