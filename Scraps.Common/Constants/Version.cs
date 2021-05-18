@@ -30,7 +30,7 @@ namespace Scraps.Common.Constants
         public static System.Version AsDotNetVersion() => new(Major, Minor, Patch, Hotfix);
         public static int Major => 4;
         public static int Minor => 0;
-        public static int Patch => 2;
+        public static int Patch => 3;
         public static int Hotfix => 0;
         public static ReleaseTypes ReleaseType => ReleaseTypes.Release;
         public static string SemVer => $"{Major}.{Minor}.{Patch}.{Hotfix}";

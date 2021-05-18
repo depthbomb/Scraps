@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="10.1.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.33" />
-    <PackageReference Include="NLog" Version="4.7.9" />
+    <PackageReference Include="NLog" Version="4.7.10" />
   </ItemGroup>
 
   <ItemGroup>

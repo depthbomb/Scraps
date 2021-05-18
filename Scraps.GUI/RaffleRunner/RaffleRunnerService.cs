@@ -219,8 +219,6 @@ namespace Scraps.GUI.RaffleRunner
             bool tokenObtained = false;
             while (!tokenObtained)
             {
-                if (_cancelToken.IsCancellationRequested) return;
-
                 SendStatus("Attempting to obtain CSRF token");
 
                 string html = await _http.GetStringAsync("https://scrap.tf");

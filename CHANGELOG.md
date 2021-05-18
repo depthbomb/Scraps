@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.3.0
+
+- Updated dependencies
+
 ## 4.0.2.0
 
 - Common values between the Console and GUI app are now stored in the new **Scraps.Common** library

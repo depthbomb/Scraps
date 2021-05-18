@@ -198,8 +198,6 @@ namespace Scraps.GUI.Forms
                     _StartStopButton.Enabled = true;
                     _StartStopButton.Text = "Start";
                     _StartStopButton.Image = Icons.Start;
-
-                    Utils.ShowError("Error", ex.Message);
                 }
             }
         }
