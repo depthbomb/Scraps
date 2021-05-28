@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.1.1.0
+
+- Improved design of WebView windows
+- Clicking the raffles won notification will now open the won raffles page in the WebView window
+
 ## 4.1.0.0
 
 **THE INSTALLATION FOLDER HAS BEEN CHANGED TO `C:\Users\USERNAME\AppData\Local\Programs\Caprine Logic\Scraps`**

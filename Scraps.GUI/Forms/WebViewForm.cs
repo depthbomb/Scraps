@@ -16,27 +16,19 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 
-using NLog;
-
 namespace Scraps.GUI.Forms
 {
-    /// <summary>
-    /// A generic WebView2 form for displaying web pages
-    /// </summary>
     public partial class WebViewForm : Form
     {
-        private readonly Logger _log;
-
         public WebViewForm(string url, string cookies = null)
         {
-            _log = LogManager.GetCurrentClassLogger();
-
             if (!IsRuntimeInstalled())
             {
                 DownloadAndInstallRuntime();
@@ -45,6 +37,9 @@ namespace Scraps.GUI.Forms
             {
                 InitializeComponent();
                 InitializeBrowserAsync(url, cookies);
+
+                _WebBrowser.NavigationCompleted += WebBrowser_OnNavigationCompleted;
+                _StatusStripButton.Click += StatusStripButton_OnClick;
             }
 
             this.FormClosing += OnFormClosing;
@@ -110,10 +105,7 @@ namespace Scraps.GUI.Forms
 
             if (cookies != null)
             {
-                _WebBrowser.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
-
                 string[] cookieList = cookies.Split(';');
-
                 foreach (string cookie in cookieList)
                 {
                     var splitCookie = cookie.Split('=');
@@ -129,6 +121,17 @@ namespace Scraps.GUI.Forms
 
             _WebBrowser.CoreWebView2.Navigate(url);
         }
+
+        private void WebBrowser_OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            string url = _WebBrowser.Source.ToString();
+
+            this.Text = url;
+            _StatusStripLabel.Text = url;
+        }
+
+        private void StatusStripButton_OnClick(object sender, EventArgs e)
+            => Process.Start("explorer.exe", _WebBrowser.Source.ToString());
 
         private void OnFormClosing(object sender, FormClosingEventArgs e) => _WebBrowser?.Dispose();
     }

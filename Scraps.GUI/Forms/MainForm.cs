@@ -18,7 +18,6 @@
 
 using System;
 using System.IO;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 using NLog;
@@ -123,7 +122,6 @@ namespace Scraps.GUI.Forms
             _StartStopButton.Image = Icons.Stop;
             _StartStopButton.Enabled = true;
             _StartStopButton.Text = "Stop";
-            _TrayIcon.Text = "Scraps is running";
         }
 
         private void OnAccountBanned(object sender, AccountBannedArgs e) => _runner.Cancel();
@@ -137,7 +135,12 @@ namespace Scraps.GUI.Forms
             if (enableToast)
             {
                 _TrayIcon.ShowBalloonTip(60_000, "Items Need Withdrawing", string.Format("You've won {0} {1} that {2} to be withdrawn!", numWonRaffles, "raffle".Pluralize(numWonRaffles), "needs".Pluralize(numWonRaffles, "need")), ToolTipIcon.Info);
-                _TrayIcon.BalloonTipClicked += (object sender, EventArgs e) => Process.Start("explorer", "https://scrap.tf/raffles/won");
+                _TrayIcon.BalloonTipClicked += (object sender, EventArgs e) =>
+                {
+                    string cookie = Properties.UserConfig.Default.Cookie;
+                    var webWindow = new WebViewForm("https://scrap.tf/raffles/won", $"scr_session={cookie}");
+                        webWindow.ShowDialog(this);
+                };
             }
         }
 
@@ -153,7 +156,6 @@ namespace Scraps.GUI.Forms
             _StartStopButton.Image = Icons.Start;
             _StartStopButton.Enabled = true;
             _StartStopButton.Text = "Start";
-            _TrayIcon.Text = "Scraps";
 
             if (_exitOnCancel)
             {
