@@ -32,6 +32,7 @@ using Scraps.Models;
 using Scraps.Services;
 using Scraps.Validators;
 using Scraps.Common.Constants;
+using Scraps.Common.Announcement;
 
 namespace Scraps
 {
@@ -60,6 +61,8 @@ namespace Scraps
             InitializeLogger();
             InitializeSettings();
             InitializeHttpClient();
+
+            CheckForAnnouncement();
 
             using (var us = new UpdateService())
             {
@@ -219,6 +222,17 @@ namespace Scraps
             _http = client;
         }
         #endregion
+
+        static void CheckForAnnouncement()
+        {
+            var ann = new AnnouncementService();
+            if (ann.GetAnnouncement().Result is string announcement && announcement != null)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("[Announcement] {0}", announcement);
+                Console.ResetColor();
+            }
+        }
 
         static void SelectFile(string path)
         {

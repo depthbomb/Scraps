@@ -28,6 +28,7 @@ using Scraps.GUI.Logging;
 using Scraps.GUI.Extensions;
 using Scraps.Common.Constants;
 using Scraps.GUI.RaffleRunner;
+using Scraps.Common.Announcement;
 using Scraps.GUI.RaffleRunner.Events;
 
 namespace Scraps.GUI.Forms
@@ -49,6 +50,8 @@ namespace Scraps.GUI.Forms
 
             var updater = new UpdaterForm();
                 updater.ShowDialog(this);
+
+            CheckForAnnouncement();
 
             this.Text = string.Format("Scraps - {0}", Common.Constants.Version.Full);
             this.FormClosing += MainForm_OnClosing;
@@ -103,6 +106,16 @@ namespace Scraps.GUI.Forms
             _runner.OnRafflesWon += OnRafflesWon;
             _runner.OnStopping += OnStopping;
             _runner.OnStopped += OnStopped;
+        }
+
+        private void CheckForAnnouncement()
+        {
+            var ann = new AnnouncementService();
+            if (ann.GetAnnouncement().Result is string announcement && announcement != null)
+            {
+                announcement = "[Announcement] " + announcement;
+                _LogWindow.AppendLine(announcement, System.Drawing.Color.GreenYellow);
+            }
         }
 
         private void ResetStatus() => _Status.Text = " "; // Set text to a space rather than null/empty so the status strip doesn't collapse

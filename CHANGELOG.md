@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.1.2.0
+
+- Added announcement system
+  - This will check the ANNOUNCEMENT file located in this repo and display its message first thing in the console on startup
+
 ## 4.1.1.0
 
 - Improved design of WebView windows
