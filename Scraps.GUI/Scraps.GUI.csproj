@@ -6,7 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Scraps.ico</ApplicationIcon>
     <StartupObject>Scraps.GUI.Bootstrapper</StartupObject>
-    <Version>4.0.1.0</Version>
+    <Version>4.1.0.0</Version>
     <Authors>Caprine Logic</Authors>
   </PropertyGroup>
 
@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.33" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.818.41" />
     <PackageReference Include="NLog" Version="4.7.10" />
   </ItemGroup>
 

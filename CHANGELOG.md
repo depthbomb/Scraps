@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.1.0.0
+
+**THE INSTALLATION FOLDER HAS BEEN CHANGED TO `C:\Users\USERNAME\AppData\Local\Programs\Caprine Logic\Scraps`**
+
+- Added a new **Won Raffles** button that will open a window allowing you to see your won raffles on the Scrap.TF website
+  - This feature requires the WebView2 Runtime, which the app will ask you to download if it isn't installed
+- Closing the application while the raffle runner is operating will now instantly close instead of waiting for the runner to stop
+- Added custom images to the installer to make it look pretty
+
 ## 4.0.3.0
 
 - Updated dependencies

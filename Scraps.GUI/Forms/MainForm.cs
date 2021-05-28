@@ -165,14 +165,6 @@ namespace Scraps.GUI.Forms
         #region Control Event Subscriptions
         private void MainForm_OnClosing(object sender, FormClosingEventArgs e)
         {
-            // Only intercept if the raffle runner is running, otherwise just close normally.
-            if (_running)
-            {
-                e.Cancel = true;
-                _exitOnCancel = true;
-                _runner.Cancel();
-            }
-
             // Finish any log writing that needs to be done.
             LogManager.Flush();
         }
@@ -200,6 +192,13 @@ namespace Scraps.GUI.Forms
                     _StartStopButton.Image = Icons.Start;
                 }
             }
+        }
+
+        private void WonRafflesButton_OnClick(object sender, EventArgs e)
+        {
+            string cookie = Properties.UserConfig.Default.Cookie;
+            var webWindow = new WebViewForm("https://scrap.tf/raffles/won", $"scr_session={cookie}");
+                webWindow.ShowDialog(this);
         }
 
         private void SettingsButton_OnClick(object sender, EventArgs e)

@@ -1,10 +1,9 @@
 #include "buttons.iss"
 
 #define MyAppName "Scraps"
-#define MyAppVersion "4.0.3.0"
+#define MyAppVersion "4.1.0.0"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "Scraps.GUI.exe"
-#define PluginsPath "{userdocs}\" + MyAppPublisher + "\" + MyAppName + "\Plugins"
 
 [Setup]
 AppId={{D3BD46E5-E1AF-41DA-92A3-4443B418294C}
@@ -20,6 +19,7 @@ VersionInfoVersion={#MyAppVersion}
 DefaultDirName={autopf}\{#MyAppPublisher}\{#MyAppName}
 DisableDirPage=yes
 DisableProgramGroupPage=yes
+PrivilegesRequired=lowest
 AllowNoIcons=yes
 LicenseFile=.\license.txt
 OutputDir=..\Scraps\bin\Publish
@@ -28,6 +28,8 @@ SetupIconFile=..\Scraps\Scraps.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=classic
+WizardImageFile=.\images\Image_*.bmp
+WizardSmallImageFile=.\images\SmallImage_*.bmp
 ArchitecturesAllowed=x64
 UninstallDisplayIcon={app}\{#MyAppExeName}
 UninstallDisplayName=Scraps - Scrap.TF Raffle Bot
@@ -51,6 +53,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\Scraps.GUI\bin\Publish\win10-x64\Scraps.GUI.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Publish\win10-x64\WebView2Loader.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Publish\win10-x64\runtimes\win-x64\native\WebView2Loader.dll"; DestDir: "{app}\runtimes\win-x64\native"; Flags: ignoreversion
 Source: "..\Scraps\bin\Publish\win-x64\Scraps.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\license.txt"; DestDir: "{app}"; Flags: ignoreversion
 
@@ -73,4 +77,6 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 Type: files; Name: "{app}\Instructions.url"
 Type: files; Name: "{app}\Changelog.url"
 Type: files; Name: "{app}\Source Code.url"
+Type: filesandordirs; Name: "{app}\Scraps.GUI.exe.WebView2\*"
+Type: dirifempty; Name: "{app}\Scraps.GUI.exe.WebView2"
 Type: dirifempty; Name: "{app}"

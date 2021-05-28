@@ -37,6 +37,7 @@ namespace Scraps.GUI.Forms
             this._LogWindow = new System.Windows.Forms.RichTextBox();
             this._SettingsButton = new System.Windows.Forms.Button();
             this._InfoButton = new System.Windows.Forms.Button();
+            this._WonRafflesButton = new System.Windows.Forms.Button();
             this._TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this._StatusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -46,7 +47,7 @@ namespace Scraps.GUI.Forms
             this._StartStopButton.Image = global::Scraps.GUI.Icons.Start;
             this._StartStopButton.Location = new System.Drawing.Point(12, 300);
             this._StartStopButton.Name = "_StartStopButton";
-            this._StartStopButton.Size = new System.Drawing.Size(425, 32);
+            this._StartStopButton.Size = new System.Drawing.Size(299, 31);
             this._StartStopButton.TabIndex = 0;
             this._StartStopButton.Text = "Start";
             this._StartStopButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -59,9 +60,9 @@ namespace Scraps.GUI.Forms
             this._StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._Status});
             this._StatusStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-            this._StatusStrip.Location = new System.Drawing.Point(0, 352);
+            this._StatusStrip.Location = new System.Drawing.Point(0, 337);
             this._StatusStrip.Name = "_StatusStrip";
-            this._StatusStrip.Size = new System.Drawing.Size(627, 5);
+            this._StatusStrip.Size = new System.Drawing.Size(627, 20);
             this._StatusStrip.SizingGrip = false;
             this._StatusStrip.TabIndex = 5;
             this._StatusStrip.Text = "statusStrip1";
@@ -69,7 +70,7 @@ namespace Scraps.GUI.Forms
             // _Status
             // 
             this._Status.Name = "_Status";
-            this._Status.Size = new System.Drawing.Size(0, 0);
+            this._Status.Size = new System.Drawing.Size(10, 15);
             this._Status.Text = " ";
             // 
             // _LogWindow
@@ -110,6 +111,19 @@ namespace Scraps.GUI.Forms
             this._InfoButton.UseVisualStyleBackColor = true;
             this._InfoButton.Click += new System.EventHandler(this.InfoButton_OnClick);
             // 
+            // _WonRafflesButton
+            // 
+            this._WonRafflesButton.Image = global::Scraps.GUI.Icons.OpenLink;
+            this._WonRafflesButton.Location = new System.Drawing.Point(317, 300);
+            this._WonRafflesButton.Name = "_WonRafflesButton";
+            this._WonRafflesButton.Size = new System.Drawing.Size(120, 31);
+            this._WonRafflesButton.TabIndex = 9;
+            this._WonRafflesButton.Text = "Won Raffles";
+            this._WonRafflesButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this._WonRafflesButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this._WonRafflesButton.UseVisualStyleBackColor = true;
+            this._WonRafflesButton.Click += new System.EventHandler(this.WonRafflesButton_OnClick);
+            // 
             // _TrayIcon
             // 
             this._TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("_TrayIcon.Icon")));
@@ -121,6 +135,7 @@ namespace Scraps.GUI.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(627, 357);
+            this.Controls.Add(this._WonRafflesButton);
             this.Controls.Add(this._InfoButton);
             this.Controls.Add(this._SettingsButton);
             this.Controls.Add(this._LogWindow);
@@ -148,6 +163,7 @@ namespace Scraps.GUI.Forms
         private System.Windows.Forms.RichTextBox _LogWindow;
         private System.Windows.Forms.Button _SettingsButton;
         private System.Windows.Forms.Button _InfoButton;
+        private System.Windows.Forms.Button _WonRafflesButton;
         private System.Windows.Forms.NotifyIcon _TrayIcon;
     }
 }
