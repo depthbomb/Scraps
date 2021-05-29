@@ -1,9 +1,15 @@
 # Changelog
 
+## 4.1.3.0
+
+- Added ability to clear the WebView2 user data folder in the settings window
+- WebView2 windows will no long act as a dialog
+  - This means that they won't block interaction with the application while they are open
+
 ## 4.1.2.0
 
 - Added announcement system
-  - This will check the ANNOUNCEMENT file located in this repo and display its message first thing in the console on startup
+  - This will check the ANNOUNCEMENT file located in this repo and display its message in the console on startup
 
 ## 4.1.1.0
 

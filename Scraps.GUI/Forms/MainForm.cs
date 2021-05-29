@@ -213,7 +213,7 @@ namespace Scraps.GUI.Forms
         {
             string cookie = Properties.UserConfig.Default.Cookie;
             var webWindow = new WebViewForm("https://scrap.tf/raffles/won", $"scr_session={cookie}");
-                webWindow.ShowDialog(this);
+                webWindow.Show();
         }
 
         private void SettingsButton_OnClick(object sender, EventArgs e)

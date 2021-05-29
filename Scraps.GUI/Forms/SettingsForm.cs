@@ -17,14 +17,19 @@
 #endregion License
 
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 using Scraps.GUI.RaffleRunner;
+
+using ByteSizeLib;
 
 namespace Scraps.GUI.Forms
 {
     public partial class SettingsForm : Form
     {
+        private const string CLEAR_USER_DATA_TEXT = "Clear user data";
+
         private readonly RaffleRunnerService _runner;
 
         public SettingsForm(RaffleRunnerService runner)
@@ -34,6 +39,7 @@ namespace Scraps.GUI.Forms
             InitializeComponent();
             SubscribeToHelpEvents();
             PopulateControlValues();
+            GetUserDataSize();
         }
 
         private void SubscribeToHelpEvents()
@@ -62,6 +68,9 @@ namespace Scraps.GUI.Forms
             _IncrementScanDelayToggle.HelpRequested += (object s, HelpEventArgs h)
                 => Utils.ShowInfo("Help", "Enabling this will make Scraps increment the Scan Delay by 1 second if a scan operation resulted in no available raffles to join.");
 
+            _ClearUserDataButton.HelpRequested += (object s, HelpEventArgs h)
+                => Utils.ShowInfo("Help", "Clears the user data folder generated when using WebView2 instances. This may affect performance.");
+
             _SaveButton.HelpRequested += (object s, HelpEventArgs h)
                 => Utils.ShowInfo("Help", "Settings changes made won't take effect until this button is clicked.");
         }
@@ -77,6 +86,8 @@ namespace Scraps.GUI.Forms
             _JoinDelayInput.Value             = Properties.UserConfig.Default.JoinDelay;
             _IncrementScanDelayToggle.Checked = Properties.UserConfig.Default.IncrementScanDelay;
         }
+
+        private void ClearUserDataButton_OnClick(object sender, EventArgs e) => DeleteWebViewUserData();
 
         private void SaveButton_OnClick(object sender, EventArgs e)
         {
@@ -114,5 +125,43 @@ namespace Scraps.GUI.Forms
         private bool InputIsValid() => (
             !string.IsNullOrEmpty(_CookieInput.Text)
         );
+
+        private void GetUserDataSize()
+        {
+            string folder = Path.GetFullPath("Scraps.GUI.exe.WebView2");
+            if (Directory.Exists(folder))
+            {
+                long size = 0;
+                var di = new DirectoryInfo(folder);
+                foreach (var fi in di.GetFiles("*", SearchOption.AllDirectories))
+                {
+                    size += fi.Length;
+                }
+
+                _ClearUserDataButton.Enabled = true;
+                _ClearUserDataButton.Text = string.Format("{0} ({1})", CLEAR_USER_DATA_TEXT, ByteSize.FromBytes(size).ToString());
+            }
+            else
+            {
+                _ClearUserDataButton.Text = CLEAR_USER_DATA_TEXT;
+            }
+        }
+
+        private void DeleteWebViewUserData()
+        {
+            _ClearUserDataButton.Enabled = false;
+            _ClearUserDataButton.Text = "Clearing...";
+
+            try
+            {
+                Directory.Delete("./Scraps.GUI.exe.WebView2", true);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("There was a problem clearing WebView2 user data. Close any open WebView2 windows and try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            GetUserDataSize();
+        }
     }
 }
