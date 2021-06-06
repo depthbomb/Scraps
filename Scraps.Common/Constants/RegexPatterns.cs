@@ -22,14 +22,14 @@ namespace Scraps.Common.Constants
 {
     public class RegexPatterns
     {
-        public static readonly Regex CsrfRegex = new(@"ScrapTF\.User\.Hash = ""([a-f0-9]{64})"";");
-        public static readonly Regex RaffleEntryRegex = new(@"ScrapTF\.Raffles\.RedirectToRaffle\('([A-Z0-9]{6,})'\)");
-        public static readonly Regex RaffleHashRegex = new(@"EnterRaffle\('[A-Z0-9]{6,}', '([a-f0-9]{64})'");
-        public static readonly Regex RaffleLimitRegex = new(@"total=""(\d+)"" data-max=""(\d+)");
-        public static readonly Regex RaffleQualityRegex = new(@"class=""item hoverable (?:quality(\d{1,2}))?\s*(?:rarity([a-z]{3,}))?\s*app\d{3,} "" style");
-        public static readonly Regex RaffleWithdrawRegex = new(@"ScrapTF\.Raffles\.WithdrawRaffle\('([A-Z0-9]{6,})'\)");
-        public static readonly Regex HoneypotRaffleStyleRegex = new(@"<style>\.enter-raffle-btns \.btn{(.*)}<\/style>");
-        public static readonly Regex HoneypotRaffleMaxEntriesRegex = new(@"data-max=""(\d{1,})""");
-        public static readonly Regex HoneypotRaffleBannedUsersRegex = new(@"<img class='tiny-raffle-avatar\s?' style='border-color:\s?#CC1100;?' src='(.*)' loading=""lazy""\s?\/>");
+        public static readonly Regex CsrfRegex = new(@"ScrapTF\.User\.Hash = ""([a-f0-9]{64})"";", RegexOptions.Compiled);
+        public static readonly Regex RaffleEntryRegex = new(@"ScrapTF\.Raffles\.RedirectToRaffle\('([A-Z0-9]{6,})'\)", RegexOptions.Compiled);
+        public static readonly Regex RaffleHashRegex = new(@"EnterRaffle\('[A-Z0-9]{6,}', '([a-f0-9]{64})'", RegexOptions.Compiled);
+        public static readonly Regex RaffleLimitRegex = new(@"total=""(\d+)"" data-max=""(\d+)", RegexOptions.Compiled);
+        public static readonly Regex RaffleWithdrawRegex = new(@"ScrapTF\.Raffles\.WithdrawRaffle\('([A-Z0-9]{6,})'\)", RegexOptions.Compiled);
+        public static readonly Regex WonRafflesAlertRegex = new(@"You've won \d raffles? that must be withdrawn", RegexOptions.Compiled);
+        public static readonly Regex HoneypotRaffleStyleRegex = new(@"<style>\.enter-raffle-btns \.btn{(.*)}<\/style>", RegexOptions.Compiled);
+        public static readonly Regex HoneypotRaffleMaxEntriesRegex = new(@"data-max=""(\d{1,})""", RegexOptions.Compiled);
+        public static readonly Regex HoneypotRaffleBannedUsersRegex = new(@"<img class='tiny-raffle-avatar\s?' style='border-color:\s?#CC1100;?' src='(.*)' loading=""lazy""\s?\/>", RegexOptions.Compiled);
     }
 }
