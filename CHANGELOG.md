@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.4.0
+
+- Updated dependencies
+- RegEx patterns are now compiled at runtime which should result in a performance gain for some operations
+- Simplified the method for checking for won raffles
+
 ## 4.1.3.0
 
 - Added ability to clear the WebView2 user data folder in the settings window

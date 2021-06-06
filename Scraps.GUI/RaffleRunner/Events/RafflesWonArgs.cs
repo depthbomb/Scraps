@@ -23,14 +23,11 @@ namespace Scraps.GUI.RaffleRunner.Events
 {
     public class RafflesWonArgs : EventArgs
     {
-        /// <summary>
-        /// IDs of raffles that the account has won
-        /// </summary>
-        public List<string> RaffleIds { get; set; }
+        public string Message { get; set; }
 
-        public RafflesWonArgs(List<string> raffleIds)
+        public RafflesWonArgs(string message)
         {
-            RaffleIds = raffleIds;
+            Message = message;
         }
     }
 }

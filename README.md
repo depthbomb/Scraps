@@ -34,7 +34,7 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Features
 
-- Cross-platform
+- Cross-platform version included
 - Fast and lighweight; no need to install Python/Node.JS/Java/etc, doesn't use browser automation
 - Easy to set up and configure, simply extract and run
 - Detailed logging so you can see everything it does and makes it easier to report problems

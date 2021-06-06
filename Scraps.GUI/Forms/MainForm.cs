@@ -141,13 +141,11 @@ namespace Scraps.GUI.Forms
 
         private void OnRafflesWon(object sender, RafflesWonArgs e)
         {
-            var wonRaffles = e.RaffleIds;
-            int numWonRaffles = wonRaffles.Count;
-
             bool enableToast = Properties.UserConfig.Default.ToastNotifications;
             if (enableToast)
             {
-                _TrayIcon.ShowBalloonTip(60_000, "Items Need Withdrawing", string.Format("You've won {0} {1} that {2} to be withdrawn!", numWonRaffles, "raffle".Pluralize(numWonRaffles), "needs".Pluralize(numWonRaffles, "need")), ToolTipIcon.Info);
+                string message = e.Message;
+                _TrayIcon.ShowBalloonTip(60_000, "Items Need Withdrawing", message, ToolTipIcon.Info);
                 _TrayIcon.BalloonTipClicked += (object sender, EventArgs e) =>
                 {
                     string cookie = Properties.UserConfig.Default.Cookie;

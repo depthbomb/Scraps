@@ -305,7 +305,7 @@ namespace Scraps.GUI.RaffleRunner
                             var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
                             if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
                             {
-                                await CheckForWonRafflesAsync();
+                                await CheckForWonRafflesAsync(html);
                             }
                             else
                             {
@@ -388,33 +388,17 @@ namespace Scraps.GUI.RaffleRunner
             }
         }
 
-        private async Task CheckForWonRafflesAsync()
+        private async Task CheckForWonRafflesAsync(string html)
         {
-            string url = "https://scrap.tf/raffles/won";
-            string html = await _http.GetStringAsync(url);
-            var raffleIds = RegexPatterns.RaffleEntryRegex.Matches(html);
-            List<string> wonRaffles = new();
-
-            foreach (Match id in raffleIds)
-            {
-                string raffleId = id.Groups[1].Value;
-                if (!_enteredRaffles.Contains(raffleId))
-                {
-                    _log.Debug("Adding {Entered} to won raffles list", raffleId);
-
-                    _enteredRaffles.Add(raffleId);
-
-                    wonRaffles.Add(raffleId);
-                }
-            }
-
             if (!_alertedOfWonRaffles)
             {
-                int numWonRaffles = wonRaffles.Count;
+                var match = RegexPatterns.WonRafflesAlertRegex.Match(html);
 
-                OnRafflesWon?.Invoke(this, new RafflesWonArgs(wonRaffles));
+                string message = match.Groups[0].Value;
 
-                _log.Info("You've won {Number} " + "raffle".Pluralize(numWonRaffles) + " that " + "needs".Pluralize(numWonRaffles, "need") + " to be withdrawn!", numWonRaffles);
+                OnRafflesWon?.Invoke(this, new RafflesWonArgs(message));
+
+                _log.Info(message);
 
                 _alertedOfWonRaffles = true;
             }
