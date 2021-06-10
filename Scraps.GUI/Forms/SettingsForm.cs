@@ -102,6 +102,11 @@ namespace Scraps.GUI.Forms
 
             if (InputIsValid())
             {
+                if (cookie != Properties.UserConfig.Default.Cookie)
+                {
+                    DeleteWebViewUserData();
+                }
+
                 Properties.UserConfig.Default.Cookie = cookie;
                 Properties.UserConfig.Default.SortByNew = sortByNew;
                 Properties.UserConfig.Default.Paranoid = paranoid;

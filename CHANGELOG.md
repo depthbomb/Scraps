@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.5.0
+
+- Added a check for profiles that are not properly set up
+- Scraps will now successfully stop if it encounters a problem while obtaining the CSRF token (such as if the account is banned)
+- WebView2 user data will now be automatically cleared when the cookie value is changed
+
 ## 4.1.4.0
 
 - Updated dependencies

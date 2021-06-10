@@ -16,13 +16,9 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.Common.Constants
+using System;
+
+namespace Scraps.GUI.RaffleRunner.Events
 {
-    public class Strings
-    {
-        public const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36";
-        public const string AccountBanned = "You have received a site-ban";
-        public const string ProfileSetup = "Scrap.TF requires your Steam profile and inventory set to <b>Public</b> visibility.";
-        public const string SiteDown = "<div class=\"dialog-title\">We're down!</div>";
-    }
+    public class ProfileNotSetUpArgs : EventArgs { }
 }

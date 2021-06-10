@@ -23,7 +23,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 using NLog;
 
@@ -80,6 +79,11 @@ namespace Scraps.GUI.RaffleRunner
         public event EventHandler<AccountBannedArgs> OnAccountBanned;
 
         /// <summary>
+        /// Raised when the account is not set up properly to use Scrap.TF
+        /// </summary>
+        public event EventHandler<ProfileNotSetUpArgs> OnProfileNotSetUp;
+
+        /// <summary>
         /// Raised when the CSRF token has been parsed from the site
         /// </summary>
         public event EventHandler<CsrfTokenObtainedArgs> OnCsrfTokenObtained;
@@ -127,6 +131,8 @@ namespace Scraps.GUI.RaffleRunner
             _cancelTokenSource = new();
             _cancelToken = _cancelTokenSource.Token;
 
+            Running = true;
+
             SendStatus("Starting");
             _log.Info("Starting");
 
@@ -159,8 +165,6 @@ namespace Scraps.GUI.RaffleRunner
             _joinDelay = Properties.UserConfig.Default.JoinDelay;
 
             OnRunning?.Invoke(this, new());
-
-            Running = true;
 
             while (!_cancelToken.IsCancellationRequested)
             {
@@ -216,15 +220,27 @@ namespace Scraps.GUI.RaffleRunner
         #region Private Methods
         private async Task GetCsrfTokenAsync()
         {
-            bool tokenObtained = false;
-            while (!tokenObtained)
+            bool tryObtainingToken = false;
+            while (!tryObtainingToken)
             {
                 SendStatus("Attempting to obtain CSRF token");
 
                 string html = await _http.GetStringAsync("https://scrap.tf");
                 if (html.Contains(Strings.AccountBanned))
                 {
+                    tryObtainingToken = true;
+
+                    _log.Error("Profile is banned.");
+
                     OnAccountBanned?.Invoke(this, new());
+                }
+                else if (html.Contains(Strings.ProfileSetup))
+                {
+                    tryObtainingToken = true;
+
+                    _log.Error("Profile is not set up to use Scrap.TF. See the website for more info.");
+
+                    OnProfileNotSetUp?.Invoke(this, new());
                 }
                 else
                 {
@@ -234,7 +250,7 @@ namespace Scraps.GUI.RaffleRunner
                         _csrfToken = csrf.Groups[1].Value;
                         OnCsrfTokenObtained?.Invoke(this, new(_csrfToken));
 
-                        tokenObtained = true;
+                        tryObtainingToken = true;
                     }
                     else
                     {

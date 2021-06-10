@@ -103,6 +103,7 @@ namespace Scraps.GUI.Forms
             _runner.OnStarting += OnStarting;
             _runner.OnRunning += OnRunning;
             _runner.OnAccountBanned += OnAccountBanned;
+            _runner.OnProfileNotSetUp += OnProfileNotSetUp;
             _runner.OnRafflesWon += OnRafflesWon;
             _runner.OnStopping += OnStopping;
             _runner.OnStopped += OnStopped;
@@ -138,6 +139,8 @@ namespace Scraps.GUI.Forms
         }
 
         private void OnAccountBanned(object sender, AccountBannedArgs e) => _runner.Cancel();
+
+        private void OnProfileNotSetUp(object sender, ProfileNotSetUpArgs e) => _runner.Cancel();
 
         private void OnRafflesWon(object sender, RafflesWonArgs e)
         {
