@@ -102,11 +102,6 @@ namespace Scraps.GUI.Forms
 
             if (InputIsValid())
             {
-                if (cookie != Properties.UserConfig.Default.Cookie)
-                {
-                    DeleteWebViewUserData();
-                }
-
                 Properties.UserConfig.Default.Cookie = cookie;
                 Properties.UserConfig.Default.SortByNew = sortByNew;
                 Properties.UserConfig.Default.Paranoid = paranoid;
@@ -120,7 +115,7 @@ namespace Scraps.GUI.Forms
 
                 if (_runner is RaffleRunnerService && _runner.Running)
                 {
-                    Utils.ShowWarning("Warning", "Some changes won't go into effect until the raffle runner is restarted.", MessageBoxButtons.OK);
+                    Utils.ShowWarning("Warning", "Some changes won't go into effect until the raffle runner is restarted.");
                 }
 
                 this.Close();

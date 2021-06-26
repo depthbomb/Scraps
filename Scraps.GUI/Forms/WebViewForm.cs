@@ -38,6 +38,7 @@ namespace Scraps.GUI.Forms
                 InitializeComponent();
                 InitializeBrowserAsync(url, cookies);
 
+                _WebBrowser.NavigationStarting += WebBrowser_NavigationStarting;
                 _WebBrowser.NavigationCompleted += WebBrowser_OnNavigationCompleted;
                 _StatusStripButton.Click += StatusStripButton_OnClick;
             }
@@ -120,6 +121,15 @@ namespace Scraps.GUI.Forms
             }
 
             _WebBrowser.CoreWebView2.Navigate(url);
+        }
+
+        private void WebBrowser_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
+        {
+            string url = e.Uri;
+            string status = string.Format("Loading {0}", url);
+
+            this.Text = status;
+            _StatusStripLabel.Text = status;
         }
 
         private void WebBrowser_OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)

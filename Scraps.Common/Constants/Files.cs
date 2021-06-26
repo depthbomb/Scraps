@@ -23,5 +23,6 @@ namespace Scraps.Common.Constants
     public class Files
     {
         public static readonly string ConfigFile = Path.Combine(Paths.StorePath, "Config.json");
+        public static readonly string LogoFile = Path.Combine(Paths.DataPath, "Logo.png");
     }
 }

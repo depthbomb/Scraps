@@ -18,7 +18,10 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Diagnostics;
 using System.Windows.Forms;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 using NLog;
 using NLog.Config;
@@ -30,6 +33,7 @@ using Scraps.Common.Constants;
 using Scraps.GUI.RaffleRunner;
 using Scraps.Common.Announcement;
 using Scraps.GUI.RaffleRunner.Events;
+using System.Net.Http;
 
 namespace Scraps.GUI.Forms
 {
@@ -40,18 +44,26 @@ namespace Scraps.GUI.Forms
         private bool _running = false;
         private bool _exitOnCancel = false;
 
-        public MainForm()
+        public MainForm(string[] args)
         {
+            ToastNotificationManagerCompat.OnActivated += Toast_OnActivated;
+
             InitializeComponent();
+
+            var updater = new UpdaterForm();
+                updater.ShowDialog();
 
             InitializeLogger();
             InitializeSettings();
             InitializeRaffleRunner();
 
-            var updater = new UpdaterForm();
-                updater.ShowDialog(this);
-
             CheckForAnnouncement();
+
+            if (args.Contains("--debug"))
+            {
+                var debugForm = new DebugForm();
+                    debugForm.Show();
+            }
 
             this.Text = string.Format("Scraps - {0}", Common.Constants.Version.Full);
             this.FormClosing += MainForm_OnClosing;
@@ -64,8 +76,6 @@ namespace Scraps.GUI.Forms
                 var settingsWindow = new SettingsForm(_runner ?? null);
                     settingsWindow.ShowDialog(this);
             }
-
-            Properties.UserConfig.Default.Reload();
         }
 
         private void InitializeLogger()
@@ -147,14 +157,34 @@ namespace Scraps.GUI.Forms
             bool enableToast = Properties.UserConfig.Default.ToastNotifications;
             if (enableToast)
             {
-                string message = e.Message;
-                _TrayIcon.ShowBalloonTip(60_000, "Items Need Withdrawing", message, ToolTipIcon.Info);
-                _TrayIcon.BalloonTipClicked += (object sender, EventArgs e) =>
+                string logo = Files.LogoFile;
+                if (!File.Exists(logo))
                 {
-                    string cookie = Properties.UserConfig.Default.Cookie;
-                    var webWindow = new WebViewForm("https://scrap.tf/raffles/won", $"scr_session={cookie}");
-                        webWindow.ShowDialog(this);
-                };
+                    using (var http = new HttpClient())
+                    {
+                        string url = string.Format("https://scrap.tf/apple-touch-icon.png?{0}", Guid.NewGuid());
+                        byte[] data = http.GetByteArrayAsync(url).Result;
+                        File.WriteAllBytes(logo, data);
+                    }
+                }
+
+                string message = e.Message;
+                var viewButton = new ToastButton();
+                    viewButton.AddArgument("action", "viewRafflesWonPage");
+                    viewButton.SetContent("View Won Raffles");
+
+                var dismissButton = new ToastButton();
+                    dismissButton.SetContent("Dismiss");
+                    dismissButton.SetDismissActivation();
+
+                var toast = new ToastContentBuilder();
+                    toast.AddAppLogoOverride(new Uri(logo), ToastGenericAppLogoCrop.Circle, null, false);
+                    toast.AddAttributionText(string.Format("Scraps {0}", Common.Constants.Version.Full));
+                    toast.AddText("Items Need Withdrawing");
+                    toast.AddText(message);
+                    toast.AddButton(viewButton);
+                    toast.AddButton(dismissButton);
+                    toast.Show();
             }
         }
 
@@ -170,6 +200,7 @@ namespace Scraps.GUI.Forms
             _StartStopButton.Image = Icons.Start;
             _StartStopButton.Enabled = true;
             _StartStopButton.Text = "Start";
+            ResetStatus();
 
             if (_exitOnCancel)
             {
@@ -183,10 +214,20 @@ namespace Scraps.GUI.Forms
         {
             // Finish any log writing that needs to be done.
             LogManager.Flush();
+
+            ToastNotificationManagerCompat.OnActivated -= Toast_OnActivated;
         }
 
         private async void StartStopButton_OnClick(object sender, EventArgs e)
         {
+            if (Properties.UserConfig.Default.Cookie.IsNullOrEmpty())
+            {
+                var settingsWindow = new SettingsForm(null);
+                    settingsWindow.ShowDialog(this);
+
+                return;
+            }
+
             if (_running)
             {
                 _runner.Cancel();
@@ -197,7 +238,7 @@ namespace Scraps.GUI.Forms
                 {
                     await _runner.StartAsync();
                 }
-                catch(Exception ex)
+                catch
                 {
                     ResetStatus();
 
@@ -210,12 +251,7 @@ namespace Scraps.GUI.Forms
             }
         }
 
-        private void WonRafflesButton_OnClick(object sender, EventArgs e)
-        {
-            string cookie = Properties.UserConfig.Default.Cookie;
-            var webWindow = new WebViewForm("https://scrap.tf/raffles/won", $"scr_session={cookie}");
-                webWindow.Show();
-        }
+        private void WonRafflesButton_OnClick(object sender, EventArgs e) => ShowWebViewWindow("https://scrap.tf/raffles/won", $"scr_session={Properties.UserConfig.Default.Cookie}");
 
         private void SettingsButton_OnClick(object sender, EventArgs e)
         {
@@ -229,5 +265,18 @@ namespace Scraps.GUI.Forms
                 aboutWindow.ShowDialog(this);
         }
         #endregion
+
+        private void ShowWebViewWindow(string url, string cookies = null) => (new WebViewForm(url, cookies)).Show();
+
+        private void Toast_OnActivated(ToastNotificationActivatedEventArgsCompat e)
+        {
+            var parsed = ToastArguments.Parse(e.Argument);
+            switch (parsed["action"])
+            {
+                case "viewRafflesWonPage":
+                    Process.Start("explorer.exe", "https://scrap.tf/raffles/won");
+                    break;
+            }
+        }
     }
 }

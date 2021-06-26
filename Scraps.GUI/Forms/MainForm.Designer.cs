@@ -29,7 +29,6 @@ namespace Scraps.GUI.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this._StartStopButton = new System.Windows.Forms.Button();
             this._StatusStrip = new System.Windows.Forms.StatusStrip();
@@ -38,7 +37,6 @@ namespace Scraps.GUI.Forms
             this._SettingsButton = new System.Windows.Forms.Button();
             this._InfoButton = new System.Windows.Forms.Button();
             this._WonRafflesButton = new System.Windows.Forms.Button();
-            this._TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this._StatusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -124,12 +122,6 @@ namespace Scraps.GUI.Forms
             this._WonRafflesButton.UseVisualStyleBackColor = true;
             this._WonRafflesButton.Click += new System.EventHandler(this.WonRafflesButton_OnClick);
             // 
-            // _TrayIcon
-            // 
-            this._TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("_TrayIcon.Icon")));
-            this._TrayIcon.Text = "Scraps";
-            this._TrayIcon.Visible = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -164,7 +156,6 @@ namespace Scraps.GUI.Forms
         private System.Windows.Forms.Button _SettingsButton;
         private System.Windows.Forms.Button _InfoButton;
         private System.Windows.Forms.Button _WonRafflesButton;
-        private System.Windows.Forms.NotifyIcon _TrayIcon;
     }
 }
 

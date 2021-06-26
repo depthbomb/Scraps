@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Scraps.GUI": {
+      "commandName": "Project",
+      "commandLineArgs": "--debug"
+    }
+  }
+}

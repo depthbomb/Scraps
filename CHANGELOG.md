@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.2.0.0
+
+- Greatly improved toast notifications
+  - No more useless tray icon!
+- Added a debug mode that you can see by launching the program with the `--debug` flag
+- Updated WebView2 window design
+- WebView2 user data is no longer automatically cleared when you change cookies
+  - Make sure to do it manually yourself
+- The update routine will run first before initializing settings
+- The settings window will now be opened if you try to start the raffle runner without a cookie
+
 ## 4.1.5.0
 
 - Added a check for profiles that are not properly set up
