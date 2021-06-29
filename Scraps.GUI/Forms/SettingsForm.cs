@@ -21,6 +21,7 @@ using System.IO;
 using System.Windows.Forms;
 
 using Scraps.GUI.RaffleRunner;
+using Scraps.Common.Constants;
 
 using ByteSizeLib;
 
@@ -128,7 +129,7 @@ namespace Scraps.GUI.Forms
 
         private void GetUserDataSize()
         {
-            string folder = Path.GetFullPath("Scraps.GUI.exe.WebView2");
+            string folder = Path.Combine(Paths.DataPath, "EBWebView");
             if (Directory.Exists(folder))
             {
                 long size = 0;

@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.2.1.1
+
+- Fixed the Clear User Data button on the settings page being broken
+
 ## 4.2.1.0
 
 - Improved WebView2 installation process
