@@ -155,7 +155,7 @@ namespace Scraps.GUI.Forms
 
             try
             {
-                Directory.Delete("./Scraps.GUI.exe.WebView2", true);
+                Directory.Delete(Path.Combine(Paths.DataPath, "EBWebView"), true);
             }
             catch (Exception)
             {
