@@ -21,7 +21,10 @@ using System.IO;
 using System.Net.Http;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
+
+using Scraps.Common.Constants;
 
 namespace Scraps.GUI.Forms
 {
@@ -31,17 +34,15 @@ namespace Scraps.GUI.Forms
         {
             if (!IsRuntimeInstalled())
             {
-                DownloadAndInstallRuntime();
+                Task.Run(async () => await DownloadAndInstallRuntimeAsync()).Wait();
             }
-            else
-            {
-                InitializeComponent();
-                InitializeBrowserAsync(url, cookies);
 
-                _WebBrowser.NavigationStarting += WebBrowser_NavigationStarting;
-                _WebBrowser.NavigationCompleted += WebBrowser_OnNavigationCompleted;
-                _StatusStripButton.Click += StatusStripButton_OnClick;
-            }
+            InitializeComponent();
+            InitializeBrowserAsync(url, cookies);
+
+            _WebBrowser.NavigationStarting += WebBrowser_NavigationStarting;
+            _WebBrowser.NavigationCompleted += WebBrowser_OnNavigationCompleted;
+            _StatusStripButton.Click += StatusStripButton_OnClick;
 
             this.FormClosing += OnFormClosing;
         }
@@ -60,47 +61,55 @@ namespace Scraps.GUI.Forms
             }
         }
 
-        private void DownloadAndInstallRuntime()
+        private async Task DownloadAndInstallRuntimeAsync()
         {
             string runtimeUrl = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
-            if (MessageBox.Show(this, "This feature requires the WebView2 Runtime to be installed on your system.\n\nWould you like to download and install the runtime?", "WebView2 Runtime Required", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+            using (var http = new HttpClient())
             {
-                using (var http = new HttpClient())
+                var request = await http.GetAsync(runtimeUrl);
+                if (request.IsSuccessStatusCode)
                 {
-                    var request = http.GetAsync(runtimeUrl).Result;
-                    if (request.IsSuccessStatusCode)
+                    string tempFile = Path.GetTempFileName();
+                    byte[] data = await request.Content.ReadAsByteArrayAsync();
+
+                    File.WriteAllBytes(tempFile, data);
+
+                    var installation = Process.Start(new ProcessStartInfo
                     {
-                        string tempFile = Path.GetTempFileName();
-                        byte[] data = request.Content.ReadAsByteArrayAsync().Result;
+                        FileName = tempFile,
+                        Arguments = "/install",
+                        Verb = "runas"
+                    });
 
-                        File.WriteAllBytes(tempFile, data);
+                    await installation.WaitForExitAsync();
 
-                        Process.Start(tempFile);
+                    File.Delete(tempFile);
+
+                    if (installation.ExitCode != 0)
+                    {
+                        MessageBox.Show(this, "The runtime could not be installed. Please attempt to install it manually or create an issue on the GitHub repo.", "Failed to install runtime", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
                         Application.Exit();
                     }
+                }
+                else
+                {
+                    if (MessageBox.Show(this, "The runtime could not be downloaded. Would you like to manually download the runtime?", "Failed to download runtime", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                    {
+                        Process.Start("explorer.exe", runtimeUrl);
+                    }
                     else
                     {
-                        if (MessageBox.Show(this, "The runtime could not be downloaded. Would you like to manually download the runtime?", "Failed to download runtime", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
-                        {
-                            Process.Start("explorer.exe", runtimeUrl);
-                        }
-                        else
-                        {
-                            Application.Exit();
-                        }
+                        Application.Exit();
                     }
                 }
-            }
-            else
-            {
-                this.Close();
             }
         }
 
         private async void InitializeBrowserAsync(string url, string cookies)
         {
-            await _WebBrowser.EnsureCoreWebView2Async(null);
+            var environment = await CoreWebView2Environment.CreateAsync(userDataFolder: Paths.DataPath);
+            await _WebBrowser.EnsureCoreWebView2Async(environment);
 
             _WebBrowser.CoreWebView2.Settings.AreDevToolsEnabled = false;
 

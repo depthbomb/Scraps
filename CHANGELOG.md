@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.2.1.0
+
+- Improved WebView2 installation process
+- Changed location of WebView2 user data
+- Updated to a prerelease version of WebView2
+  - Seems to work fine for me
+- Application data located in *My Documents\Caprine Logic\Scraps* will be deleted upon uninstallation
+  - This includes logs, WebView2 user data, temporary files, and the Scraps CLI application config file
+  - Your Scraps GUI application settings will not be affected
+
 ## 4.2.0.0
 
 - Greatly improved toast notifications
