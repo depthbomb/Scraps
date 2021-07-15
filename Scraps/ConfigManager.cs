@@ -27,9 +27,8 @@ namespace Scraps
 {
     public class ConfigManager
     {
-        private string _configFile = Files.ConfigFile;
-
         public Config Config;
+        private string _configFile = Files.ConfigFile;
 
         public void Create() => Save(new Config());
 

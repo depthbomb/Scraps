@@ -41,11 +41,52 @@ namespace Scraps
         static Logger _log;
         static Config _config;
         static HttpClient _http;
+        static bool _inDocker = (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") is string env && env == "true");
 
         static async Task Main(string[] args)
         {
-            if (IsAlreadyRunning()) Environment.Exit(0);
+            if (_inDocker)
+            {
+                await DockerBootUpAsync(args);
+            }
+            else
+            {
+                if (IsAlreadyRunning()) Environment.Exit(1);
 
+                await NormalBootUpAsync(args);
+            }
+        }
+
+        static async Task DockerBootUpAsync(string[] args)
+        {
+            Console.WriteLine("Scraps - Scrap.TF Raffle Bot");
+            Console.WriteLine("By depthbomb - https://s.team/p/fwc-crhc");
+
+            if (args.Length != 0)
+            {
+                // The cookie value will be required to be passed as a launch argument, so assume the first argument is the cookie
+                string cookie = args[0];
+                _config = new Config
+                {
+                    Cookie = cookie
+                };
+            }
+            else
+            {
+                Console.WriteLine("Please pass your cookie value as the first argument when running this container.");
+                Environment.Exit(1);
+                return;
+            }
+
+            InitializeLogger();
+            InitializeHttpClient();
+
+            var bot = new Bot(_config, _http);
+            await bot.RunAsync();
+        }
+
+        static async Task NormalBootUpAsync(string[] args)
+        {
             Console.Title = string.Format("Scraps - {0}", Common.Constants.Version.Full);
 
             Console.WriteLine();

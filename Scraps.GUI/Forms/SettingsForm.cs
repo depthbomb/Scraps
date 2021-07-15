@@ -157,9 +157,9 @@ namespace Scraps.GUI.Forms
             {
                 Directory.Delete(Path.Combine(Paths.DataPath, "EBWebView"), true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("There was a problem clearing WebView2 user data. Close any open WebView2 windows and try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("There was a problem clearing WebView2 user data. Close any open WebView2 windows and try again.\n\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             GetUserDataSize();

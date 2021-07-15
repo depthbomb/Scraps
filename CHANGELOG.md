@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.2.2.0
+
+The console version of Scraps is now also available as a [Docker image!](https://hub.docker.com/repository/docker/depthbomb/scraps)
+
+- The error reason will be displayed if WebView2 user data cannot be deleted
+
 ## 4.2.1.1
 
 - Fixed the Clear User Data button on the settings page being broken

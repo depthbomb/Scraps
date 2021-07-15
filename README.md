@@ -41,6 +41,10 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 - Honeypot/trap raffle detection; avoids fake raffles created by staff members that will get you banned
 - Basic proxy support
 
+## Using the Docker version
+
+The Docker version of the console application allows you to easily run Scraps without needing to install anything onto your system. The Docker version has many features disabled and requires your cookie value to be passed to it as the very first argument when running it.
+
 ## Requirements
 
 The **.NET Desktop Runtime 5.0.x** is required to run both the GUI and Console application on Windows. The runtime installer can be downloaded [here.](https://dotnet.microsoft.com/download/dotnet/5.0)
