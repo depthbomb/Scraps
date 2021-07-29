@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.2.3.0
+
+- Updated dependencies
+
 ## 4.2.2.0
 
 The console version of Scraps is now also available as a [Docker image!](https://hub.docker.com/repository/docker/depthbomb/scraps)
