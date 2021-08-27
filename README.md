@@ -51,7 +51,7 @@ The **.NET Desktop Runtime 5.0.x** is required to run both the GUI and Console a
 
 Unix builds are self-contained and do not require a runtime to be installed.
 
-## Usage
+## Console Version Usage
 
 See [INSTRUCTIONS.md](https://github.com/depthbomb/Scraps/blob/master/INSTRUCTIONS.md)
 
