@@ -533,6 +533,8 @@ namespace Scraps.GUI.RaffleRunner
                 }
                 else
                 {
+                    _enteredRaffles.Add(raffle);
+
                     _log.Error("Could not obtain hash from raffle {Id}", raffle);
                 }
             }

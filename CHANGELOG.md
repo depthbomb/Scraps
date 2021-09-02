@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.2.5.0
+
+- If a hash cannot be obtained from a raffle page then it will be skipped in subsequent checks
+- Updated dependencies
+
 ## 4.2.4.0
 
 - Updated dependencies
