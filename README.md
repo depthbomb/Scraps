@@ -15,7 +15,7 @@
 					<a href="https://github.com/depthbomb/Scraps/releases/latest"><img src="https://img.shields.io/github/downloads/depthbomb/Scraps/latest/total.svg?label=Downloads&logo=github&style=flat-square&cacheSeconds=300"></a>
 				</p>
 				<p>
-					<a href="https://ko-fi.com/O4O1DV77"><img src="https://ko-fi.com/img/githubbutton_sm.svg"></a>
+					<a href='https://ko-fi.com/O4O1DV77' target='_blank'><img height='36' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' alt='Buy Me a Coffee at ko-fi.com' /></a>
 				</p>
 				<img width="2000" height="0">
 			</td>
