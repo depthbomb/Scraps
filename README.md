@@ -15,8 +15,7 @@
 					<a href="https://github.com/depthbomb/Scraps/releases/latest"><img src="https://img.shields.io/github/downloads/depthbomb/Scraps/latest/total.svg?label=Downloads&logo=github&style=flat-square&cacheSeconds=300"></a>
 				</p>
 				<p>
-					<a href="https://patreon.com/depthbomb"><img src="https://img.shields.io/badge/Become%20a-Patron-F96854.svg?logo=patreon&style=flat-square&cacheSeconds=300"></a>
-					<a href="https://steamcommunity.com/tradeoffer/new/?partner=66133073&token=cFIlCTRq"><img src="https://img.shields.io/badge/Donate%20Items%20via-Steam-111111.svg?logo=steam&style=flat-square&cacheSeconds=300"></a>
+					<a href="https://ko-fi.com/O4O1DV77"><img src="https://ko-fi.com/img/githubbutton_sm.svg"></a>
 				</p>
 				<img width="2000" height="0">
 			</td>
