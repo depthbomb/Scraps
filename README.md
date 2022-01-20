@@ -34,7 +34,6 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Features
 
-- Cross-platform version included
 - Fast and lighweight; no need to install Python/Node.JS/Java/etc, doesn't use browser automation
 - Easy to set up and configure, simply extract and run
 - Detailed logging so you can see everything it does and makes it easier to report problems
@@ -42,9 +41,7 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Requirements
 
-The **.NET Desktop Runtime 6.0.x** is required to run both the GUI and Console application on Windows. The runtime installer can be downloaded [here.](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
-
-Unix builds are self-contained and do not require a runtime to be installed.
+- [.NET Desktop Runtime 6.x](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
 ## Avoiding Bans
 
