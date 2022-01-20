@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2021  Caprine Logic
+/// Copyright(C) 2022 Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@ namespace Scraps.Common.Constants
 {
     public class Strings
     {
-        public const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36";
-        public const string AccountBanned = "You have received a site-ban";
-        public const string ProfileSetup = "Scrap.TF requires your Steam profile and inventory set to <b>Public</b> visibility.";
-        public const string SiteDown = "<div class=\"dialog-title\">We're down!</div>";
+        public const string USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36";
+        public const string ACCOUNT_BANNED = "You have received a site-ban";
+        public const string PROFILE_SET_UP = "Scrap.TF requires your Steam profile and inventory set to <b>Public</b> visibility.";
+        public const string SITE_DOWN = "<div class=\"dialog-title\">We're down!</div>";
     }
 }

@@ -1,7 +1,7 @@
 #include "buttons.iss"
 
 #define MyAppName "Scraps"
-#define MyAppVersion "4.2.6.0"
+#define MyAppVersion "4.3.0.0"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "Scraps.GUI.exe"
 
@@ -14,7 +14,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL=https://github.com/depthbomb
 AppSupportURL=https://github.com/depthbomb/Scraps
 AppUpdatesURL=https://github.com/depthbomb/Scraps/releases
-AppCopyright=Copyright (C) 2021 Caprine Logic
+AppCopyright=Copyright (C) 2022 Caprine Logic
 VersionInfoVersion={#MyAppVersion}
 DefaultDirName={autopf}\{#MyAppPublisher}\{#MyAppName}
 DisableDirPage=yes
@@ -22,9 +22,9 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 AllowNoIcons=yes
 LicenseFile=.\license.txt
-OutputDir=..\Scraps\bin\Publish
+OutputDir=..\Scraps.GUI\bin\Publish
 OutputBaseFilename=scraps_setup
-SetupIconFile=..\Scraps\Scraps.ico
+SetupIconFile=..\Scraps.GUI\Scraps.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=classic
@@ -54,11 +54,9 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "..\Scraps.GUI\bin\Publish\win10-x64\Scraps.GUI.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Scraps.GUI\bin\Publish\win10-x64\WebView2Loader.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Scraps\bin\Publish\win-x64\Scraps.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\license.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [INI]
-Filename: "{app}\Instructions.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://bit.ly/scraps-instructions"
 Filename: "{app}\Changelog.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://bit.ly/scraps-changelog"
 Filename: "{app}\Source Code.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://bit.ly/scraps-repo"
 

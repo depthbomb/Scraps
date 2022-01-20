@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2021  Caprine Logic
+/// Copyright(C) 2022 Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ namespace Scraps.Common.Constants
 {
     public class Files
     {
-        public static readonly string ConfigFile = Path.Combine(Paths.StorePath, "Config.json");
-        public static readonly string LogoFile = Path.Combine(Paths.DataPath, "Logo.png");
+        public static readonly string CONFIG_FILE = Path.Combine(Paths.STORE_PATH, "Config.json");
+        public static readonly string LOGO_FILE = Path.Combine(Paths.DATA_PATH, "Logo.png");
     }
 }

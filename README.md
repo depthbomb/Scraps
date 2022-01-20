@@ -39,17 +39,12 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 - Easy to set up and configure, simply extract and run
 - Detailed logging so you can see everything it does and makes it easier to report problems
 - Honeypot/trap raffle detection; avoids fake raffles created by staff members that will get you banned
-- Basic proxy support
 
 ## Requirements
 
-The **.NET Desktop Runtime 5.0.x** is required to run both the GUI and Console application on Windows. The runtime installer can be downloaded [here.](https://dotnet.microsoft.com/download/dotnet/5.0)
+The **.NET Desktop Runtime 6.0.x** is required to run both the GUI and Console application on Windows. The runtime installer can be downloaded [here.](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
 Unix builds are self-contained and do not require a runtime to be installed.
-
-## Console Version Usage
-
-See [INSTRUCTIONS.md](https://github.com/depthbomb/Scraps/blob/master/INSTRUCTIONS.md)
 
 ## Avoiding Bans
 

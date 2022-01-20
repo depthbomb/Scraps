@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2021  Caprine Logic
+/// Copyright(C) 2022 Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.Toolkit.Uwp.Notifications;
@@ -33,7 +34,6 @@ using Scraps.Common.Constants;
 using Scraps.GUI.RaffleRunner;
 using Scraps.Common.Announcement;
 using Scraps.GUI.RaffleRunner.Events;
-using System.Net.Http;
 
 namespace Scraps.GUI.Forms
 {
@@ -93,7 +93,7 @@ namespace Scraps.GUI.Forms
                 ArchiveNumbering = ArchiveNumberingMode.Date,
                 ArchiveDateFormat = "yyyyMMddHHmm",
                 EnableArchiveFileCompression = true,
-                FileName = Path.Combine(Paths.LogsPath, "Scraps.${date:format=yyyy-MM}.log"),
+                FileName = Path.Combine(Paths.LOGS_PATH, "Scraps.${date:format=yyyy-MM}.log"),
                 CreateDirs = true,
                 MaxArchiveFiles = 5,
             };
@@ -157,7 +157,7 @@ namespace Scraps.GUI.Forms
             bool enableToast = Properties.UserConfig.Default.ToastNotifications;
             if (enableToast)
             {
-                string logo = Files.LogoFile;
+                string logo = Files.LOGO_FILE;
                 if (!File.Exists(logo))
                 {
                     using (var http = new HttpClient())

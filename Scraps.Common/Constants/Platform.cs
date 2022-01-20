@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2021  Caprine Logic
+/// Copyright(C) 2022 Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -23,6 +23,6 @@ namespace Scraps.Common.Constants
     public static class Platform
     {
         public static readonly string OS = Environment.OSVersion.Platform.ToString();
-        public static readonly bool IsUnix = OS == "Unix";
+        public static readonly bool IS_UNIX = OS == "Unix";
     }
 }

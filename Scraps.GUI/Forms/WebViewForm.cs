@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2021  Caprine Logic
+/// Copyright(C) 2022 Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ namespace Scraps.GUI.Forms
 
         private async void InitializeBrowserAsync(string url, string cookies)
         {
-            var environment = await CoreWebView2Environment.CreateAsync(userDataFolder: Paths.DataPath);
+            var environment = await CoreWebView2Environment.CreateAsync(userDataFolder: Paths.DATA_PATH);
             await _WebBrowser.EnsureCoreWebView2Async(environment);
 
             _WebBrowser.CoreWebView2.Settings.AreDevToolsEnabled = false;

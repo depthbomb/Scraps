@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.3.0.0
+
+- Ported to .NET 6
+  - Requires the [.NET Desktop Runtime 6.0.1](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+- The CLI version of Scraps has been removed
+  - You can still use the previous version's if you need it
+- Closing the settings dialog when no cookie is saved will close the program instead of taking you to the main form
+- Updated dependencies
+
 ## 4.2.6.0
 
 - Updated dependencies

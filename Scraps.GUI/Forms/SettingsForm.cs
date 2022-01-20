@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2021  Caprine Logic
+/// Copyright(C) 2022 Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -129,7 +129,7 @@ namespace Scraps.GUI.Forms
 
         private void GetUserDataSize()
         {
-            string folder = Path.Combine(Paths.DataPath, "EBWebView");
+            string folder = Path.Combine(Paths.DATA_PATH, "EBWebView");
             if (Directory.Exists(folder))
             {
                 long size = 0;
@@ -155,7 +155,7 @@ namespace Scraps.GUI.Forms
 
             try
             {
-                Directory.Delete(Path.Combine(Paths.DataPath, "EBWebView"), true);
+                Directory.Delete(Path.Combine(Paths.DATA_PATH, "EBWebView"), true);
             }
             catch (Exception ex)
             {
@@ -163,6 +163,16 @@ namespace Scraps.GUI.Forms
             }
 
             GetUserDataSize();
+        }
+
+        private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_CookieInput.Text == "" && Properties.UserConfig.Default.Cookie == "")
+            {
+                // Simply close the entire program
+                e.Cancel = true;
+                Environment.Exit(0);
+            }
         }
     }
 }

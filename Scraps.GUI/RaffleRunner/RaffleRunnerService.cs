@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2021  Caprine Logic
+/// Copyright(C) 2022 Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -153,7 +153,7 @@ namespace Scraps.GUI.RaffleRunner
                 };
                 var client = new HttpClient(handler);
                     client.Timeout = TimeSpan.FromSeconds(30);
-                    client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
+                    client.DefaultRequestHeaders.Add("user-agent", Strings.USER_AGENT);
                     client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _cookie);
 
                 _http = client;
@@ -226,7 +226,7 @@ namespace Scraps.GUI.RaffleRunner
                 SendStatus("Attempting to obtain CSRF token");
 
                 string html = await _http.GetStringAsync("https://scrap.tf");
-                if (html.Contains(Strings.AccountBanned))
+                if (html.Contains(Strings.ACCOUNT_BANNED))
                 {
                     tryObtainingToken = true;
 
@@ -234,7 +234,7 @@ namespace Scraps.GUI.RaffleRunner
 
                     OnAccountBanned?.Invoke(this, new());
                 }
-                else if (html.Contains(Strings.ProfileSetup))
+                else if (html.Contains(Strings.PROFILE_SET_UP))
                 {
                     tryObtainingToken = true;
 
@@ -244,7 +244,7 @@ namespace Scraps.GUI.RaffleRunner
                 }
                 else
                 {
-                    var csrf = RegexPatterns.CsrfRegex.Match(html);
+                    var csrf = RegexPatterns.CSRF.Match(html);
                     if (csrf.Success)
                     {
                         _csrfToken = csrf.Groups[1].Value;
@@ -254,7 +254,7 @@ namespace Scraps.GUI.RaffleRunner
                     }
                     else
                     {
-                        if (html.Contains(Strings.SiteDown))
+                        if (html.Contains(Strings.SITE_DOWN))
                         {
                             _log.Error("Site appears to be down/under maintenance. Trying again after 1 minute.");
 
@@ -318,7 +318,7 @@ namespace Scraps.GUI.RaffleRunner
                             _html.LoadHtml(html);
 
                             var document = _html.DocumentNode;
-                            var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
+                            var raffleElements = document.SelectNodes(Xpaths.UNENTERED_RAFFLES);
                             if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
                             {
                                 await CheckForWonRafflesAsync(html);
@@ -331,7 +331,7 @@ namespace Scraps.GUI.RaffleRunner
                             foreach (var el in raffleElements)
                             {
                                 string elementHtml = el.InnerHtml.Trim();
-                                string raffleId = RegexPatterns.RaffleEntryRegex.Match(elementHtml).Groups[1].Value.Trim();
+                                string raffleId = RegexPatterns.RAFFLE_ENTRY.Match(elementHtml).Groups[1].Value.Trim();
                                 if (
                                     !raffleId.IsNullOrEmpty() &&
                                     !_raffleQueue.Contains(raffleId) &&
@@ -408,7 +408,7 @@ namespace Scraps.GUI.RaffleRunner
         {
             if (!_alertedOfWonRaffles)
             {
-                var match = RegexPatterns.WonRafflesAlertRegex.Match(html);
+                var match = RegexPatterns.WON_RAFFLES_ALERT.Match(html);
 
                 string message = match.Groups[0].Value;
 
@@ -441,8 +441,8 @@ namespace Scraps.GUI.RaffleRunner
                 SendStatus($"Joining raffle {raffle}");
 
                 string html = await _http.GetStringAsync($"https://scrap.tf/raffles/{raffle}");
-                var hash = RegexPatterns.RaffleHashRegex.Match(html);
-                var limits = RegexPatterns.RaffleLimitRegex.Match(html);
+                var hash = RegexPatterns.RAFFLE_HASH.Match(html);
+                var limits = RegexPatterns.RAFFLE_LIMIT.Match(html);
                 bool hasEnded = html.Contains("data-time=\"Raffle Ended\"");
 
                 var hp = new HoneypotService(html);

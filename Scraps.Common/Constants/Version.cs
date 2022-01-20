@@ -1,6 +1,6 @@
 ﻿#region License
 /// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2021  Caprine Logic
+/// Copyright(C) 2022 Caprine Logic
 
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@ namespace Scraps.Common.Constants
 
         public static System.Version AsDotNetVersion() => new(Major, Minor, Patch, Hotfix);
         public static int Major => 4;
-        public static int Minor => 2;
-        public static int Patch => 6;
+        public static int Minor => 3;
+        public static int Patch => 0;
         public static int Hotfix => 0;
         public static ReleaseTypes ReleaseType => ReleaseTypes.Release;
         public static string SemVer => $"{Major}.{Minor}.{Patch}.{Hotfix}";
