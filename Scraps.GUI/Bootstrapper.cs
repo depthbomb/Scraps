@@ -16,11 +16,7 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.IO;
-using System.Linq;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 using Scraps.GUI.Forms;
 using Scraps.Common.Constants;

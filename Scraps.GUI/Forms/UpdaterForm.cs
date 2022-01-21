@@ -16,11 +16,6 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.Diagnostics;
-using System.Windows.Forms;
-using System.Threading.Tasks;
-
 using Scraps.GUI.Updater;
 using Scraps.GUI.Updater.Events;
 

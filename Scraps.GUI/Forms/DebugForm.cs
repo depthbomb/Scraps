@@ -16,8 +16,6 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Toolkit.Uwp.Notifications;
 

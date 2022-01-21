@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.3.0.1
+
+- General code cleanup
+- Use `Application.Exit` instead of `Environment.Exit` where possible
+- Added support for multiple announcement lines
+
 ## 4.3.0.0
 
 - Ported to .NET 6

@@ -16,8 +16,6 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System.Text.Json.Serialization;
-
 namespace Scraps.GUI.Models
 {
     public class PaginateResponse

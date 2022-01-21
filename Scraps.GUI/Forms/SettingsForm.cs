@@ -16,10 +16,6 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.IO;
-using System.Windows.Forms;
-
 using Scraps.GUI.RaffleRunner;
 using Scraps.Common.Constants;
 
@@ -169,9 +165,7 @@ namespace Scraps.GUI.Forms
         {
             if (_CookieInput.Text == "" && Properties.UserConfig.Default.Cookie == "")
             {
-                // Simply close the entire program
-                e.Cancel = true;
-                Environment.Exit(0);
+                Application.Exit();
             }
         }
     }

@@ -6,14 +6,15 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Scraps.ico</ApplicationIcon>
     <StartupObject>Scraps.GUI.Bootstrapper</StartupObject>
-    <Version>4.3.0.0</Version>
+    <Version>4.3.1.0</Version>
     <Authors>Caprine Logic</Authors>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NeutralLanguage>en-US</NeutralLanguage>
     <RepositoryUrl>https://github.com/depthbomb/Scraps</RepositoryUrl>
     <Description>A Scrap.TF Raffle Bot</Description>
-    <Copyright>(c) 2021 Caprine Logic</Copyright>
+    <Copyright>(c) 2022 Caprine Logic</Copyright>
     <SignAssembly>False</SignAssembly>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -16,18 +16,6 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
-using NLog;
-
-using HtmlAgilityPack;
-
 using Scraps.GUI.Models;
 using Scraps.GUI.Honeypot;
 using Scraps.GUI.Extensions;
@@ -40,7 +28,7 @@ namespace Scraps.GUI.RaffleRunner
     public class RaffleRunnerService
     {
         private readonly Logger _log;
-        private readonly HtmlDocument _html;
+        private readonly HtmlAgilityPack.HtmlDocument _html;
         private readonly List<string> _raffleQueue = new();
         private readonly List<string> _enteredRaffles = new();
 
@@ -122,7 +110,7 @@ namespace Scraps.GUI.RaffleRunner
         public RaffleRunnerService()
         {
             _log = LogManager.GetCurrentClassLogger();
-            _html = new HtmlDocument();
+            _html = new HtmlAgilityPack.HtmlDocument();
         }
 
         #region Public Methods

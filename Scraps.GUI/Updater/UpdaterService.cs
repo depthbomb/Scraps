@@ -16,15 +16,6 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-using NLog;
-
 using Scraps.GUI.Updater.Events;
 using Scraps.GUI.Updater.Models;
 

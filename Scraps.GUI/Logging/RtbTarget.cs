@@ -16,13 +16,6 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-
-using NLog;
-using NLog.Targets;
-
 using Scraps.GUI.Extensions;
 
 namespace Scraps.GUI.Logging

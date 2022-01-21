@@ -16,12 +16,6 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Diagnostics;
-using System.Windows.Forms;
-using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
 
 using Scraps.Common.Constants;

@@ -16,11 +16,6 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.Drawing;
-using System.Diagnostics;
-using System.Windows.Forms;
-
 namespace Scraps.GUI.Forms
 {
     public partial class AboutForm : Form

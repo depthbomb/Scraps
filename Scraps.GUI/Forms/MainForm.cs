@@ -16,17 +16,7 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Diagnostics;
-using System.Windows.Forms;
 using Microsoft.Toolkit.Uwp.Notifications;
-
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 
 using Scraps.GUI.Logging;
 using Scraps.GUI.Extensions;
@@ -124,8 +114,15 @@ namespace Scraps.GUI.Forms
             var ann = new AnnouncementService();
             if (ann.GetAnnouncement().Result is string announcement && announcement != null)
             {
-                announcement = "[Announcement] " + announcement;
-                _LogWindow.AppendLine(announcement, System.Drawing.Color.GreenYellow);
+                string[] announcementLines = announcement.Split('\n');
+                for (int i = 0; i < announcementLines.Length; i++)
+                {
+                    string line = announcementLines[i];
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        _LogWindow.AppendLine($"[Announcement #{i + 1}] {line}", Color.GreenYellow);
+                    }
+                }
             }
         }
 
