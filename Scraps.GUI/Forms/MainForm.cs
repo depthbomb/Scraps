@@ -35,6 +35,7 @@ namespace Scraps.GUI.Forms
         private bool _exitOnCancel = false;
 
         private readonly UpdaterService _updater;
+        private readonly AnnouncementService _announcement;
 
         public MainForm(string[] args)
         {
@@ -56,6 +57,7 @@ namespace Scraps.GUI.Forms
             _runner.OnStopped += OnStopped;
 
             _updater = new UpdaterService(this);
+            _announcement = new AnnouncementService();
 
             this.Text = string.Format("Scraps - {0}", Constants.Version.Full);
             this.FormClosing += MainForm_OnClosing;
@@ -182,22 +184,13 @@ namespace Scraps.GUI.Forms
         #region Control Event Subscriptions
         private async void MainForm_OnShown(object sender, EventArgs e)
         {
-            var ann = new AnnouncementService();
-            var request = await ann.GetAnnouncementAsync();
-            if (request is string announcement && !string.IsNullOrEmpty(announcement))
-            {
-                string[] announcementLines = announcement.Split('\n');
-                for (int i = 0; i < announcementLines.Length; i++)
-                {
-                    string line = announcementLines[i].Trim();
-                    if (!string.IsNullOrEmpty(line))
-                    {
-                        _LogWindow.AppendLine($"[Announcement #{i + 1}] {line}", Color.GreenYellow);
-                    }
-                }
-            }
+            _Status.Text = "Fetching announcements";
 
-            await _updater.CheckForUpdatesAsync();
+            await FetchAnnouncementsAsync();
+
+            _Status.Text = "Checking for updates";
+
+            await _updater.CheckForUpdatesAsync().ContinueWith(_ => ResetStatus());
         }
 
         private void MainForm_OnClosing(object sender, FormClosingEventArgs e)
@@ -257,9 +250,6 @@ namespace Scraps.GUI.Forms
         }
         #endregion
 
-        private void ShowWebViewWindow(string url, string cookies = null)
-            => (new WebViewForm(url, cookies)).Show();
-
         private void Toast_OnActivated(ToastNotificationActivatedEventArgsCompat e)
         {
             var parsed = ToastArguments.Parse(e.Argument);
@@ -268,6 +258,26 @@ namespace Scraps.GUI.Forms
                 case "viewRafflesWonPage":
                     Process.Start("explorer.exe", "https://scrap.tf/raffles/won");
                     break;
+            }
+        }
+
+        private void ShowWebViewWindow(string url, string cookies = null)
+            => (new WebViewForm(url, cookies)).Show();
+
+        private async Task FetchAnnouncementsAsync()
+        {
+            var request = await _announcement.GetAnnouncementAsync();
+            if (request is string announcement && !string.IsNullOrEmpty(announcement))
+            {
+                string[] announcementLines = announcement.Split('\n');
+                for (int i = 0; i < announcementLines.Length; i++)
+                {
+                    string line = announcementLines[i].Trim();
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        _LogWindow.AppendLine($"[Announcement #{i + 1}] {line}", Color.GreenYellow);
+                    }
+                }
             }
         }
     }
