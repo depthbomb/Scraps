@@ -26,16 +26,14 @@ namespace Scraps.GUI.Updater
 
         private readonly Logger _log;
         private readonly HttpClient _http;
-        private readonly Form _parentForm;
 
         private LatestRelease _latestRelease;
 
-        public UpdaterService(Form parentForm)
+        public UpdaterService()
         {
             _log = LogManager.GetCurrentClassLogger();
             _http = new HttpClient();
             _http.DefaultRequestHeaders.Add("user-agent", "Scraps - depthbomb/Scraps");
-            _parentForm = parentForm;
         }
 
         /// <summary>
@@ -119,7 +117,7 @@ namespace Scraps.GUI.Updater
                 updateAvailablePage.Buttons.Add(dismissButton);
                 updateAvailablePage.DefaultButton = downloadButton;
 
-                var res = TaskDialog.ShowDialog(_parentForm, updateAvailablePage);
+                var res = TaskDialog.ShowDialog(updateAvailablePage);
             }
         }
     }

@@ -30,11 +30,10 @@ namespace Scraps.GUI.Forms
 {
     public partial class MainForm : Form
     {
-        private RaffleRunnerService _runner;
         private bool _running = false;
         private bool _exitOnCancel = false;
 
-        private readonly UpdaterService _updater;
+        private readonly RaffleRunnerService _runner;
         private readonly AnnouncementService _announcement;
 
         public MainForm(string[] args)
@@ -56,7 +55,6 @@ namespace Scraps.GUI.Forms
             _runner.OnStopping += OnStopping;
             _runner.OnStopped += OnStopped;
 
-            _updater = new UpdaterService(this);
             _announcement = new AnnouncementService();
 
             this.Text = string.Format("Scraps - {0}", Constants.Version.Full);
@@ -184,13 +182,24 @@ namespace Scraps.GUI.Forms
         #region Control Event Subscriptions
         private async void MainForm_OnShown(object sender, EventArgs e)
         {
-            _Status.Text = "Fetching announcements";
+            if (await IsOnline())
+            {
+                try
+                {
+                    _Status.Text = "Fetching announcements";
 
-            await FetchAnnouncementsAsync();
+                    await FetchAnnouncementsAsync();
 
-            _Status.Text = "Checking for updates";
+                    _StartStopButton.Enabled = true;
+                }
+                catch { }
 
-            await _updater.CheckForUpdatesAsync().ContinueWith(_ => ResetStatus());
+                ResetStatus();
+            }
+            else
+            {
+                Utils.ShowError("No Internet Connection", "Could not connect to the internet. Please check your internet connection.\n\nIf you believe this is a mistake then please open up an issue on GitHub.");
+            }
         }
 
         private void MainForm_OnClosing(object sender, FormClosingEventArgs e)
@@ -277,6 +286,24 @@ namespace Scraps.GUI.Forms
                     {
                         _LogWindow.AppendLine($"[Announcement #{i + 1}] {line}", Color.GreenYellow);
                     }
+                }
+            }
+        }
+
+        private async Task<bool> IsOnline()
+        {
+            _Status.Text = "Checking connectivity";
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    await client.GetAsync("https://google.com/204_response");
+
+                    return true;
+                }
+                catch
+                {
+                    return false;
                 }
             }
         }

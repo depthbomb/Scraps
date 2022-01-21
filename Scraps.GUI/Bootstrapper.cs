@@ -17,6 +17,7 @@
 #endregion License
 
 using Scraps.GUI.Forms;
+using Scraps.GUI.Updater;
 using Scraps.GUI.Constants;
 
 namespace Scraps.GUI
@@ -24,8 +25,10 @@ namespace Scraps.GUI
     static class Bootstrapper
     {
         [STAThread]
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
+            var updater = new UpdaterService();
+
             EnsureFileSystem();
 
             if (!IsAlreadyRunning())
@@ -40,6 +43,13 @@ namespace Scraps.GUI
                 Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+
+                try
+                {
+                    await updater.CheckForUpdatesAsync();
+                }
+                catch {}
+
                 Application.Run(new MainForm(args));
             }
         }
@@ -48,11 +58,7 @@ namespace Scraps.GUI
 
         static void EnsureFileSystem()
         {
-            foreach (string path in new string[]
-            {
-                Paths.LOGS_PATH,
-                Paths.DATA_PATH,
-            })
+            foreach (string path in new string[] { Paths.LOGS_PATH, Paths.DATA_PATH })
             {
                 if (!Directory.Exists(path))
                 {

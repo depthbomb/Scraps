@@ -42,6 +42,7 @@ namespace Scraps.GUI.Forms
             // 
             // _StartStopButton
             // 
+            this._StartStopButton.Enabled = false;
             this._StartStopButton.Image = global::Scraps.GUI.Icons.Start;
             this._StartStopButton.Location = new System.Drawing.Point(12, 300);
             this._StartStopButton.Name = "_StartStopButton";
