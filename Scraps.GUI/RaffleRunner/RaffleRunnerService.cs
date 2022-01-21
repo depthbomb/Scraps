@@ -308,7 +308,7 @@ namespace Scraps.GUI.RaffleRunner
                             var raffleElements = document.SelectNodes(Xpaths.UNENTERED_RAFFLES);
                             if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
                             {
-                                await CheckForWonRafflesAsync(html);
+                                CheckForWonRaffles(html);
                             }
                             else
                             {
@@ -391,7 +391,7 @@ namespace Scraps.GUI.RaffleRunner
             }
         }
 
-        private async Task CheckForWonRafflesAsync(string html)
+        private void CheckForWonRaffles(string html)
         {
             if (!_alertedOfWonRaffles)
             {
