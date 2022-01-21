@@ -19,10 +19,11 @@
 using Microsoft.Toolkit.Uwp.Notifications;
 
 using Scraps.GUI.Logging;
+using Scraps.GUI.Updater;
+using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
-using Scraps.Common.Constants;
 using Scraps.GUI.RaffleRunner;
-using Scraps.Common.Announcement;
+using Scraps.GUI.Announcement;
 using Scraps.GUI.RaffleRunner.Events;
 
 namespace Scraps.GUI.Forms
@@ -30,9 +31,10 @@ namespace Scraps.GUI.Forms
     public partial class MainForm : Form
     {
         private RaffleRunnerService _runner;
-
         private bool _running = false;
         private bool _exitOnCancel = false;
+
+        private readonly UpdaterService _updater;
 
         public MainForm(string[] args)
         {
@@ -40,22 +42,22 @@ namespace Scraps.GUI.Forms
 
             InitializeComponent();
 
-            var updater = new UpdaterForm();
-                updater.ShowDialog();
-
             InitializeLogger();
             InitializeSettings();
-            InitializeRaffleRunner();
 
-            CheckForAnnouncement();
+            _runner = new();
+            _runner.OnStatus += OnStatus;
+            _runner.OnStarting += OnStarting;
+            _runner.OnRunning += OnRunning;
+            _runner.OnAccountBanned += OnAccountBanned;
+            _runner.OnProfileNotSetUp += OnProfileNotSetUp;
+            _runner.OnRafflesWon += OnRafflesWon;
+            _runner.OnStopping += OnStopping;
+            _runner.OnStopped += OnStopped;
 
-            if (args.Contains("--debug"))
-            {
-                var debugForm = new DebugForm();
-                    debugForm.Show();
-            }
+            _updater = new UpdaterService(this);
 
-            this.Text = string.Format("Scraps - {0}", Common.Constants.Version.Full);
+            this.Text = string.Format("Scraps - {0}", Constants.Version.Full);
             this.FormClosing += MainForm_OnClosing;
         }
 
@@ -96,37 +98,8 @@ namespace Scraps.GUI.Forms
             LogManager.Configuration = config;
         }
 
-        private void InitializeRaffleRunner()
-        {
-            _runner = new();
-            _runner.OnStatus += OnStatus;
-            _runner.OnStarting += OnStarting;
-            _runner.OnRunning += OnRunning;
-            _runner.OnAccountBanned += OnAccountBanned;
-            _runner.OnProfileNotSetUp += OnProfileNotSetUp;
-            _runner.OnRafflesWon += OnRafflesWon;
-            _runner.OnStopping += OnStopping;
-            _runner.OnStopped += OnStopped;
-        }
-
-        private void CheckForAnnouncement()
-        {
-            var ann = new AnnouncementService();
-            if (ann.GetAnnouncement().Result is string announcement && announcement != null)
-            {
-                string[] announcementLines = announcement.Split('\n');
-                for (int i = 0; i < announcementLines.Length; i++)
-                {
-                    string line = announcementLines[i];
-                    if (!string.IsNullOrEmpty(line))
-                    {
-                        _LogWindow.AppendLine($"[Announcement #{i + 1}] {line}", Color.GreenYellow);
-                    }
-                }
-            }
-        }
-
-        private void ResetStatus() => _Status.Text = " "; // Set text to a space rather than null/empty so the status strip doesn't collapse
+        private void ResetStatus()
+            => _Status.Text = " "; // Set text to a space rather than null/empty so the status strip doesn't collapse
 
         #region Raffle Runner Event Subscriptions
         private void OnStatus(object sender, StatusArgs e) => _Status.Text = e.Message;
@@ -176,7 +149,7 @@ namespace Scraps.GUI.Forms
 
                 var toast = new ToastContentBuilder();
                     toast.AddAppLogoOverride(new Uri(logo), ToastGenericAppLogoCrop.Circle, null, false);
-                    toast.AddAttributionText(string.Format("Scraps {0}", Common.Constants.Version.Full));
+                    toast.AddAttributionText(string.Format("Scraps {0}", Constants.Version.Full));
                     toast.AddText("Items Need Withdrawing");
                     toast.AddText(message);
                     toast.AddButton(viewButton);
@@ -207,6 +180,26 @@ namespace Scraps.GUI.Forms
         #endregion
 
         #region Control Event Subscriptions
+        private async void MainForm_OnShown(object sender, EventArgs e)
+        {
+            var ann = new AnnouncementService();
+            var request = await ann.GetAnnouncementAsync();
+            if (request is string announcement && !string.IsNullOrEmpty(announcement))
+            {
+                string[] announcementLines = announcement.Split('\n');
+                for (int i = 0; i < announcementLines.Length; i++)
+                {
+                    string line = announcementLines[i].Trim();
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        _LogWindow.AppendLine($"[Announcement #{i + 1}] {line}", Color.GreenYellow);
+                    }
+                }
+            }
+
+            await _updater.CheckForUpdatesAsync();
+        }
+
         private void MainForm_OnClosing(object sender, FormClosingEventArgs e)
         {
             // Finish any log writing that needs to be done.
@@ -248,7 +241,8 @@ namespace Scraps.GUI.Forms
             }
         }
 
-        private void WonRafflesButton_OnClick(object sender, EventArgs e) => ShowWebViewWindow("https://scrap.tf/raffles/won", $"scr_session={Properties.UserConfig.Default.Cookie}");
+        private void WonRafflesButton_OnClick(object sender, EventArgs e)
+            => ShowWebViewWindow("https://scrap.tf/raffles/won", $"scr_session={Properties.UserConfig.Default.Cookie}");
 
         private void SettingsButton_OnClick(object sender, EventArgs e)
         {
@@ -263,7 +257,8 @@ namespace Scraps.GUI.Forms
         }
         #endregion
 
-        private void ShowWebViewWindow(string url, string cookies = null) => (new WebViewForm(url, cookies)).Show();
+        private void ShowWebViewWindow(string url, string cookies = null)
+            => (new WebViewForm(url, cookies)).Show();
 
         private void Toast_OnActivated(ToastNotificationActivatedEventArgsCompat e)
         {

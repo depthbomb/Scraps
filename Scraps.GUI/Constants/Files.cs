@@ -16,9 +16,7 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System.IO;
-
-namespace Scraps.Common.Constants
+namespace Scraps.GUI.Constants
 {
     public class Files
     {

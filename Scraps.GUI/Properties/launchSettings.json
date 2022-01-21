@@ -2,7 +2,8 @@
   "profiles": {
     "Scraps.GUI": {
       "commandName": "Project",
-      "commandLineArgs": "--debug"
+      "jsWebView2Debugging": false,
+      "hotReloadEnabled": false
     }
   }
 }

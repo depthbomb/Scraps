@@ -16,10 +16,8 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using System.Diagnostics;
-
 using Scraps.GUI.Forms;
-using Scraps.Common.Constants;
+using Scraps.GUI.Constants;
 
 namespace Scraps.GUI
 {

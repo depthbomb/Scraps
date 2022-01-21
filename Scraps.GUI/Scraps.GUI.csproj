@@ -6,7 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Scraps.ico</ApplicationIcon>
     <StartupObject>Scraps.GUI.Bootstrapper</StartupObject>
-    <Version>4.3.1.0</Version>
+    <Version>4.4.0.0</Version>
     <Authors>Caprine Logic</Authors>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NeutralLanguage>en-US</NeutralLanguage>
@@ -31,10 +31,6 @@
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1072.54" />
     <PackageReference Include="NLog" Version="4.7.13" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Scraps.Common\Scraps.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

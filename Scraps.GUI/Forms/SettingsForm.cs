@@ -16,8 +16,8 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
+using Scraps.GUI.Constants;
 using Scraps.GUI.RaffleRunner;
-using Scraps.Common.Constants;
 
 using ByteSizeLib;
 

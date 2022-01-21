@@ -18,10 +18,9 @@
 
 using Scraps.GUI.Models;
 using Scraps.GUI.Honeypot;
+using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
 using Scraps.GUI.RaffleRunner.Events;
-
-using Scraps.Common.Constants;
 
 namespace Scraps.GUI.RaffleRunner
 {

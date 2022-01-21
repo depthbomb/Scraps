@@ -140,6 +140,7 @@ namespace Scraps.GUI.Forms
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Initializing...";
+            this.Shown += new System.EventHandler(this.MainForm_OnShown);
             this._StatusStrip.ResumeLayout(false);
             this._StatusStrip.PerformLayout();
             this.ResumeLayout(false);

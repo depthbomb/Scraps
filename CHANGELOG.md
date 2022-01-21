@@ -1,6 +1,16 @@
 # Changelog
 
-## 4.3.0.1
+## 4.4.0.0
+
+- Overhauled updater functionality
+  - Uses a sexy new task dialog
+  - Added ability to see changelog from the update dialog
+- Fixed a regression in announcement checking
+- Fixed blank lines sometimes appearing when printing announcements
+- Removed Scrap.Common DLL and merged functionality with the main assembly
+- Cleaned up unused code
+
+## 4.3.1.0
 
 - General code cleanup
 - Use `Application.Exit` instead of `Environment.Exit` where possible

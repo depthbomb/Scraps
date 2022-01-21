@@ -18,7 +18,7 @@
 
 using Microsoft.Web.WebView2.Core;
 
-using Scraps.Common.Constants;
+using Scraps.GUI.Constants;
 
 namespace Scraps.GUI.Forms
 {

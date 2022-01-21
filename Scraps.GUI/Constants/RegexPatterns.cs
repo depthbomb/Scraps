@@ -18,7 +18,7 @@
 
 using System.Text.RegularExpressions;
 
-namespace Scraps.Common.Constants
+namespace Scraps.GUI.Constants
 {
     public class RegexPatterns
     {

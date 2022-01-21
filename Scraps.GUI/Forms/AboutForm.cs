@@ -41,7 +41,7 @@ namespace Scraps.GUI.Forms
         {
             _AuthorIcon.Image = _images[_rng.Next(_images.Length)];
 
-            _VersionLabel.Text = string.Format("v{0} by depthbomb", Common.Constants.Version.Full);
+            _VersionLabel.Text = string.Format("v{0} by depthbomb", Constants.Version.Full);
 
             _GithubLink.Click += (object sender, EventArgs e)
                 => Process.Start("explorer", "https://github.com/depthbomb/Scraps");

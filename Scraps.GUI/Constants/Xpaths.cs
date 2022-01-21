@@ -16,7 +16,10 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Updater.Events
+namespace Scraps.GUI.Constants
 {
-    public class CheckingForUpdatesArgs : EventArgs { }
+    public class Xpaths
+    {
+        public const string UNENTERED_RAFFLES = "//*[contains(@class, 'panel-raffle') and not(contains(@class, 'raffle-entered'))]";
+    }
 }
