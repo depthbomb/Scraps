@@ -43,14 +43,14 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 - [.NET Desktop Runtime 6.x](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
+## Finding your Cookie
+
+Scraps requires your Scrap.TF session cookie, `scr_session` to function. This can be found by accessing your browers's dev tools (usually by pressing `F12`), going to **Application** and then **Cookies**. This process may differ depending on your browser.
+
 ## Avoiding Bans
 
 The default settings are set so as to avoid hitting any rate limits and drawing suspicion. Since staff can see if you are using the same IP for multiple accounts, it is highly recommended that you run a VPN alongside Scraps to hide your IP if you are to use multiple accounts.
 
-## Help
-
-If you need help with Scraps then send me a DM on Discord `depthbomb#0163`.
-
 ## Disclaimer
 
-This tool is in no way associated with Scrap.TF (obviously) and using this tool is against their community guidelines so there is always a risk your Scrap.TF account may get banned. Use this tool with caution or study it as a proof of concept.
+This tool is in no way associated with Scrap.TF (obviously) and using this tool is against their community guidelines so there is always a risk your Scrap.TF account may get banned. Use this tool with caution.
