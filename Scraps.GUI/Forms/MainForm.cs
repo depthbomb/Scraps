@@ -29,7 +29,6 @@ namespace Scraps.GUI.Forms
     public partial class MainForm : Form
     {
         private bool _running = false;
-        private bool _exitOnCancel = false;
 
         private readonly RaffleRunnerService _runner;
         private readonly AnnouncementService _announcement;
@@ -51,7 +50,6 @@ namespace Scraps.GUI.Forms
             _runner.OnAccountBanned += OnAccountBanned;
             _runner.OnProfileNotSetUp += OnProfileNotSetUp;
             _runner.OnRafflesWon += OnRafflesWon;
-            _runner.OnStopping += OnStopping;
             _runner.OnStopped += OnStopped;
 
             this.Text = string.Format("Scraps - {0}", Constants.Version.Full);
@@ -157,12 +155,6 @@ namespace Scraps.GUI.Forms
             }
         }
 
-        private void OnStopping(object sender, StoppingArgs e)
-        {
-            _StartStopButton.Enabled = false;
-            _StartStopButton.Text = "Stopping...";
-        }
-
         private void OnStopped(object sender, StoppedArgs e)
         {
             _running = false;
@@ -171,11 +163,6 @@ namespace Scraps.GUI.Forms
             _StartStopButton.Text = "Start";
 
             ResetStatus();
-
-            if (_exitOnCancel)
-            {
-                Application.Exit();
-            }
         }
         #endregion
 
@@ -244,9 +231,7 @@ namespace Scraps.GUI.Forms
         }
 
         private void WonRafflesButton_OnClick(object sender, EventArgs e)
-        {
-            ShowWebViewWindow("https://scrap.tf/raffles/won", $"scr_session={Properties.UserConfig.Default.Cookie}");
-        }
+            => ShowWebViewWindow("https://scrap.tf/raffles/won", $"scr_session={Properties.UserConfig.Default.Cookie}");
 
         private void SettingsButton_OnClick(object sender, EventArgs e)
         {

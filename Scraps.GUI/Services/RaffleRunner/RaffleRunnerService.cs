@@ -17,7 +17,6 @@
 #endregion License
 
 using Scraps.GUI.Models;
-using Scraps.GUI.Honeypot;
 using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
 using Scraps.GUI.RaffleRunner.Events;
@@ -26,80 +25,63 @@ namespace Scraps.GUI.Services
 {
     public class RaffleRunnerService
     {
+        public bool Running = false;
+
+        private string _cookie;
+        private string _csrfToken;
+        private HttpClient _http;
+        private int _scanDelay;
+        private int _joinDelay;
+        private bool _alertedOfWonRaffles = false;
+        private CancellationToken _cancelToken;
+        private CancellationTokenSource _cancelTokenSource;
+
         private readonly Logger _log;
         private readonly HtmlAgilityPack.HtmlDocument _html;
         private readonly List<string> _raffleQueue = new();
         private readonly List<string> _enteredRaffles = new();
-
-        private HttpClient _http;
-        private int _scanDelay;
-        private int _joinDelay;
-        private CancellationToken _cancelToken;
-        private CancellationTokenSource _cancelTokenSource;
-
-        private string _csrfToken;
-        private string _cookie;
-
-        private bool _alertedOfWonRaffles = false;
-
-        public bool Running = false;
 
         #region Events
         /// <summary>
         /// Raised when a status is sent
         /// </summary>
         public event EventHandler<StatusArgs> OnStatus;
-
         /// <summary>
         /// Raised when a start is requested
         /// </summary>
         public event EventHandler<StartingArgs> OnStarting;
-
         /// <summary>
         /// Raised when the main loop has officially started
         /// </summary>
         public event EventHandler<RunningArgs> OnRunning;
-
         /// <summary>
         /// Raised when the account has been banned from Scrap.TF
         /// </summary>
         public event EventHandler<AccountBannedArgs> OnAccountBanned;
-
         /// <summary>
         /// Raised when the account is not set up properly to use Scrap.TF
         /// </summary>
         public event EventHandler<ProfileNotSetUpArgs> OnProfileNotSetUp;
-
         /// <summary>
         /// Raised when the CSRF token has been parsed from the site
         /// </summary>
         public event EventHandler<CsrfTokenObtainedArgs> OnCsrfTokenObtained;
-
         /// <summary>
         /// Raised when the bot receives a response from paginating the raffle index
         /// </summary>
         public event EventHandler<PaginateArgs> OnPaginate;
-
         /// <summary>
         /// Raised when pagination has completed before processing the results
         /// </summary>
         public event EventHandler<PaginateDoneArgs> OnPaginateDone;
-
         /// <summary>
         /// Raised when a raffle has been successfully joined
         /// </summary>
         public event EventHandler<RaffleJoinedArgs> OnRaffleJoined;
-
         /// <summary>
         /// Raised when one or more raffles have been won
         /// </summary>
         public event EventHandler<RafflesWonArgs> OnRafflesWon;
-
-        /// <summary>
-        /// Raised when a cancellation is requested
-        /// </summary>
-        public event EventHandler<StoppingArgs> OnStopping;
-
         /// <summary>
         /// Raised when cancellation has succeeded
         /// </summary>
@@ -125,7 +107,7 @@ namespace Scraps.GUI.Services
 
             OnStarting?.Invoke(this, new());
 
-            if (!(_http is HttpClient) || _cookie != Properties.UserConfig.Default.Cookie)
+            if (_http == null || _cookie != Properties.UserConfig.Default.Cookie)
             {
                 _http = null;
 
@@ -153,53 +135,58 @@ namespace Scraps.GUI.Services
 
             OnRunning?.Invoke(this, new());
 
-            while (!_cancelToken.IsCancellationRequested)
+            try
             {
-                SendStatus("Scanning raffles");
-
-                await ScanRafflesAsync();
-
-                OnPaginateDone?.Invoke(this, new());
-
-                if (_raffleQueue.Count > 0)
+                while (Running && !_cancelToken.IsCancellationRequested)
                 {
-                    SendStatus("Joining raffles");
+                    SendStatus("Scanning raffles");
 
-                    // Set the scan delay to our config's value in case it was modified elsewhere
-                    _scanDelay = Properties.UserConfig.Default.ScanDelay;
+                    await ScanRafflesAsync();
 
-                    await JoinRafflesAsync();
-                }
-                else
-                {
-                    SendStatus("Waiting to scan");
+                    OnPaginateDone?.Invoke(this, new());
 
-                    _log.Debug("All raffles have been entered, scanning again after {Delay} seconds", _scanDelay / 1000);
-
-                    await Task.Delay(_scanDelay);
-
-                    if (Properties.UserConfig.Default.IncrementScanDelay)
+                    if (_raffleQueue.Count > 0)
                     {
-                        _scanDelay += 1000;
+                        SendStatus("Joining raffles");
+
+                        // Set the scan delay to our config's value in case it was modified elsewhere
+                        _scanDelay = Properties.UserConfig.Default.ScanDelay;
+
+                        await JoinRafflesAsync();
+                    }
+                    else
+                    {
+                        SendStatus("Waiting to scan");
+
+                        _log.Debug("All raffles have been entered, scanning again after {Delay} seconds", _scanDelay / 1000);
+
+                        await Task.Delay(_scanDelay, _cancelToken);
+
+                        if (Properties.UserConfig.Default.IncrementScanDelay)
+                        {
+                            _scanDelay += 1000;
+                        }
                     }
                 }
             }
-
-            OnStopped?.Invoke(this, new());
-            _log.Info("Stopped");
-            SendStatus(null);
-            Running = false;
+            catch
+            {
+                Cancel();
+            }
+            finally
+            {
+                OnStopped?.Invoke(this, new());
+                _log.Info("Stopped");
+                SendStatus(null);
+                Running = false;
+            }
         }
 
         public void Cancel()
         {
             if (Running)
             {
-                SendStatus("Stopping");
-                _log.Info("Stopping");
-
                 _cancelTokenSource.Cancel();
-                OnStopping?.Invoke(this, new StoppingArgs());
             }
         }
         #endregion
@@ -245,7 +232,7 @@ namespace Scraps.GUI.Services
                         {
                             _log.Error("Site appears to be down/under maintenance. Trying again after 1 minute.");
 
-                            await Task.Delay(60 * 1000);
+                            await Task.Delay(60 * 1000, _cancelToken);
                         }
                         else
                         {
@@ -275,7 +262,7 @@ namespace Scraps.GUI.Services
                 if (json == null)
                 {
                     _log.Error("Pagination returned an invalid response instead of JSON. Waiting 10 seconds");
-                    await Task.Delay(10_000);
+                    await Task.Delay(10_000, _cancelToken);
                 }
                 else
                 {
@@ -291,7 +278,7 @@ namespace Scraps.GUI.Services
                             {
                                 _log.Debug("Scanning next page (apex = {Apex})", lastId);
 
-                                await Task.Delay(Properties.UserConfig.Default.PaginateDelay);
+                                await Task.Delay(Properties.UserConfig.Default.PaginateDelay, _cancelToken);
 
                                 continue;
                             }
@@ -343,7 +330,7 @@ namespace Scraps.GUI.Services
                                 {
                                     _log.Error("Encountered an error while paginating: {Message} - Waiting 10 seconds", paginateResponse.Message);
 
-                                    await Task.Delay(10_000);
+                                    await Task.Delay(10_000, _cancelToken);
                                 }
                             }
                             else
@@ -422,9 +409,6 @@ namespace Scraps.GUI.Services
 
             foreach (string raffle in _raffleQueue)
             {
-                // Check if we need to cancel here as well since this is the spot that would delay the cancellation the most
-                if (_cancelToken.IsCancellationRequested) return;
-
                 SendStatus($"Joining raffle {raffle}");
 
                 string html = await _http.GetStringAsync($"https://scrap.tf/raffles/{raffle}");
@@ -516,7 +500,7 @@ namespace Scraps.GUI.Services
 
                     SendStatus("Waiting");
 
-                    await Task.Delay(_joinDelay);
+                    await Task.Delay(_joinDelay, _cancelToken);
                 }
                 else
                 {
