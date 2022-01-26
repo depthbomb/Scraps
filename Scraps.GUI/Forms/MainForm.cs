@@ -262,16 +262,18 @@ namespace Scraps.GUI.Forms
 
         private async Task FetchAnnouncementsAsync()
         {
-            var request = await _announcement.GetAnnouncementAsync();
-            if (request is string announcement && !string.IsNullOrEmpty(announcement))
+            using (var ann = new AnnouncementService())
             {
-                string[] announcementLines = announcement.Split('\n');
-                for (int i = 0; i < announcementLines.Length; i++)
+                if (await ann.GetAnnouncementAsync() is string announcement && !string.IsNullOrEmpty(announcement))
                 {
-                    string line = announcementLines[i].Trim();
-                    if (!string.IsNullOrEmpty(line))
+                    string[] announcementLines = announcement.Split('\n');
+                    for (int i = 0; i < announcementLines.Length; i++)
                     {
-                        _LogWindow.AppendLine($"[Announcement #{i + 1}] {line}", Color.GreenYellow);
+                        string line = announcementLines[i].Trim();
+                        if (!string.IsNullOrEmpty(line))
+                        {
+                            _LogWindow.AppendLine($"[Announcement #{i + 1}] {line}", Color.GreenYellow);
+                        }
                     }
                 }
             }

@@ -18,28 +18,37 @@
 
 namespace Scraps.GUI.Services
 {
-    public class AnnouncementService
+    public class AnnouncementService : IDisposable
     {
-        private const string FILE_URL = "https://raw.githubusercontent.com/depthbomb/Scraps/master/ANNOUNCEMENT";
+        private readonly string _fileURL;
+        private readonly HttpClient _http;
+
+        public AnnouncementService()
+        {
+            _fileURL = "https://raw.githubusercontent.com/depthbomb/Scraps/master/ANNOUNCEMENT";
+            _http = new();
+            _http.Timeout = TimeSpan.FromSeconds(3);
+            _http.DefaultRequestHeaders.Add("user-agent", "RaffleRunner - depthbomb/RaffleRunner");
+        }
 
         public async Task<string> GetAnnouncementAsync()
         {
-            string announcement = "";
-            using (var http = new HttpClient())
+            string announcements = string.Empty;
+
+            var request = await _http.GetAsync(_fileURL);
+            if (request != null && request.IsSuccessStatusCode)
             {
-                http.Timeout = TimeSpan.FromSeconds(3);
-                http.DefaultRequestHeaders.Add("user-agent", "Scraps - depthbomb/Scraps");
+                string contents = await request.Content.ReadAsStringAsync();
 
-                var request = await http.GetAsync(FILE_URL);
-                if (request.IsSuccessStatusCode)
-                {
-                    string contents = await request.Content.ReadAsStringAsync();
-
-                    announcement = contents.Trim();
-                }
+                announcements = contents.Trim();
             }
 
-            return announcement;
+            return announcements;
+        }
+
+        public void Dispose()
+        {
+            _http.Dispose();
         }
     }
 }
