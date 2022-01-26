@@ -22,7 +22,7 @@ using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
 using Scraps.GUI.RaffleRunner.Events;
 
-namespace Scraps.GUI.RaffleRunner
+namespace Scraps.GUI.Services
 {
     public class RaffleRunnerService
     {

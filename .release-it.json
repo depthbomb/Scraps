@@ -1,0 +1,15 @@
+{
+	"pkgFiles": null,
+	"npm": {
+		"publish": false
+	},
+	"git": {
+		"releaseName": "${version}",
+		"tagName": "${version}",
+		"commitMessage": "chore: release v${version}"
+	},
+	"github": {
+		"release": true,
+		"assets": "./Scraps.GUI/bin/Publish/scraps_setup.exe"
+	}
+}

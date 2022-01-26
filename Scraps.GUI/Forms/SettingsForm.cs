@@ -16,8 +16,8 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
+using Scraps.GUI.Services;
 using Scraps.GUI.Constants;
-using Scraps.GUI.RaffleRunner;
 
 using ByteSizeLib;
 
@@ -42,34 +42,34 @@ namespace Scraps.GUI.Forms
         private void SubscribeToHelpEvents()
         {
             _CookieInput.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo("Help", "This is where you paste your Scrap.TF cookie value. This is required for operation.");
+                => Utils.ShowInfo(this, "Help", "This is where you paste your Scrap.TF cookie value. This is required for operation.");
 
             _SortNewToggle.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo("Help", "Enabling this will make Scraps load newer raffles rather than by time remaining.");
+                => Utils.ShowInfo(this, "Help", "Enabling this will make Scraps load newer raffles rather than by time remaining.");
 
             _ParanoidToggle.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo("Help", "Enabling this will make Scraps be extra strict when checking raffles as to avoid honeypots.");
+                => Utils.ShowInfo(this, "Help", "Enabling this will make Scraps be extra strict when checking raffles as to avoid honeypots.");
 
             _ToastToggle.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo("Help", "Enabling this will enable toast notifications for various events.");
+                => Utils.ShowInfo(this, "Help", "Enabling this will enable toast notifications for various events.");
 
             _ScanDelayInput.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo("Help", "This is where you can change the delay between scan operations (in milliseconds).");
+                => Utils.ShowInfo(this, "Help", "This is where you can change the delay between scan operations (in milliseconds).");
 
             _PaginateDelayInput.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo("Help", "This is where you can change the delay between loading raffle index page results (in milliseconds).");
+                => Utils.ShowInfo(this, "Help", "This is where you can change the delay between loading raffle index page results (in milliseconds).");
 
             _JoinDelayInput.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo("Help", "This is where you can change the delay between joining queued raffles (in milliseconds).");
+                => Utils.ShowInfo(this, "Help", "This is where you can change the delay between joining queued raffles (in milliseconds).");
 
             _IncrementScanDelayToggle.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo("Help", "Enabling this will make Scraps increment the Scan Delay by 1 second if a scan operation resulted in no available raffles to join.");
+                => Utils.ShowInfo(this, "Help", "Enabling this will make Scraps increment the Scan Delay by 1 second if a scan operation resulted in no available raffles to join.");
 
             _ClearUserDataButton.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo("Help", "Clears the user data folder generated when using WebView2 instances. This may affect performance.");
+                => Utils.ShowInfo(this, "Help", "Clears the user data folder generated when using WebView2 instances.");
 
             _SaveButton.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo("Help", "Settings changes made won't take effect until this button is clicked.");
+                => Utils.ShowInfo(this, "Help", "Settings changes made won't take effect until this button is clicked.");
         }
 
         private void PopulateControlValues()
@@ -112,16 +112,15 @@ namespace Scraps.GUI.Forms
 
                 if (_runner is RaffleRunnerService && _runner.Running)
                 {
-                    Utils.ShowWarning("Warning", "Some changes won't go into effect until the raffle runner is restarted.");
+                    Utils.ShowWarning(this, "Warning", "Some changes won't go into effect until the raffle runner is restarted.");
                 }
 
                 this.Close();
             }
         }
         
-        private bool InputIsValid() => (
-            !string.IsNullOrEmpty(_CookieInput.Text)
-        );
+        private bool InputIsValid()
+            => !string.IsNullOrEmpty(_CookieInput.Text);
 
         private void GetUserDataSize()
         {

@@ -212,7 +212,7 @@ namespace Scraps.GUI.Forms
             // 
             this._SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this._SaveButton.Image = global::Scraps.GUI.Icons.Save;
-            this._SaveButton.Location = new System.Drawing.Point(317, 355);
+            this._SaveButton.Location = new System.Drawing.Point(317, 353);
             this._SaveButton.Name = "_SaveButton";
             this._SaveButton.Size = new System.Drawing.Size(77, 24);
             this._SaveButton.TabIndex = 4;
@@ -260,7 +260,7 @@ namespace Scraps.GUI.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(406, 391);
+            this.ClientSize = new System.Drawing.Size(406, 389);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this._ToastToggle);
             this.Controls.Add(this._ParanoidToggle);

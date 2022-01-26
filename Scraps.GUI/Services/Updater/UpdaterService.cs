@@ -18,7 +18,7 @@
 
 using Scraps.GUI.Updater.Models;
 
-namespace Scraps.GUI.Updater
+namespace Scraps.GUI.Services
 {
     public class UpdaterService
     {

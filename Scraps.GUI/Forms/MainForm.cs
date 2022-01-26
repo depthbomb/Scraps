@@ -19,11 +19,9 @@
 using Microsoft.Toolkit.Uwp.Notifications;
 
 using Scraps.GUI.Logging;
-using Scraps.GUI.Updater;
+using Scraps.GUI.Services;
 using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
-using Scraps.GUI.RaffleRunner;
-using Scraps.GUI.Announcement;
 using Scraps.GUI.RaffleRunner.Events;
 
 namespace Scraps.GUI.Forms
@@ -45,6 +43,7 @@ namespace Scraps.GUI.Forms
             InitializeLogger();
             InitializeSettings();
 
+            _announcement = new();
             _runner = new();
             _runner.OnStatus += OnStatus;
             _runner.OnStarting += OnStarting;
@@ -54,8 +53,6 @@ namespace Scraps.GUI.Forms
             _runner.OnRafflesWon += OnRafflesWon;
             _runner.OnStopping += OnStopping;
             _runner.OnStopped += OnStopped;
-
-            _announcement = new AnnouncementService();
 
             this.Text = string.Format("Scraps - {0}", Constants.Version.Full);
             this.FormClosing += MainForm_OnClosing;
@@ -118,9 +115,11 @@ namespace Scraps.GUI.Forms
             _StartStopButton.Text = "Stop";
         }
 
-        private void OnAccountBanned(object sender, AccountBannedArgs e) => _runner.Cancel();
+        private void OnAccountBanned(object sender, AccountBannedArgs e)
+            => _runner.Cancel();
 
-        private void OnProfileNotSetUp(object sender, ProfileNotSetUpArgs e) => _runner.Cancel();
+        private void OnProfileNotSetUp(object sender, ProfileNotSetUpArgs e)
+            => _runner.Cancel();
 
         private void OnRafflesWon(object sender, RafflesWonArgs e)
         {
@@ -170,6 +169,7 @@ namespace Scraps.GUI.Forms
             _StartStopButton.Image = Icons.Start;
             _StartStopButton.Enabled = true;
             _StartStopButton.Text = "Start";
+
             ResetStatus();
 
             if (_exitOnCancel)
@@ -198,7 +198,7 @@ namespace Scraps.GUI.Forms
             }
             else
             {
-                Utils.ShowError("No Internet Connection", "Could not connect to the internet. Please check your internet connection.\n\nIf you believe this is a mistake then please open up an issue on GitHub.");
+                Utils.ShowError(this, "No Internet Connection", "Could not connect to the internet. Please check your internet connection.\n\nIf you believe this is a mistake then please open up an issue on GitHub.");
             }
         }
 
@@ -244,7 +244,9 @@ namespace Scraps.GUI.Forms
         }
 
         private void WonRafflesButton_OnClick(object sender, EventArgs e)
-            => ShowWebViewWindow("https://scrap.tf/raffles/won", $"scr_session={Properties.UserConfig.Default.Cookie}");
+        {
+            ShowWebViewWindow("https://scrap.tf/raffles/won", $"scr_session={Properties.UserConfig.Default.Cookie}");
+        }
 
         private void SettingsButton_OnClick(object sender, EventArgs e)
         {

@@ -24,8 +24,12 @@ namespace Scraps.GUI.Forms
 {
     public partial class WebViewForm : Form
     {
+        private readonly string _runtimeURL;
+
         public WebViewForm(string url, string cookies = null)
         {
+            _runtimeURL = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
+
             if (!IsRuntimeInstalled())
             {
                 Task.Run(async () => await DownloadAndInstallRuntimeAsync()).Wait();
@@ -57,10 +61,9 @@ namespace Scraps.GUI.Forms
 
         private async Task DownloadAndInstallRuntimeAsync()
         {
-            string runtimeUrl = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
             using (var http = new HttpClient())
             {
-                var request = await http.GetAsync(runtimeUrl);
+                var request = await http.GetAsync(_runtimeURL);
                 if (request.IsSuccessStatusCode)
                 {
                     string tempFile = Path.GetTempFileName();
@@ -81,20 +84,20 @@ namespace Scraps.GUI.Forms
 
                     if (installation.ExitCode != 0)
                     {
-                        MessageBox.Show(this, "The runtime could not be installed. Please attempt to install it manually or create an issue on the GitHub repo.", "Failed to install runtime", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                        Utils.ShowError(this, "Failed to install runtime", "The runtime could not be installed. Please attempt to install it manually or create an issue on the GitHub repo.", MessageBoxButtons.YesNo);
 
                         Application.Exit();
                     }
                 }
                 else
                 {
-                    if (MessageBox.Show(this, "The runtime could not be downloaded. Would you like to manually download the runtime?", "Failed to download runtime", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                    if (Utils.ShowError(this, "Failed to download runtime", "The runtime could not be downloaded. Would you like to manually download the runtime?", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        Process.Start("explorer.exe", runtimeUrl);
+                        Process.Start("explorer.exe", _runtimeURL);
                     }
                     else
                     {
-                        Application.Exit();
+                        Close();
                     }
                 }
             }
@@ -146,6 +149,7 @@ namespace Scraps.GUI.Forms
         private void StatusStripButton_OnClick(object sender, EventArgs e)
             => Process.Start("explorer.exe", _WebBrowser.Source.ToString());
 
-        private void OnFormClosing(object sender, FormClosingEventArgs e) => _WebBrowser?.Dispose();
+        private void OnFormClosing(object sender, FormClosingEventArgs e)
+            => _WebBrowser?.Dispose();
     }
 }

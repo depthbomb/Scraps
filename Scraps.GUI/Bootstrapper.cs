@@ -17,7 +17,7 @@
 #endregion License
 
 using Scraps.GUI.Forms;
-using Scraps.GUI.Updater;
+using Scraps.GUI.Services;
 using Scraps.GUI.Constants;
 
 namespace Scraps.GUI

@@ -9,8 +9,10 @@
 //------------------------------------------------------------------------------
 
 namespace Scraps.GUI.Properties {
+    
+    
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.0.3.0")]
     internal sealed partial class UserConfig : global::System.Configuration.ApplicationSettingsBase {
         
         private static UserConfig defaultInstance = ((UserConfig)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new UserConfig())));
@@ -32,7 +34,7 @@ namespace Scraps.GUI.Properties {
                 this["UpgradeRequired"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -68,7 +70,7 @@ namespace Scraps.GUI.Properties {
                 this["IncrementScanDelay"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]

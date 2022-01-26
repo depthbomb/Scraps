@@ -16,9 +16,10 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
+using Scraps.GUI.Honeypot;
 using Scraps.GUI.Honeypot.Checks;
 
-namespace Scraps.GUI.Honeypot
+namespace Scraps.GUI.Services
 {
     public class HoneypotService
     {
