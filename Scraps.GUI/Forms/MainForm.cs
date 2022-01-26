@@ -22,7 +22,7 @@ using Scraps.GUI.Logging;
 using Scraps.GUI.Services;
 using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
-using Scraps.GUI.RaffleRunner.Events;
+using Scraps.GUI.Services.Raffle;
 
 namespace Scraps.GUI.Forms
 {
@@ -30,7 +30,7 @@ namespace Scraps.GUI.Forms
     {
         private bool _running = false;
 
-        private readonly RaffleRunnerService _runner;
+        private readonly RaffleService _runner;
         private readonly AnnouncementService _announcement;
 
         public MainForm(string[] args)

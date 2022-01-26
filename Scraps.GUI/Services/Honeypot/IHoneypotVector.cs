@@ -16,10 +16,12 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.RaffleRunner.Events
+namespace Scraps.GUI.Services.Honeypot
 {
-    public class PaginateDoneArgs : EventArgs
+    interface IHoneypotVector
     {
-        public PaginateDoneArgs() { }
+        bool Detected { get; }
+        string DetectReason { get; }
+        void Check();
     }
 }

@@ -16,7 +16,7 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Updater.Models
+namespace Scraps.GUI.Services.Updater.Models
 {
     /**
      * TODO: Fix name rule violation

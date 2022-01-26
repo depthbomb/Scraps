@@ -16,18 +16,18 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.RaffleRunner.Events
+namespace Scraps.GUI.Services.Raffle
 {
-    public class StartingArgs : EventArgs
+    public class StoppedArgs : EventArgs
     {
         /// <summary>
-        /// The time that the start was initiated
+        /// The time that the cancellation has finished
         /// </summary>
-        public DateTime Time { get; set; }
+        public DateTime TimeCancelled { get; set; }
 
-        public StartingArgs()
+        public StoppedArgs()
         {
-            Time = DateTime.UtcNow;
+            TimeCancelled = DateTime.UtcNow;
         }
     }
 }

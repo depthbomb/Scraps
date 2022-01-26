@@ -16,18 +16,22 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.RaffleRunner.Events
+namespace Scraps.GUI.Services.Raffle
 {
-    public class StoppedArgs : EventArgs
+    /// <summary>
+    /// An event that contains a list of available raffle IDs
+    /// </summary>
+    public class RaffleListReceivedArgs : EventArgs
     {
-        /// <summary>
-        /// The time that the cancellation has finished
-        /// </summary>
-        public DateTime TimeCancelled { get; set; }
+        public List<string> AvailableRaffles { get; set; }
 
-        public StoppedArgs()
+        /// <summary>
+        /// Raised when a list of available raffle IDs is received
+        /// </summary>
+        /// <param name="availableRaffles"></param>
+        public RaffleListReceivedArgs(List<string> availableRaffles)
         {
-            TimeCancelled = DateTime.UtcNow;
+            AvailableRaffles = availableRaffles;
         }
     }
 }

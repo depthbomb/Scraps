@@ -27,9 +27,9 @@ namespace Scraps.GUI.Forms
     {
         private const string CLEAR_USER_DATA_TEXT = "Clear user data";
 
-        private readonly RaffleRunnerService _runner;
+        private readonly RaffleService _runner;
 
-        public SettingsForm(RaffleRunnerService runner)
+        public SettingsForm(RaffleService runner)
         {
             _runner = runner;
 
@@ -110,7 +110,7 @@ namespace Scraps.GUI.Forms
                 Properties.UserConfig.Default.Save();
                 Properties.UserConfig.Default.Reload();
 
-                if (_runner is RaffleRunnerService && _runner.Running)
+                if (_runner is RaffleService && _runner.Running)
                 {
                     Utils.ShowWarning(this, "Warning", "Some changes won't go into effect until the raffle runner is restarted.");
                 }

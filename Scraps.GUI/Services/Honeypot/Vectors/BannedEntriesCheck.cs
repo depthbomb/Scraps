@@ -16,22 +16,35 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.RaffleRunner.Events
+using Scraps.GUI.Constants;
+
+namespace Scraps.GUI.Services.Honeypot.Vectors
 {
-    /// <summary>
-    /// An event that contains a list of available raffle IDs
-    /// </summary>
-    public class RaffleListReceivedArgs : EventArgs
+    public class BannedEntriesCheck : IHoneypotVector
     {
-        public List<string> AvailableRaffles { get; set; }
+        private readonly string _html;
+
+        public bool Detected { get; set; } = false;
+        public string DetectReason { get; set; }
 
         /// <summary>
-        /// Raised when a list of available raffle IDs is received
+        /// Checks the raffle page HTML for signs of banned user entries.
         /// </summary>
-        /// <param name="availableRaffles"></param>
-        public RaffleListReceivedArgs(List<string> availableRaffles)
+        /// <param name="html">Raffle page HTML</param>
+        public BannedEntriesCheck(string html)
         {
-            AvailableRaffles = availableRaffles;
+            _html = html;
+        }
+
+        public void Check()
+        {
+            var entries = RegexPatterns.HONEYPOT_RAFFLE_BANNED_USERS.Matches(_html);
+
+            if (entries.Count > 1)
+            {
+                Detected = true;
+                DetectReason = string.Format("{0} users who entered this raffle are now banned", entries.Count);
+            }
         }
     }
 }

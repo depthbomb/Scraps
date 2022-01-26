@@ -16,15 +16,18 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.RaffleRunner.Events
+namespace Scraps.GUI.Services.Raffle
 {
-    public class RafflesWonArgs : EventArgs
+    public class RunningArgs : EventArgs
     {
-        public string Message { get; set; }
+        /// <summary>
+        /// The time that the runner was started after a start was requested
+        /// </summary>
+        public DateTime Time { get; set; }
 
-        public RafflesWonArgs(string message)
+        public RunningArgs()
         {
-            Message = message;
+            Time = DateTime.UtcNow;
         }
     }
 }

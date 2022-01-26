@@ -16,8 +16,8 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using Scraps.GUI.Honeypot;
-using Scraps.GUI.Honeypot.Checks;
+using Scraps.GUI.Services.Honeypot;
+using Scraps.GUI.Services.Honeypot.Vectors;
 
 namespace Scraps.GUI.Services
 {
@@ -35,7 +35,7 @@ namespace Scraps.GUI.Services
 
         public void Check()
         {
-            var checks = new IHoneypotCheck[]
+            var checks = new IHoneypotVector[]
             {
                 new BannedEntriesCheck(_html),
             };

@@ -19,11 +19,11 @@
 using Scraps.GUI.Models;
 using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
-using Scraps.GUI.RaffleRunner.Events;
+using Scraps.GUI.Services.Raffle;
 
 namespace Scraps.GUI.Services
 {
-    public class RaffleRunnerService
+    public class RaffleService
     {
         public bool Running = false;
 
@@ -88,7 +88,7 @@ namespace Scraps.GUI.Services
         public event EventHandler<StoppedArgs> OnStopped;
         #endregion
 
-        public RaffleRunnerService()
+        public RaffleService()
         {
             _log = LogManager.GetCurrentClassLogger();
             _html = new HtmlAgilityPack.HtmlDocument();

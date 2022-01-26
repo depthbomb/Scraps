@@ -16,35 +16,24 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-using Scraps.GUI.Constants;
-
-namespace Scraps.GUI.Honeypot.Checks
+namespace Scraps.GUI.Services.Raffle
 {
-    public class BannedEntriesCheck : IHoneypotCheck
+    public class PaginateArgs : EventArgs
     {
-        private readonly string _html;
-
-        public bool Detected { get; set; } = false;
-        public string DetectReason { get; set; }
+        /// <summary>
+        /// The raffle ID used to paginate
+        /// </summary>
+        public string Apex { get; set; }
 
         /// <summary>
-        /// Checks the raffle page HTML for signs of banned user entries.
+        /// The HTML content of the pagination response
         /// </summary>
-        /// <param name="html">Raffle page HTML</param>
-        public BannedEntriesCheck(string html)
-        {
-            _html = html;
-        }
+        public string Html { get; set; }
 
-        public void Check()
+        public PaginateArgs(string apex, string html)
         {
-            var entries = RegexPatterns.HONEYPOT_RAFFLE_BANNED_USERS.Matches(_html);
-
-            if (entries.Count > 1)
-            {
-                Detected = true;
-                DetectReason = string.Format("{0} users who entered this raffle are now banned", entries.Count);
-            }
+            Apex = apex;
+            Html = html.Trim();
         }
     }
 }
