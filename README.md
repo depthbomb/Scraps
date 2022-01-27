@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-	<img src="https://i.imgur.com/VOYwJYP.png">
+	<img src="https://i.imgur.com/xrXwZj7.png">
 </p>
 
 The idea for Scraps was conceived during one of my periods of "devious programming".
