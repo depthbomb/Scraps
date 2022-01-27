@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.5.0.1
+
+- Fixed a hang when the raffle runner is started for a banned account
+- Cleaned up error message for banned account
+
 ## 4.5.0.0
 
 - Stopping the raffle runner is now instant in nearly all cases

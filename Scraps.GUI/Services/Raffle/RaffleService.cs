@@ -167,7 +167,14 @@ namespace Scraps.GUI.Services
             {
                 if (ex is not TaskCanceledException || _options.Debug)
                 {
-                    _log.Error(ex);
+                    if (ex is AccountBannedException)
+                    {
+                        _log.Error("Account banned: {Reason}", ex.Message);
+                    }
+                    else
+                    {
+                        _log.Error(ex);
+                    }
                 }
 
                 Cancel();
@@ -198,7 +205,7 @@ namespace Scraps.GUI.Services
             string html = await _http.GetStringAsync("https://scrap.tf");
             if (html.Contains(Strings.ACCOUNT_BANNED))
             {
-                throw NewAccountBannedException();
+                throw await NewAccountBannedException();
             }
             else if (html.Contains(Strings.PROFILE_SET_UP))
             {
@@ -260,7 +267,6 @@ namespace Scraps.GUI.Services
                                 _log.Debug("Scanning next page (apex = {Apex})", lastId);
 
                                 await Task.Delay(Properties.UserConfig.Default.PaginateDelay, _cancelToken);
-
                                 continue;
                             }
                             else
@@ -269,7 +275,6 @@ namespace Scraps.GUI.Services
                             }
 
                             _log.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles");
-
                             _html.LoadHtml(html);
 
                             var document = _html.DocumentNode;
@@ -305,7 +310,7 @@ namespace Scraps.GUI.Services
                             {
                                 if (paginateResponse.Message.Contains("active site ban"))
                                 {
-                                    throw NewAccountBannedException();
+                                    throw await NewAccountBannedException();
                                 }
                                 else
                                 {
@@ -364,13 +369,11 @@ namespace Scraps.GUI.Services
             if (!_alertedOfWonRaffles)
             {
                 var match = RegexPatterns.WON_RAFFLES_ALERT.Match(html);
-
                 string message = match.Groups[0].Value;
 
                 OnRafflesWon?.Invoke(this, new RafflesWonArgs(message));
 
                 _log.Info(message);
-
                 _alertedOfWonRaffles = true;
             }
         }
@@ -503,11 +506,9 @@ namespace Scraps.GUI.Services
 
         private void SendStatus(string message) => OnStatus?.Invoke(this, new(message));
 
-        AccountBannedException NewAccountBannedException()
+        async Task<AccountBannedException> NewAccountBannedException()
         {
-            string reason = GetBanReason().Result;
-
-            return new AccountBannedException(reason);
+            return new AccountBannedException(await GetBanReason());
         }
         #endregion
     }
