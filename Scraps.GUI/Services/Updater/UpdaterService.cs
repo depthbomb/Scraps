@@ -20,7 +20,7 @@ using Scraps.GUI.Services.Updater.Models;
 
 namespace Scraps.GUI.Services
 {
-    public class UpdaterService
+    public class UpdaterService : IDisposable
     {
         private const string URL = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
 
@@ -32,7 +32,7 @@ namespace Scraps.GUI.Services
         public UpdaterService()
         {
             _log = LogManager.GetCurrentClassLogger();
-            _http = new HttpClient();
+            _http = new();
             _http.DefaultRequestHeaders.Add("user-agent", "Scraps - depthbomb/Scraps");
         }
 
@@ -119,6 +119,11 @@ namespace Scraps.GUI.Services
 
                 var res = TaskDialog.ShowDialog(updateAvailablePage);
             }
+        }
+
+        public void Dispose()
+        {
+            _http.Dispose();
         }
     }
 }
