@@ -16,9 +16,24 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle
+using Scraps.GUI.Constants;
+
+namespace Scraps.GUI.Services.Honeypot.Vectors
 {
-    public class AccountBannedArgs : EventArgs
+    public class BannedEntriesVector : IHoneypotVector
     {
+        public bool Detected { get; set; } = false;
+        public string DetectReason { get; set; }
+
+        public void Check(string html)
+        {
+            var entries = RegexPatterns.HONEYPOT_RAFFLE_BANNED_USERS.Matches(html);
+
+            if (entries.Count > 1)
+            {
+                Detected = true;
+                DetectReason = string.Format("{0} users who entered this raffle are now banned", entries.Count);
+            }
+        }
     }
 }

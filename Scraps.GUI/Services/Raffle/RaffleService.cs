@@ -20,6 +20,7 @@ using Scraps.GUI.Models;
 using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
 using Scraps.GUI.Services.Raffle;
+using Scraps.GUI.Services.Raffle.Exceptions;
 
 namespace Scraps.GUI.Services
 {
@@ -38,6 +39,7 @@ namespace Scraps.GUI.Services
 
         private readonly Logger _log;
         private readonly HtmlAgilityPack.HtmlDocument _html;
+        private readonly LaunchOptions _options;
         private readonly List<string> _raffleQueue = new();
         private readonly List<string> _enteredRaffles = new();
 
@@ -54,14 +56,6 @@ namespace Scraps.GUI.Services
         /// Raised when the main loop has officially started
         /// </summary>
         public event EventHandler<RunningArgs> OnRunning;
-        /// <summary>
-        /// Raised when the account has been banned from Scrap.TF
-        /// </summary>
-        public event EventHandler<AccountBannedArgs> OnAccountBanned;
-        /// <summary>
-        /// Raised when the account is not set up properly to use Scrap.TF
-        /// </summary>
-        public event EventHandler<ProfileNotSetUpArgs> OnProfileNotSetUp;
         /// <summary>
         /// Raised when the CSRF token has been parsed from the site
         /// </summary>
@@ -88,10 +82,11 @@ namespace Scraps.GUI.Services
         public event EventHandler<StoppedArgs> OnStopped;
         #endregion
 
-        public RaffleService()
+        public RaffleService(LaunchOptions options)
         {
             _log = LogManager.GetCurrentClassLogger();
             _html = new HtmlAgilityPack.HtmlDocument();
+            _options = options;
         }
 
         #region Public Methods
@@ -109,7 +104,7 @@ namespace Scraps.GUI.Services
 
             if (_http == null || _cookie != Properties.UserConfig.Default.Cookie)
             {
-                _http = null;
+                _http?.Dispose();
 
                 _log.Debug("Creating HTTP client");
 
@@ -128,15 +123,15 @@ namespace Scraps.GUI.Services
                 _http = client;
             }
 
-            await GetCsrfTokenAsync();
-
-            _scanDelay = Properties.UserConfig.Default.ScanDelay;
-            _joinDelay = Properties.UserConfig.Default.JoinDelay;
-
-            OnRunning?.Invoke(this, new());
-
             try
             {
+                await GetCsrfTokenAsync();
+
+                _scanDelay = Properties.UserConfig.Default.ScanDelay;
+                _joinDelay = Properties.UserConfig.Default.JoinDelay;
+
+                OnRunning?.Invoke(this, new());
+
                 while (Running && !_cancelToken.IsCancellationRequested)
                 {
                     SendStatus("Scanning raffles");
@@ -149,7 +144,6 @@ namespace Scraps.GUI.Services
                     {
                         SendStatus("Joining raffles");
 
-                        // Set the scan delay to our config's value in case it was modified elsewhere
                         _scanDelay = Properties.UserConfig.Default.ScanDelay;
 
                         await JoinRafflesAsync();
@@ -169,8 +163,13 @@ namespace Scraps.GUI.Services
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex is not TaskCanceledException || _options.Debug)
+                {
+                    _log.Error(ex);
+                }
+
                 Cancel();
             }
             finally
@@ -194,50 +193,34 @@ namespace Scraps.GUI.Services
         #region Private Methods
         private async Task GetCsrfTokenAsync()
         {
-            bool tryObtainingToken = false;
-            while (!tryObtainingToken)
+            SendStatus("Obtaining CSRF token");
+
+            string html = await _http.GetStringAsync("https://scrap.tf");
+            if (html.Contains(Strings.ACCOUNT_BANNED))
             {
-                SendStatus("Attempting to obtain CSRF token");
-
-                string html = await _http.GetStringAsync("https://scrap.tf");
-                if (html.Contains(Strings.ACCOUNT_BANNED))
+                throw NewAccountBannedException();
+            }
+            else if (html.Contains(Strings.PROFILE_SET_UP))
+            {
+                throw new ProfileNotSetUpException("Profile is not set up to use Scrap.TF. See the website for more info.");
+            }
+            else
+            {
+                var csrf = RegexPatterns.CSRF.Match(html);
+                if (csrf.Success)
                 {
-                    tryObtainingToken = true;
-
-                    _log.Error("Profile is banned.");
-
-                    OnAccountBanned?.Invoke(this, new());
-                }
-                else if (html.Contains(Strings.PROFILE_SET_UP))
-                {
-                    tryObtainingToken = true;
-
-                    _log.Error("Profile is not set up to use Scrap.TF. See the website for more info.");
-
-                    OnProfileNotSetUp?.Invoke(this, new());
+                    _csrfToken = csrf.Groups[1].Value;
+                    OnCsrfTokenObtained?.Invoke(this, new(_csrfToken));
                 }
                 else
                 {
-                    var csrf = RegexPatterns.CSRF.Match(html);
-                    if (csrf.Success)
+                    if (html.Contains(Strings.SITE_DOWN))
                     {
-                        _csrfToken = csrf.Groups[1].Value;
-                        OnCsrfTokenObtained?.Invoke(this, new(_csrfToken));
-
-                        tryObtainingToken = true;
+                        throw new DownForMaintenanceException("Site appears to be down/under maintenance. Trying again after 1 minute.");
                     }
                     else
                     {
-                        if (html.Contains(Strings.SITE_DOWN))
-                        {
-                            _log.Error("Site appears to be down/under maintenance. Trying again after 1 minute.");
-
-                            await Task.Delay(60 * 1000, _cancelToken);
-                        }
-                        else
-                        {
-                            throw new Exception("Unable to retreive CSRF token. Please check your cookie value.");
-                        }
+                        throw new Exception("Unable to retreive CSRF token. Please check your cookie value.");
                     }
                 }
             }
@@ -253,10 +236,8 @@ namespace Scraps.GUI.Services
             string html = await _http.GetStringAsync("https://scrap.tf/raffles");
             string lastId = string.Empty;
 
-            while (!doneScanning)
+            while (!doneScanning && !_cancelToken.IsCancellationRequested)
             {
-                if (_cancelToken.IsCancellationRequested) return;
-
                 string json = await PaginateAsync(lastId);
 
                 if (json == null)
@@ -324,7 +305,7 @@ namespace Scraps.GUI.Services
                             {
                                 if (paginateResponse.Message.Contains("active site ban"))
                                 {
-                                    OnAccountBanned?.Invoke(this, new AccountBannedArgs());
+                                    throw NewAccountBannedException();
                                 }
                                 else
                                 {
@@ -399,15 +380,8 @@ namespace Scraps.GUI.Services
             int entered = 0;
             int total = _raffleQueue.Count;
 
-            foreach (string raffle in _enteredRaffles)
-            {
-                if (_raffleQueue.Contains(raffle))
-                {
-                    _raffleQueue.Remove(raffle);
-                }
-            }
-
-            foreach (string raffle in _raffleQueue)
+            var queue = _raffleQueue.Where(r => !_enteredRaffles.Contains(r));
+            foreach (string raffle in queue)
             {
                 SendStatus($"Joining raffle {raffle}");
 
@@ -416,16 +390,17 @@ namespace Scraps.GUI.Services
                 var limits = RegexPatterns.RAFFLE_LIMIT.Match(html);
                 bool hasEnded = html.Contains("data-time=\"Raffle Ended\"");
 
-                var hp = new HoneypotService(html);
-                    hp.Check();
-                if (hp.IsHoneypot)
+                using (var hp = new HoneypotService())
                 {
-                    _log.Info("Raffle {Id} is likely a honeypot: {Reason}", raffle, hp.Reason);
+                    hp.Check(html);
+                    if (hp.IsHoneypot)
+                    {
+                        _log.Info("Raffle {Id} is likely a honeypot: {Reason}", raffle, hp.Reason);
 
-                    total--;
-                    _enteredRaffles.Add(raffle);
-
-                    continue;
+                        total--;
+                        _enteredRaffles.Add(raffle);
+                        continue;
+                    }
                 }
 
                 if (hasEnded)
@@ -434,7 +409,6 @@ namespace Scraps.GUI.Services
 
                     total--;
                     _enteredRaffles.Add(raffle);
-
                     continue;
                 }
 
@@ -448,7 +422,6 @@ namespace Scraps.GUI.Services
                         _log.Info("Raffle {Id} has too few entries", raffle);
 
                         total--;
-
                         continue;
                     }
 
@@ -458,7 +431,6 @@ namespace Scraps.GUI.Services
 
                         total--;
                         _enteredRaffles.Add(raffle);
-
                         continue;
                     }
                 }
@@ -489,7 +461,7 @@ namespace Scraps.GUI.Services
 
                         OnRaffleJoined?.Invoke(this, new RaffleJoinedArgs(raffle, html, entered, total));
 
-                        _log.Info("[{Entered}/{Total}] Joined raffle {Id}", entered, total, raffle);
+                        _log.Info("Joined raffle {Id} ({Entered} of {Total})", raffle, entered, total);
 
                         _enteredRaffles.Add(raffle);
                     }
@@ -516,7 +488,27 @@ namespace Scraps.GUI.Services
             }
         }
 
+        private async Task<string> GetBanReason()
+        {
+            string reason = "Could not obtain reason";
+            string html = await _http.GetStringAsync("https://scrap.tf/banappeal");
+            var match = RegexPatterns.BAN_REASON.Match(html);
+            if (match.Success)
+            {
+                return match.Groups[1].Value.Trim();
+            }
+
+            return reason;
+        }
+
         private void SendStatus(string message) => OnStatus?.Invoke(this, new(message));
+
+        AccountBannedException NewAccountBannedException()
+        {
+            string reason = GetBanReason().Result;
+
+            return new AccountBannedException(reason);
+        }
         #endregion
     }
 }

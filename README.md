@@ -47,6 +47,13 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 Scraps requires your Scrap.TF session cookie, `scr_session` to function. This can be found by accessing your browers's dev tools (usually by pressing `F12`), going to **Application** and then **Cookies**. This process may differ depending on your browser.
 
+## Launch Arguments
+
+- `/Debug` Enable logging debug info to the app's log window
+- `/Silent` Launches Scraps minimized and immediately starts the raffle runner
+- `/SkipUpdates` Skips the update check
+- `/SkipAnnouncements` Skips announcement fetching
+
 ## Avoiding Bans
 
 The default settings are set so as to avoid hitting any rate limits and drawing suspicion. Since staff can see if you are using the same IP for multiple accounts, it is highly recommended that you run a VPN alongside Scraps to hide your IP if you are to use multiple accounts.

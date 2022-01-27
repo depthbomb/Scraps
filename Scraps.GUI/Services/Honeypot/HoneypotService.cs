@@ -21,36 +21,38 @@ using Scraps.GUI.Services.Honeypot.Vectors;
 
 namespace Scraps.GUI.Services
 {
-    public class HoneypotService
+    public class HoneypotService : IDisposable
     {
-        private readonly string _html;
+        private readonly List<IHoneypotVector> _vectors;
 
         public bool IsHoneypot { get; set; } = false;
         public string Reason { get; set; }
 
-        public HoneypotService(string html)
+        public HoneypotService()
         {
-            _html = html;
+            _vectors = new()
+            {
+                new BannedEntriesVector(),
+            };
         }
 
-        public void Check()
+        public void Check(string html)
         {
-            var checks = new IHoneypotVector[]
+            foreach (var vector in _vectors)
             {
-                new BannedEntriesCheck(_html),
-            };
-
-            foreach (var check in checks)
-            {
-                // Run each implementation's check method and break on the first detection
-                check.Check();
-                if (check.Detected)
+                vector.Check(html);
+                if (vector.Detected)
                 {
                     IsHoneypot = true;
-                    Reason = check.DetectReason;
+                    Reason = vector.DetectReason;
                     break;
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            _vectors.Clear();
         }
     }
 }

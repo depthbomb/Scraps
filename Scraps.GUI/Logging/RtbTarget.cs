@@ -35,19 +35,19 @@ namespace Scraps.GUI.Logging
             string level = logEvent.Level.Name;
             string prefix = DateTime.Now.ToString("HH:mm:ss");
             string message = RenderLogEvent(Layout, logEvent);
-            _rtb.AppendText(prefix + " ", Color.DarkGray);
+            _rtb.AppendText($"{prefix} ", Color.DarkGray);
             _rtb.AppendLine(message, GetColor(level));
             _rtb.ScrollToCaret();
         }
 
         private Color GetColor(string level) => level switch
         {
-            "Trace" => Color.DeepPink,
-            "Info"  => Color.AliceBlue,
-            "Warn"  => Color.Orange,
-            "Error" => Color.Red,
+            "Trace" => Color.Gray,
+            "Info"  => Color.FromArgb(239, 246, 255),
+            "Warn"  => Color.FromArgb(234, 88, 12),
+            "Error" => Color.FromArgb(225, 29, 72),
             "Fatal" => Color.DarkRed,
-            _       => Color.Gray,
+            _       => Color.FromArgb(6, 182, 212),
         };
     }
 }

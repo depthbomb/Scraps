@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.5.0.0
+
+- Stopping the raffle runner is now instant in nearly all cases
+- Operation will now stop on fatal errors
+- Errors are now displayed in the main form log
+- Scraps will now bring itself to the front if another instance is launched
+- Scraps will attempt to obtain your ban reason if your account gets banned
+- Updated log colors
+- Slightly increased font size of log
+- Added launch arguments, see README for more info
+- Scraps will now exit if started with no internet connection
+
 ## 4.4.0.0
 
 - Overhauled updater functionality

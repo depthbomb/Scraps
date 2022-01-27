@@ -22,6 +22,6 @@ namespace Scraps.GUI.Services.Honeypot
     {
         bool Detected { get; }
         string DetectReason { get; }
-        void Check();
+        void Check(string html);
     }
 }

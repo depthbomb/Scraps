@@ -16,24 +16,12 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle
+namespace Scraps.GUI.Services.Raffle.Exceptions
 {
-    public class PaginateArgs : EventArgs
+    public class AccountBannedException : Exception
     {
-        /// <summary>
-        /// The raffle ID used to paginate
-        /// </summary>
-        public string Apex { get; set; }
-
-        /// <summary>
-        /// The HTML content of the pagination response
-        /// </summary>
-        public string Html { get; set; }
-
-        public PaginateArgs(string apex, string html)
-        {
-            Apex = apex;
-            Html = html.Trim();
-        }
+        public AccountBannedException() {}
+        public AccountBannedException(string message) : base(message) {}
+        public AccountBannedException(string message, Exception inner) : base(message, inner) {}
     }
 }

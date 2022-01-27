@@ -43,12 +43,10 @@ namespace Scraps.GUI.Forms
             InitializeLogger();
             InitializeSettings();
 
-            _runner = new();
+            _runner = new(_options);
             _runner.OnStatus += OnStatus;
             _runner.OnStarting += OnStarting;
             _runner.OnRunning += OnRunning;
-            _runner.OnAccountBanned += OnAccountBanned;
-            _runner.OnProfileNotSetUp += OnProfileNotSetUp;
             _runner.OnRafflesWon += OnRafflesWon;
             _runner.OnStopped += OnStopped;
 
@@ -115,12 +113,6 @@ namespace Scraps.GUI.Forms
             _StartStopButton.Text = "Stop";
         }
 
-        private void OnAccountBanned(object sender, AccountBannedArgs e)
-            => _runner.Cancel();
-
-        private void OnProfileNotSetUp(object sender, ProfileNotSetUpArgs e)
-            => _runner.Cancel();
-
         private void OnRafflesWon(object sender, RafflesWonArgs e)
         {
             bool enableToast = Properties.UserConfig.Default.ToastNotifications;
@@ -183,6 +175,12 @@ namespace Scraps.GUI.Forms
                     }
 
                     _StartStopButton.Enabled = true;
+
+                    if (_options.Silent)
+                    {
+                        this.WindowState = FormWindowState.Minimized;
+                        await _runner.StartAsync();
+                    }
                 }
                 catch { }
 
@@ -243,13 +241,13 @@ namespace Scraps.GUI.Forms
         private void SettingsButton_OnClick(object sender, EventArgs e)
         {
             var settingsWindow = new SettingsForm(_runner);
-                settingsWindow.ShowDialog(this);
+            settingsWindow.ShowDialog(this);
         }
 
         private void InfoButton_OnClick(object sender, EventArgs e)
         {
             var aboutWindow = new AboutForm();
-                aboutWindow.ShowDialog(this);
+            aboutWindow.ShowDialog(this);
         }
         #endregion
 
@@ -265,7 +263,7 @@ namespace Scraps.GUI.Forms
         }
 
         private void ShowWebViewWindow(string url, string cookies = null)
-            => (new WebViewForm(url, cookies)).Show();
+            => new WebViewForm(url, cookies).Show();
 
         private async Task FetchAnnouncementsAsync()
         {
@@ -279,7 +277,7 @@ namespace Scraps.GUI.Forms
                         string line = announcementLines[i].Trim();
                         if (!string.IsNullOrEmpty(line))
                         {
-                            _LogWindow.AppendLine($"[Announcement #{i + 1}] {line}", Color.GreenYellow);
+                            _LogWindow.AppendLine($"[Announcement #{i + 1}] {line}", Color.FromArgb(251, 191, 36));
                         }
                     }
                 }
@@ -308,14 +306,14 @@ namespace Scraps.GUI.Forms
         {
             if (m.Msg == Native.WM_RAFFLERUNNER_SHOWME)
             {
-                if (WindowState == FormWindowState.Minimized)
+                if (this.WindowState == FormWindowState.Minimized)
                 {
-                    WindowState = FormWindowState.Normal;
+                    this.WindowState = FormWindowState.Normal;
                 }
 
-                Show();
-                Activate();
-                BringToFront();
+                this.Show();
+                this.Activate();
+                this.BringToFront();
             }
 
             base.WndProc(ref m);

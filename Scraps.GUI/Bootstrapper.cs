@@ -86,7 +86,7 @@ namespace Scraps.GUI
             var options = new LaunchOptions
             {
                 Debug = args.Any(a => a == "/Debug"),
-                Silent = false,
+                Silent = args.Any(a => a == "/Silent"),
                 SkipUpdates = args.Any(a => a == "/SkipUpdate"),
                 SkipAnnouncements = args.Any(a => a == "/SkipAnnouncements")
             };

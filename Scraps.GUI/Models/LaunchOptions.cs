@@ -16,24 +16,13 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle
+namespace Scraps.GUI.Models
 {
-    public class PaginateArgs : EventArgs
+    public class LaunchOptions
     {
-        /// <summary>
-        /// The raffle ID used to paginate
-        /// </summary>
-        public string Apex { get; set; }
-
-        /// <summary>
-        /// The HTML content of the pagination response
-        /// </summary>
-        public string Html { get; set; }
-
-        public PaginateArgs(string apex, string html)
-        {
-            Apex = apex;
-            Html = html.Trim();
-        }
+        public bool Debug { get; set; } = false;
+        public bool Silent { get; set; } = false;
+        public bool SkipUpdates { get; set; } = false;
+        public bool SkipAnnouncements { get; set; } = false;
     }
 }
