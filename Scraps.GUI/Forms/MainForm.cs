@@ -18,6 +18,7 @@
 
 using Microsoft.Toolkit.Uwp.Notifications;
 
+using Scraps.GUI.Models;
 using Scraps.GUI.Logging;
 using Scraps.GUI.Services;
 using Scraps.GUI.Constants;
@@ -30,19 +31,18 @@ namespace Scraps.GUI.Forms
     {
         private bool _running = false;
 
+        private readonly LaunchOptions _options;
         private readonly RaffleService _runner;
-        private readonly AnnouncementService _announcement;
 
-        public MainForm(string[] args)
+        public MainForm(LaunchOptions options)
         {
-            ToastNotificationManagerCompat.OnActivated += Toast_OnActivated;
+            _options = options;
 
             InitializeComponent();
 
             InitializeLogger();
             InitializeSettings();
 
-            _announcement = new();
             _runner = new();
             _runner.OnStatus += OnStatus;
             _runner.OnStarting += OnStarting;
@@ -54,6 +54,8 @@ namespace Scraps.GUI.Forms
 
             this.Text = string.Format("Scraps - {0}", Constants.Version.Full);
             this.FormClosing += MainForm_OnClosing;
+
+            ToastNotificationManagerCompat.OnActivated += Toast_OnActivated;
         }
 
         private void InitializeSettings()
@@ -87,7 +89,7 @@ namespace Scraps.GUI.Forms
 
             config.AddTarget("RTB", rtbTarget);
             config.AddTarget("File", fileTarget);
-            config.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, rtbTarget));
+            config.LoggingRules.Add(new LoggingRule("*", _options.Debug ? LogLevel.Debug : LogLevel.Info, rtbTarget));
             config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
 
             LogManager.Configuration = config;
@@ -173,9 +175,12 @@ namespace Scraps.GUI.Forms
             {
                 try
                 {
-                    _Status.Text = "Fetching announcements";
+                    if (!_options.SkipAnnouncements)
+                    {
+                        _Status.Text = "Fetching announcements";
 
-                    await FetchAnnouncementsAsync();
+                        await FetchAnnouncementsAsync();
+                    }
 
                     _StartStopButton.Enabled = true;
                 }
@@ -186,6 +191,8 @@ namespace Scraps.GUI.Forms
             else
             {
                 Utils.ShowError(this, "No Internet Connection", "Could not connect to the internet. Please check your internet connection.\n\nIf you believe this is a mistake then please open up an issue on GitHub.");
+
+                Application.Exit();
             }
         }
 
@@ -295,6 +302,23 @@ namespace Scraps.GUI.Forms
                     return false;
                 }
             }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == Native.WM_RAFFLERUNNER_SHOWME)
+            {
+                if (WindowState == FormWindowState.Minimized)
+                {
+                    WindowState = FormWindowState.Normal;
+                }
+
+                Show();
+                Activate();
+                BringToFront();
+            }
+
+            base.WndProc(ref m);
         }
     }
 }

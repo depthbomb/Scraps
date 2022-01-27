@@ -17,6 +17,7 @@
 #endregion License
 
 using Scraps.GUI.Forms;
+using Scraps.GUI.Models;
 using Scraps.GUI.Services;
 using Scraps.GUI.Constants;
 
@@ -24,15 +25,24 @@ namespace Scraps.GUI
 {
     static class Bootstrapper
     {
+        public static LaunchOptions _options;
+
         [STAThread]
         static async Task Main(string[] args)
         {
-            var updater = new UpdaterService();
-
-            EnsureFileSystem();
-
-            if (!IsAlreadyRunning())
+            using (var mutex = new Mutex(false, "RaffleRunner Windows"))
             {
+                if (!mutex.WaitOne(0))
+                {
+                    IntPtr intPtr = Native.FindWindowByCaption(IntPtr.Zero, string.Format("Scraps - {0}", Constants.Version.Full));
+                    Native.SendMessage(intPtr, Native.WM_RAFFLERUNNER_SHOWME, IntPtr.Zero, IntPtr.Zero);
+                    Environment.Exit(0);
+                }
+
+                _options = ParseOptions(args);
+
+                EnsureFileSystem();
+
                 if (Properties.UserConfig.Default.UpgradeRequired)
                 {
                     Properties.UserConfig.Default.Upgrade();
@@ -46,17 +56,21 @@ namespace Scraps.GUI
 
                 try
                 {
-                    await updater.CheckForUpdatesAsync();
+                    if (!_options.SkipUpdates)
+                    {
+                        using (var updater = new UpdaterService())
+                        {
+                            await updater.CheckForUpdatesAsync();
+                        }
+                    }
                 }
-                catch {}
+                catch { }
 
-                Application.Run(new MainForm(args));
+                Application.Run(new MainForm(_options));
             }
         }
 
-        static bool IsAlreadyRunning() => Process.GetProcesses().Count(p => p.ProcessName == Process.GetCurrentProcess().ProcessName) > 1;
-
-        static void EnsureFileSystem()
+        private static void EnsureFileSystem()
         {
             foreach (string path in new string[] { Paths.LOGS_PATH, Paths.DATA_PATH })
             {
@@ -65,6 +79,19 @@ namespace Scraps.GUI
                     Directory.CreateDirectory(path);
                 }
             }
+        }
+
+        private static LaunchOptions ParseOptions(string[] args)
+        {
+            var options = new LaunchOptions
+            {
+                Debug = args.Any(a => a == "/Debug"),
+                Silent = false,
+                SkipUpdates = args.Any(a => a == "/SkipUpdate"),
+                SkipAnnouncements = args.Any(a => a == "/SkipAnnouncements")
+            };
+
+            return options;
         }
     }
 }
