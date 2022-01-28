@@ -35,7 +35,7 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 ## Features
 
 - Fast and lighweight; no need to install Python/Node.JS/Java/etc, doesn't use browser automation
-- Easy to set up and configure, simply extract and run
+- Configurable
 - Detailed logging so you can see everything it does and makes it easier to report problems
 - Honeypot/trap raffle detection; avoids fake raffles created by staff members that will get you banned
 
