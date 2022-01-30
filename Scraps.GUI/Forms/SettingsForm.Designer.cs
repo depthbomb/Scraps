@@ -43,13 +43,10 @@ namespace Scraps.GUI.Forms
             this.label2 = new System.Windows.Forms.Label();
             this._SaveButton = new System.Windows.Forms.Button();
             this._ToastToggle = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this._ClearUserDataButton = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._JoinDelayInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._PaginateDelayInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._ScanDelayInput)).BeginInit();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -212,7 +209,7 @@ namespace Scraps.GUI.Forms
             // 
             this._SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this._SaveButton.Image = global::Scraps.GUI.Icons.Save;
-            this._SaveButton.Location = new System.Drawing.Point(317, 353);
+            this._SaveButton.Location = new System.Drawing.Point(317, 287);
             this._SaveButton.Name = "_SaveButton";
             this._SaveButton.Size = new System.Drawing.Size(77, 24);
             this._SaveButton.TabIndex = 4;
@@ -232,36 +229,11 @@ namespace Scraps.GUI.Forms
             this._ToastToggle.Text = "Enable Toast Notifications";
             this._ToastToggle.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this._ClearUserDataButton);
-            this.groupBox1.Location = new System.Drawing.Point(13, 287);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(381, 57);
-            this.groupBox1.TabIndex = 6;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "WebView2";
-            // 
-            // _ClearUserDataButton
-            // 
-            this._ClearUserDataButton.Enabled = false;
-            this._ClearUserDataButton.Image = global::Scraps.GUI.Icons.Trash;
-            this._ClearUserDataButton.Location = new System.Drawing.Point(6, 28);
-            this._ClearUserDataButton.Name = "_ClearUserDataButton";
-            this._ClearUserDataButton.Size = new System.Drawing.Size(369, 23);
-            this._ClearUserDataButton.TabIndex = 0;
-            this._ClearUserDataButton.Text = "Calculating...";
-            this._ClearUserDataButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this._ClearUserDataButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this._ClearUserDataButton.UseVisualStyleBackColor = true;
-            this._ClearUserDataButton.Click += new System.EventHandler(this.ClearUserDataButton_OnClick);
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(406, 389);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(406, 323);
             this.Controls.Add(this._ToastToggle);
             this.Controls.Add(this._ParanoidToggle);
             this.Controls.Add(this._SortNewToggle);
@@ -282,7 +254,6 @@ namespace Scraps.GUI.Forms
             ((System.ComponentModel.ISupportInitialize)(this._JoinDelayInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this._PaginateDelayInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this._ScanDelayInput)).EndInit();
-            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -304,7 +275,5 @@ namespace Scraps.GUI.Forms
         private System.Windows.Forms.Button _SaveButton;
         private System.Windows.Forms.CheckBox _SortNewToggle;
         private System.Windows.Forms.CheckBox _ToastToggle;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button _ClearUserDataButton;
     }
 }

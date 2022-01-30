@@ -236,7 +236,7 @@ namespace Scraps.GUI.Forms
         }
 
         private void WonRafflesButton_OnClick(object sender, EventArgs e)
-            => ShowWebViewWindow("https://scrap.tf/raffles/won", $"scr_session={Properties.UserConfig.Default.Cookie}");
+            => Process.Start("explorer.exe", "https://scrap.tf/raffles/won");
 
         private void SettingsButton_OnClick(object sender, EventArgs e)
         {
@@ -261,9 +261,6 @@ namespace Scraps.GUI.Forms
                     break;
             }
         }
-
-        private void ShowWebViewWindow(string url, string cookies = null)
-            => new WebViewForm(url, cookies).Show();
 
         private async Task FetchAnnouncementsAsync()
         {

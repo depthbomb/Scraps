@@ -173,7 +173,7 @@ namespace Scraps.GUI.Services
                     }
                     else
                     {
-                        _log.Error(ex);
+                        _log.Error("{Name}{Stack}", ex.Source, ex.StackTrace);
                     }
                 }
 

@@ -73,7 +73,6 @@ namespace Scraps.GUI.Services
                     Heading = "Downloading installer...",
                     ProgressBar = new(TaskDialogProgressBarState.Marquee)
                 };
-
                 var downloadButton = new TaskDialogCommandLinkButton
                 {
                     Text = "Update",
@@ -87,12 +86,11 @@ namespace Scraps.GUI.Services
 
                 downloadButton.Click += async (s, e) =>
                 {
-                    updateAvailablePage.Navigate(progressPage);
-
-                    string tempLocation = Path.Combine(Path.GetTempPath(), "scraps_setup.exe");
-
                     _log.Debug("Downloading installer");
 
+                    updateAvailablePage.Navigate(progressPage);
+
+                    string tempLocation = Path.GetTempFileName();
                     string windowsAsset = _latestRelease.assets.Where(a => a.name.StartsWith("scraps_setup")).First().browser_download_url;
                     byte[] data = await _http.GetByteArrayAsync(windowsAsset);
                     using (var fs = new FileStream(tempLocation, FileMode.Create, FileAccess.Write, FileShare.None))

@@ -1,7 +1,7 @@
 #include "buttons.iss"
 
 #define MyAppName "Scraps"
-#define MyAppVersion "4.5.0.1"
+#define MyAppVersion "4.6.0.0"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "Scraps.GUI.exe"
 
@@ -53,7 +53,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\Scraps.GUI\bin\Publish\win10-x64\Scraps.GUI.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Scraps.GUI\bin\Publish\win10-x64\WebView2Loader.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Publish\win10-x64\Scraps.GUI.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\license.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [INI]
@@ -65,23 +65,17 @@ Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\Instructions.url"; Description: "View instructions"; Flags: nowait postinstall skipifsilent shellexec unchecked
 Filename: "{app}\Changelog.url"; Description: "View changelog"; Flags: nowait postinstall skipifsilent shellexec unchecked
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent; Check: FromUpdate
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent unchecked; Check: FromNormal
 
 [UninstallDelete]
 Type: files; Name: "{userdocs}\Caprine Logic\Scraps\Config.json"
-Type: filesandordirs; Name: "{userdocs}\Caprine Logic\Scraps\Plugins\*"
-Type: dirifempty; Name: "{userdocs}\Caprine Logic\Scraps\Plugins"
 Type: filesandordirs; Name: "{userdocs}\Caprine Logic\Scraps\Logs\*"
 Type: dirifempty; Name: "{userdocs}\Caprine Logic\Scraps\Logs"
 Type: filesandordirs; Name: "{userdocs}\Caprine Logic\Scraps\Data\*"
 Type: dirifempty; Name: "{userdocs}\Caprine Logic\Scraps\Data"
 Type: dirifempty; Name: "{userdocs}\Caprine Logic\Scraps"
-Type: files; Name: "{app}\Instructions.url"
 Type: files; Name: "{app}\Changelog.url"
 Type: files; Name: "{app}\Source Code.url"
-Type: filesandordirs; Name: "{app}\Scraps.GUI.exe.WebView2\*"
-Type: dirifempty; Name: "{app}\Scraps.GUI.exe.WebView2"
 Type: dirifempty; Name: "{app}"

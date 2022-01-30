@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.6.0.0
+
+- Downloaded temporary setup now uses a unique name
+- Removed WebView2 and replaced "Won Raffles" button functionality
+- Included a program database file (.pdb) for easier debugging of errors
+- Improved error logging
+
 ## 4.5.0.1
 
 - Fixed a hang when the raffle runner is started for a banned account
