@@ -33,6 +33,7 @@ namespace Scraps.GUI.Services
         private HttpClient _http;
         private int _scanDelay;
         private int _joinDelay;
+        private bool _stoppedFromError = false;
         private bool _alertedOfWonRaffles = false;
         private CancellationToken _cancelToken;
         private CancellationTokenSource _cancelTokenSource;
@@ -169,10 +170,12 @@ namespace Scraps.GUI.Services
                 {
                     if (ex is AccountBannedException)
                     {
+                        _stoppedFromError = false; // So we don't try to restart for no reason
                         _log.Error("Account banned: {Reason}", ex.Message);
                     }
                     else
                     {
+                        _stoppedFromError = true;
                         _log.Error("{Name}{Stack}", ex.Source, ex.StackTrace);
                     }
                 }
@@ -185,6 +188,13 @@ namespace Scraps.GUI.Services
                 _log.Info("Stopped");
                 SendStatus(null);
                 Running = false;
+
+                if (_options.AutoReconnect && _stoppedFromError)
+                {
+                    _log.Info("Restarting in 5 seconds.");
+                    await Task.Delay(5_000);
+                    await StartAsync();
+                }
             }
         }
 

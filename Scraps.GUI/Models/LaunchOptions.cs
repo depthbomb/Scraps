@@ -23,6 +23,7 @@ namespace Scraps.GUI.Models
         public bool Debug { get; set; } = false;
         public bool Silent { get; set; } = false;
         public bool SkipUpdates { get; set; } = false;
+        public bool AutoReconnect { get; set; } = false;
         public bool SkipAnnouncements { get; set; } = false;
     }
 }
