@@ -52,6 +52,7 @@ Scraps requires your Scrap.TF session cookie, `scr_session` to function. This ca
 - `/Debug` Enable logging debug info to the app's log window
 - `/Silent` Launches Scraps minimized and immediately starts the raffle runner
 - `/SkipUpdates` Skips the update check
+- `/AutoReconnect` Attempts to restart operations after stopping due to an error
 - `/SkipAnnouncements` Skips announcement fetching
 
 ## Avoiding Bans

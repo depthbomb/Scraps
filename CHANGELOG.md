@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.6.1.0
+
+- Added `/AutoReconnect` launch flag to automatically attempt to restart the raffle runner after stopping from an error
+- Updated dependencies
+
 ## 4.6.0.0
 
 - Downloaded temporary setup now uses a unique name
