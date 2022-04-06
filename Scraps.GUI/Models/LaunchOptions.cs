@@ -25,5 +25,6 @@ namespace Scraps.GUI.Models
         public bool SkipUpdates { get; set; } = false;
         public bool AutoReconnect { get; set; } = false;
         public bool SkipAnnouncements { get; set; } = false;
+        public bool UseProxies { get; set; } = false;
     }
 }

@@ -89,7 +89,8 @@ namespace Scraps.GUI
                 Silent = args.Any(a => a == "/Silent"),
                 SkipUpdates = args.Any(a => a == "/SkipUpdate"),
                 AutoReconnect = args.Any(a => a == "/AutoReconnect"),
-                SkipAnnouncements = args.Any(a => a == "/SkipAnnouncements")
+                SkipAnnouncements = args.Any(a => a == "/SkipAnnouncements"),
+                UseProxies = args.Any(a => a == "/UseProxies"),
             };
 
             return options;
