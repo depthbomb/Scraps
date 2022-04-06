@@ -22,10 +22,6 @@ Steps to reproduce the behavior:
 3. Scroll down to '....'
 4. See error
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Version [e.g. 22]
-
 **Additional context**
 Add any other context about the problem here.
 
