@@ -86,30 +86,36 @@ namespace Scraps.GUI.Forms
             int joinDelay           = (int)_JoinDelayInput.Value;
             bool incrementScanDelay = _IncrementScanDelayToggle.Checked;
 
-            if (InputIsValid())
+            if (string.IsNullOrEmpty(cookie)) return;
+            if (cookie.Length < 360)
             {
-                Properties.UserConfig.Default.Cookie = cookie;
-                Properties.UserConfig.Default.SortByNew = sortByNew;
-                Properties.UserConfig.Default.Paranoid = paranoid;
-                Properties.UserConfig.Default.ToastNotifications = toast;
-                Properties.UserConfig.Default.ScanDelay = scanDelay;
-                Properties.UserConfig.Default.PaginateDelay = paginateDelay;
-                Properties.UserConfig.Default.JoinDelay = joinDelay;
-                Properties.UserConfig.Default.IncrementScanDelay = incrementScanDelay;
-                Properties.UserConfig.Default.Save();
-                Properties.UserConfig.Default.Reload();
-
-                if (_runner is RaffleService && _runner.Running)
-                {
-                    Utils.ShowWarning(this, "Warning", "Some changes won't go into effect until the raffle runner is restarted.");
-                }
-
-                this.Close();
+                Utils.ShowError(this, "Invalid Cookie Length", "Your cookie value is likely invalid due to it being shorter in length than expected. If you are sure that this is incorrect then please submit an issue.");
+                return;
             }
+            if (cookie.Contains("scr_session"))
+            {
+                Utils.ShowError(this, "Invalid Cookie Value", "Your cookie value is invalid. Make sure that you input ONLY the value of the scr_session cookie.");
+                return;
+            }
+
+            Properties.UserConfig.Default.Cookie = cookie;
+            Properties.UserConfig.Default.SortByNew = sortByNew;
+            Properties.UserConfig.Default.Paranoid = paranoid;
+            Properties.UserConfig.Default.ToastNotifications = toast;
+            Properties.UserConfig.Default.ScanDelay = scanDelay;
+            Properties.UserConfig.Default.PaginateDelay = paginateDelay;
+            Properties.UserConfig.Default.JoinDelay = joinDelay;
+            Properties.UserConfig.Default.IncrementScanDelay = incrementScanDelay;
+            Properties.UserConfig.Default.Save();
+            Properties.UserConfig.Default.Reload();
+
+            if (_runner is RaffleService && _runner.Running)
+            {
+                Utils.ShowWarning(this, "Warning", "Some changes won't go into effect until the raffle runner is restarted.");
+            }
+
+            this.Close();
         }
-        
-        private bool InputIsValid()
-            => !string.IsNullOrEmpty(_CookieInput.Text);
 
         private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
         {

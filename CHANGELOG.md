@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.6.2.0
+
+- Updated validation when saving settings
+- Updated installer look
+- Updated dependencies
+
 ## 4.6.1.0
 
 - Added `/AutoReconnect` launch flag to automatically attempt to restart the raffle runner after stopping from an error
