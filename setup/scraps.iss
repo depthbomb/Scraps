@@ -1,9 +1,9 @@
-#include "buttons.iss"
-
 #define MyAppName "Scraps"
-#define MyAppVersion "4.6.1.0"
+#define MyAppDescription "Scrap.TF Raffle Bot"
+#define MyAppVersion "4.6.2.0"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "Scraps.GUI.exe"
+#define MyAppCopyright "Copyright (C) 2022 Caprine Logic"
 
 [Setup]
 AppId={{D3BD46E5-E1AF-41DA-92A3-4443B418294C}
@@ -14,7 +14,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL=https://github.com/depthbomb
 AppSupportURL=https://github.com/depthbomb/Scraps
 AppUpdatesURL=https://github.com/depthbomb/Scraps/releases
-AppCopyright=Copyright (C) 2022 Caprine Logic
+AppCopyright={#MyAppCopyright}
 VersionInfoVersion={#MyAppVersion}
 DefaultDirName={autopf}\{#MyAppPublisher}\{#MyAppName}
 DisableDirPage=yes
@@ -27,12 +27,21 @@ OutputBaseFilename=scraps_setup
 SetupIconFile=..\Scraps.GUI\Scraps.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
-WizardStyle=classic
+WizardStyle=modern
+WizardResizable=no
 WizardImageFile=.\images\Image_*.bmp
 WizardSmallImageFile=.\images\SmallImage_*.bmp
 ArchitecturesAllowed=x64
-UninstallDisplayIcon={app}\{#MyAppExeName}
-UninstallDisplayName=Scraps - Scrap.TF Raffle Bot
+UninstallDisplayIcon={app}\Scraps.GUI.exe
+UninstallDisplayName={#MyAppName} - {#MyAppDescription}
+ShowTasksTreeLines=True
+AlwaysShowDirOnReadyPage=True
+VersionInfoCompany={#MyAppPublisher}
+VersionInfoCopyright={#MyAppCopyright}
+VersionInfoProductName={#MyAppName}
+VersionInfoProductVersion={#MyAppVersion}
+VersionInfoProductTextVersion={#MyAppVersion}
+VersionInfoDescription={#MyAppDescription}
 
 [Code]
 function FromUpdate: Boolean;
