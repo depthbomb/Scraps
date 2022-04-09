@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.7.0.1
+
+This is a hotfix for the previous release.
+
+- Added missing help request controls for the new proxy settings
+
+Previous release notes:
+
+- Fixed error message relating to the site being down for maintenance
+- Improved exception logging
+- Added experimental proxy support
+  - Using a VPN may be a better solution
+
 ## 4.7.0.0
 
 - Fixed error message relating to the site being down for maintenance

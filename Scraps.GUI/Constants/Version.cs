@@ -31,7 +31,7 @@ namespace Scraps.GUI.Constants
         public static int Major => 4;
         public static int Minor => 7;
         public static int Patch => 0;
-        public static int Hotfix => 0;
+        public static int Hotfix => 1;
         public static ReleaseTypes ReleaseType => ReleaseTypes.Release;
         public static string SemVer => $"{Major}.{Minor}.{Patch}.{Hotfix}";
         public static string Full => $"{SemVer}-{ReleaseType}";

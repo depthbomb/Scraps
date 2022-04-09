@@ -65,6 +65,15 @@ namespace Scraps.GUI.Forms
             _IncrementScanDelayToggle.HelpRequested += (object s, HelpEventArgs h)
                 => Utils.ShowInfo(this, "Help", "Enabling this will make Scraps increment the Scan Delay by 1 second if a scan operation resulted in no available raffles to join.");
 
+            _ProxiesInput.HelpRequested += (object s, HelpEventArgs h)
+                => Utils.ShowInfo(this, "Help", "Here you may enter HTTP proxy addresses (+ port) that Scraps will use when operating. Separate each address by a single new line.");
+
+            _TestProxiesButton.HelpRequested += (object s, HelpEventArgs h)
+                => Utils.ShowInfo(this, "Help", "Tests the current above proxies to ensure that they don't reveal your IP address.");
+
+            _CancelProxyTestButton.HelpRequested += (object s, HelpEventArgs h)
+                => Utils.ShowInfo(this, "Help", "Cancels the proxy test as soon as it can.");
+
             _SaveButton.HelpRequested += (object s, HelpEventArgs h)
                 => Utils.ShowInfo(this, "Help", "Settings changes made won't take effect until this button is clicked.");
         }
