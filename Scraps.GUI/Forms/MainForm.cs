@@ -32,6 +32,7 @@ namespace Scraps.GUI.Forms
         private bool _running = false;
 
         private readonly LaunchOptions _options;
+        private readonly ProxyService _proxy;
         private readonly RaffleService _runner;
 
         public MainForm(LaunchOptions options)
@@ -43,7 +44,9 @@ namespace Scraps.GUI.Forms
             InitializeLogger();
             InitializeSettings();
 
-            _runner = new(_options);
+            _proxy = new();
+
+            _runner = new(_proxy, _options);
             _runner.OnStatus += OnStatus;
             _runner.OnStarting += OnStarting;
             _runner.OnRunning += OnRunning;
@@ -60,7 +63,7 @@ namespace Scraps.GUI.Forms
         {
             if (string.IsNullOrEmpty(Properties.UserConfig.Default.Cookie))
             {
-                var settingsWindow = new SettingsForm(_runner ?? null);
+                var settingsWindow = new SettingsForm(_runner ?? null, _proxy);
                     settingsWindow.ShowDialog(this);
             }
         }
@@ -206,7 +209,7 @@ namespace Scraps.GUI.Forms
         {
             if (Properties.UserConfig.Default.Cookie.IsNullOrEmpty())
             {
-                var settingsWindow = new SettingsForm(null);
+                var settingsWindow = new SettingsForm(null, _proxy);
                     settingsWindow.ShowDialog(this);
 
                 return;
@@ -240,7 +243,7 @@ namespace Scraps.GUI.Forms
 
         private void SettingsButton_OnClick(object sender, EventArgs e)
         {
-            var settingsWindow = new SettingsForm(_runner);
+            var settingsWindow = new SettingsForm(_runner, _proxy);
             settingsWindow.ShowDialog(this);
         }
 

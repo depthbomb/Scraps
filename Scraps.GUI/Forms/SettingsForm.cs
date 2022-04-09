@@ -22,15 +22,21 @@ namespace Scraps.GUI.Forms
 {
     public partial class SettingsForm : Form
     {
-        private readonly RaffleService _runner;
+        private bool _testingProxies = false;
+        private CancellationToken _cancelToken;
+        private CancellationTokenSource _cancelTokenSource;
 
-        public SettingsForm(RaffleService runner)
+        private readonly RaffleService _runner;
+        private readonly ProxyService _proxy;
+
+        public SettingsForm(RaffleService runner, ProxyService proxy)
         {
             _runner = runner;
+            _proxy = proxy;
 
             InitializeComponent();
-            SubscribeToHelpEvents();
             PopulateControlValues();
+            SubscribeToHelpEvents();
         }
 
         private void SubscribeToHelpEvents()
@@ -73,6 +79,56 @@ namespace Scraps.GUI.Forms
             _PaginateDelayInput.Value         = Properties.UserConfig.Default.PaginateDelay;
             _JoinDelayInput.Value             = Properties.UserConfig.Default.JoinDelay;
             _IncrementScanDelayToggle.Checked = Properties.UserConfig.Default.IncrementScanDelay;
+            _ProxiesInput.Text                = Properties.UserConfig.Default.Proxies;
+        }
+
+        private async void TestProxiesButton_OnClick(object sender, EventArgs e)
+        {
+            if (_ProxiesInput.Text.Trim().Length == 0) return;
+
+            _cancelTokenSource = new();
+            _cancelToken = _cancelTokenSource.Token;
+
+            _testingProxies = true;
+            _SaveButton.Enabled = false;
+            _TestProxiesButton.Enabled = false;
+            _CancelProxyTestButton.Visible = true;
+
+            List<string> brokenProxies = new();
+            string[] proxies = _ProxiesInput.Text.Split("\n");
+            foreach (string proxy in proxies)
+            {
+                if (_cancelToken.IsCancellationRequested) break;
+
+                bool working = await _proxy.TestProxyAsync(proxy.Trim());
+                if (!working)
+                {
+                    brokenProxies.Add(proxy);
+                }
+            }
+
+            if (brokenProxies.Count > 0)
+            {
+                string invalidProxies = string.Join("\n", brokenProxies);
+                Utils.ShowError(this, "Proxy Test", $"The following proxies don't appear to work:\n\n{invalidProxies}");
+            }
+            else
+            {
+                Utils.ShowInfo(this, "Proxy Test", "All proxies are working!");
+            }
+
+            _testingProxies = false;
+            _SaveButton.Enabled = true;
+            _TestProxiesButton.Enabled = true;
+            _CancelProxyTestButton.Visible = false;
+            _CancelProxyTestButton.Enabled = true;
+        }
+
+        private void CancelProxyTestButton_OnClick(object sender, EventArgs e)
+        {
+            _CancelProxyTestButton.Enabled = false;
+
+            _cancelTokenSource.Cancel();
         }
 
         private void SaveButton_OnClick(object sender, EventArgs e)
@@ -85,6 +141,7 @@ namespace Scraps.GUI.Forms
             int paginateDelay       = (int)_PaginateDelayInput.Value;
             int joinDelay           = (int)_JoinDelayInput.Value;
             bool incrementScanDelay = _IncrementScanDelayToggle.Checked;
+            string proxies          = _ProxiesInput.Text.Trim();
 
             if (string.IsNullOrEmpty(cookie)) return;
             if (cookie.Length < 360)
@@ -106,6 +163,7 @@ namespace Scraps.GUI.Forms
             Properties.UserConfig.Default.PaginateDelay = paginateDelay;
             Properties.UserConfig.Default.JoinDelay = joinDelay;
             Properties.UserConfig.Default.IncrementScanDelay = incrementScanDelay;
+            Properties.UserConfig.Default.Proxies = proxies;
             Properties.UserConfig.Default.Save();
             Properties.UserConfig.Default.Reload();
 
@@ -119,6 +177,11 @@ namespace Scraps.GUI.Forms
 
         private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (_testingProxies)
+            {
+                e.Cancel = true;
+            }
+
             if (_CookieInput.Text == "" && Properties.UserConfig.Default.Cookie == "")
             {
                 Application.Exit();

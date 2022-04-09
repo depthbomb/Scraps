@@ -39,6 +39,7 @@ namespace Scraps.GUI.Services
         private CancellationTokenSource _cancelTokenSource;
 
         private readonly Logger _log;
+        private readonly ProxyService _proxy;
         private readonly HtmlAgilityPack.HtmlDocument _html;
         private readonly LaunchOptions _options;
         private readonly List<string> _raffleQueue = new();
@@ -83,9 +84,10 @@ namespace Scraps.GUI.Services
         public event EventHandler<StoppedArgs> OnStopped;
         #endregion
 
-        public RaffleService(LaunchOptions options)
+        public RaffleService(ProxyService proxy, LaunchOptions options)
         {
             _log = LogManager.GetCurrentClassLogger();
+            _proxy = proxy;
             _html = new HtmlAgilityPack.HtmlDocument();
             _options = options;
         }
@@ -116,8 +118,18 @@ namespace Scraps.GUI.Services
                     CookieContainer = cookies,
                     UseCookies = true,
                 };
+
+                if (_proxy.HasProxies())
+                {
+                    var (address, port) = _proxy.GetProxy();
+                    handler.Proxy = new WebProxy(address, port);
+                    handler.UseProxy = true;
+
+                    _log.Debug("Using proxy {Proxy}", $"{address}:{port}");
+                }
+
                 var client = new HttpClient(handler);
-                    client.Timeout = TimeSpan.FromSeconds(30);
+                    client.Timeout = _proxy.HasProxies() ? TimeSpan.FromSeconds(60) : TimeSpan.FromSeconds(30);
                     client.DefaultRequestHeaders.Add("user-agent", Strings.USER_AGENT);
                     client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _cookie);
 
@@ -176,7 +188,7 @@ namespace Scraps.GUI.Services
                     else
                     {
                         _stoppedFromError = true;
-                        _log.Error("{Name}{Stack}", ex.Source, ex.StackTrace);
+                        _log.Error("{Err}", ex.ToString());
                     }
                 }
 
@@ -233,7 +245,7 @@ namespace Scraps.GUI.Services
                 {
                     if (html.Contains(Strings.SITE_DOWN))
                     {
-                        throw new DownForMaintenanceException("Site appears to be down/under maintenance. Trying again after 1 minute.");
+                        throw new DownForMaintenanceException("Site appears to be down/under maintenance.");
                     }
                     else
                     {
