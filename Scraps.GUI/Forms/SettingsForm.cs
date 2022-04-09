@@ -153,11 +153,6 @@ namespace Scraps.GUI.Forms
             string proxies          = _ProxiesInput.Text.Trim();
 
             if (string.IsNullOrEmpty(cookie)) return;
-            if (cookie.Length < 360)
-            {
-                Utils.ShowError(this, "Invalid Cookie Length", "Your cookie value is likely invalid due to it being shorter in length than expected. If you are sure that this is incorrect then please submit an issue.");
-                return;
-            }
             if (cookie.Contains("scr_session"))
             {
                 Utils.ShowError(this, "Invalid Cookie Value", "Your cookie value is invalid. Make sure that you input ONLY the value of the scr_session cookie.");

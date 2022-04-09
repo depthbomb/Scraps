@@ -105,36 +105,7 @@ namespace Scraps.GUI.Services
 
             OnStarting?.Invoke(this, new());
 
-            if (_http == null || _cookie != Properties.UserConfig.Default.Cookie)
-            {
-                _http?.Dispose();
-
-                _log.Debug("Creating HTTP client");
-
-                _cookie = Properties.UserConfig.Default.Cookie;
-                var cookies = new CookieContainer();
-                var handler = new HttpClientHandler
-                {
-                    CookieContainer = cookies,
-                    UseCookies = true,
-                };
-
-                if (_proxy.HasProxies())
-                {
-                    var (address, port) = _proxy.GetProxy();
-                    handler.Proxy = new WebProxy(address, port);
-                    handler.UseProxy = true;
-
-                    _log.Debug("Using proxy {Proxy}", $"{address}:{port}");
-                }
-
-                var client = new HttpClient(handler);
-                    client.Timeout = _proxy.HasProxies() ? TimeSpan.FromSeconds(60) : TimeSpan.FromSeconds(30);
-                    client.DefaultRequestHeaders.Add("user-agent", Strings.USER_AGENT);
-                    client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _cookie);
-
-                _http = client;
-            }
+            CreateHTTPClient();
 
             try
             {
@@ -220,6 +191,37 @@ namespace Scraps.GUI.Services
         #endregion
 
         #region Private Methods
+        private void CreateHTTPClient()
+        {
+            _http?.Dispose();
+
+            _log.Debug("Creating HTTP client");
+
+            _cookie = Properties.UserConfig.Default.Cookie;
+            var cookies = new CookieContainer();
+            var handler = new HttpClientHandler
+            {
+                CookieContainer = cookies,
+                UseCookies = true,
+            };
+
+            if (_proxy.HasProxies())
+            {
+                var (address, port) = _proxy.GetProxy();
+                handler.Proxy = new WebProxy(address, port);
+                handler.UseProxy = true;
+
+                _log.Debug("Using proxy {Proxy}", $"{address}:{port}");
+            }
+
+            var client = new HttpClient(handler);
+            client.Timeout = _proxy.HasProxies() ? TimeSpan.FromSeconds(60) : TimeSpan.FromSeconds(30);
+            client.DefaultRequestHeaders.Add("user-agent", Strings.USER_AGENT);
+            client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _cookie);
+
+            _http = client;
+        }
+
         private async Task GetCsrfTokenAsync()
         {
             SendStatus("Obtaining CSRF token");

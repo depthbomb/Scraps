@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.7.1.0
+
+- Fixed a bug when attempting to start the runner without proxies
+- Loosened the cookie value length check (fixes [#32](https://github.com/depthbomb/Scraps/issues/32))
+- HTTP client is now created during each runner start
+
 ## 4.7.0.1
 
 This is a hotfix for the previous release.

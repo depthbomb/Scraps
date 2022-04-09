@@ -33,7 +33,11 @@ namespace Scraps.GUI.Services
             _testURL = "http://api.ipify.org";
         }
 
-        public bool HasProxies() => Properties.UserConfig.Default.Proxies.Split("\n").Length > 0;
+        public bool HasProxies()
+        {
+            string proxies = Properties.UserConfig.Default.Proxies.Trim();
+            return !proxies.IsNullOrEmpty() && proxies.Split("\n").Length > 0;
+        }
 
         public (string, int) GetProxy()
         {
