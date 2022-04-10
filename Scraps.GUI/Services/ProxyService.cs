@@ -24,11 +24,13 @@ namespace Scraps.GUI.Services
     {
         private string _localIP;
 
+        private readonly Random _rng;
         private readonly Logger _log;
         private readonly string _testURL;
 
         public ProxyService()
         {
+            _rng = new Random();
             _log = LogManager.GetCurrentClassLogger();
             _testURL = "http://api.ipify.org";
         }
@@ -41,11 +43,19 @@ namespace Scraps.GUI.Services
 
         public (string, int) GetProxy()
         {
-            var rng = new Random();
             string[] proxies = Properties.UserConfig.Default.Proxies.Split("\n");
-            string randomProxy = rng.RandomArrayItem(proxies);
+            string[] validProxies = proxies.Where(p => IsAddressValid(p)).ToArray();
 
-            return GetProxyParts(randomProxy);
+            if (validProxies.Length > 0)
+            {
+                string randomProxy = _rng.RandomArrayItem(validProxies);
+
+                return GetProxyParts(randomProxy);
+            }
+            else
+            {
+                return (null, 0);
+            }
         }
 
         public async Task<bool> TestProxyAsync(string proxyToTest)
@@ -100,6 +110,8 @@ namespace Scraps.GUI.Services
             return testIP != currentIP;
         }
 
+        public bool IsAddressValid(string proxy) => IPEndPoint.TryParse(proxy, out _);
+
         private async Task<string> GetCurrentIPAsync()
         {
             if (_localIP == null)
@@ -116,8 +128,7 @@ namespace Scraps.GUI.Services
 
         private (string, int) GetProxyParts(string proxy)
         {
-            var split = proxy.Trim().Split(":");
-
+            string[] split = proxy.Trim().Split(":");
             string address = split[0];
             int port = int.Parse(split[1]);
 

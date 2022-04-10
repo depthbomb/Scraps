@@ -103,23 +103,23 @@ namespace Scraps.GUI.Forms
             _TestProxiesButton.Enabled = false;
             _CancelProxyTestButton.Visible = true;
 
-            List<string> brokenProxies = new();
+            List<string> problematicProxies = new();
             string[] proxies = _ProxiesInput.Text.Split("\n");
             foreach (string proxy in proxies)
             {
                 if (_cancelToken.IsCancellationRequested) break;
-
-                bool working = await _proxy.TestProxyAsync(proxy.Trim());
-                if (!working)
+                if (!_proxy.IsAddressValid(proxy.Trim()))
                 {
-                    brokenProxies.Add(proxy);
+                    problematicProxies.Add(proxy);
+                    continue;
                 }
+                if (!await _proxy.TestProxyAsync(proxy.Trim())) problematicProxies.Add(proxy);
             }
 
-            if (brokenProxies.Count > 0)
+            if (problematicProxies.Count > 0)
             {
-                string invalidProxies = string.Join("\n", brokenProxies);
-                Utils.ShowError(this, "Proxy Test", $"The following proxies don't appear to work:\n\n{invalidProxies}");
+                string problematicProxiesList = string.Join("\n", problematicProxies);
+                Utils.ShowError(this, "Proxy Test", $"The following proxies won't work because they are invalid, timed out, or didn't hide your IP:\n\n{problematicProxiesList}");
             }
             else
             {

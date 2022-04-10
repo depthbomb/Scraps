@@ -208,16 +208,26 @@ namespace Scraps.GUI.Services
             if (_proxy.HasProxies())
             {
                 var (address, port) = _proxy.GetProxy();
-                handler.Proxy = new WebProxy(address, port);
-                handler.UseProxy = true;
 
-                _log.Debug("Using proxy {Proxy}", $"{address}:{port}");
+                if (address != null)
+                {
+                    handler.Proxy = new WebProxy(address, port);
+                    handler.UseProxy = true;
+
+                    _log.Debug("Using proxy {Proxy}", $"{address}:{port}");
+                }
+                else
+                {
+                    // How do we even get here?
+                    _log.Error("Could not use a valid proxy.");
+                    _cancelTokenSource.Cancel();
+                }
             }
 
             var client = new HttpClient(handler);
-            client.Timeout = _proxy.HasProxies() ? TimeSpan.FromSeconds(60) : TimeSpan.FromSeconds(30);
-            client.DefaultRequestHeaders.Add("user-agent", Strings.USER_AGENT);
-            client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _cookie);
+                client.Timeout = TimeSpan.FromSeconds(30);
+                client.DefaultRequestHeaders.Add("user-agent", Strings.USER_AGENT);
+                client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _cookie);
 
             _http = client;
         }

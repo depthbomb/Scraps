@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.7.2.0
+
+- Improved proxy validation
+- Only valid proxies will be chosen if the user saved invalid proxies
+
 ## 4.7.1.0
 
 - Fixed a bug when attempting to start the runner without proxies
