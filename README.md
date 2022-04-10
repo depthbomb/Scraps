@@ -47,6 +47,10 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 Scraps requires your Scrap.TF session cookie, `scr_session` to function. This can be found by accessing your browers's dev tools (usually by pressing `F12`), going to **Application** and then **Cookies**. This process may differ depending on your browser.
 
+## Using Proxies
+
+As of 4.7.0.0, Scraps comes with experimental proxy support. You may supply a newline-delimited list of _HTTP/S_ proxies in the settings. You must provide your own proxy addresses and proxies found in public lists are normally unreliable. There is also a good chance that CloudFlare blocks requests made with proxies. Consider using a VPN alongside Scraps instead.
+
 ## Launch Arguments
 
 - `/Debug` Enable logging debug info to the app's log window
