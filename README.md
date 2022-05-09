@@ -28,6 +28,8 @@
 	<img src="https://i.imgur.com/xrXwZj7.png">
 </p>
 
+> **ATTENTION:** Scraps is no longer being updated and will no longer work due to Cloudflare browser checks on the Scrap.TF website (good on them).
+
 The idea for Scraps was conceived during one of my periods of "devious programming".
 
 It uses no exploits, doesn't rely on slow and clunky browser automation, and all operations use the website's AJAX endpoints to handle loading of raffles and joining them.
