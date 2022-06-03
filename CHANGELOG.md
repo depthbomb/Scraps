@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.8.0.0
+
+- Added Cloudflare challenge checking
+- Updated dependencies
+
 ## 4.7.2.0
 
 - Improved proxy validation

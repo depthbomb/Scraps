@@ -28,8 +28,6 @@
 	<img src="https://i.imgur.com/xrXwZj7.png">
 </p>
 
-> **ATTENTION:** Scrap.TF has started to occasionally require captcha verification via CloudFlare. In these events Scraps will not function properly.
-
 The idea for Scraps was conceived during one of my periods of "devious programming".
 
 It uses no exploits, doesn't rely on slow and clunky browser automation, and all operations use the website's AJAX endpoints to handle loading of raffles and joining them.

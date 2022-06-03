@@ -24,5 +24,6 @@ namespace Scraps.GUI.Constants
         public const string ACCOUNT_BANNED = "You have received a site-ban";
         public const string PROFILE_SET_UP = "Scrap.TF requires your Steam profile and inventory set to <b>Public</b> visibility.";
         public const string SITE_DOWN = "<div class=\"dialog-title\">We're down!</div>";
+        public const string CLOUDFLARE = "cf-wrapper"; // Not air-tight but should work for now
     }
 }

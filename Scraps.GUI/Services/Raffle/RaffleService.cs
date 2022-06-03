@@ -156,6 +156,11 @@ namespace Scraps.GUI.Services
                         _stoppedFromError = false; // So we don't try to restart for no reason
                         _log.Error("Account banned: {Reason}", ex.Message);
                     }
+                    else if (ex is CloudflareException)
+                    {
+                        _stoppedFromError = false;
+                        _log.Error(ex.Message);
+                    }
                     else
                     {
                         _stoppedFromError = true;
@@ -240,6 +245,10 @@ namespace Scraps.GUI.Services
             if (html.Contains(Strings.ACCOUNT_BANNED))
             {
                 throw await NewAccountBannedException();
+            }
+            else if (!html.Contains(Strings.CLOUDFLARE))
+            {
+                throw new CloudflareException("Scrap.TF is displaying a Cloudflare challenge, Scraps cannot continue.");
             }
             else if (html.Contains(Strings.PROFILE_SET_UP))
             {

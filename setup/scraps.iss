@@ -1,6 +1,6 @@
 #define MyAppName "Scraps"
 #define MyAppDescription "Scrap.TF Raffle Bot"
-#define MyAppVersion "4.7.2.0"
+#define MyAppVersion "4.8.0.0"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "Scraps.GUI.exe"
 #define MyAppCopyright "Copyright (C) 2022 Caprine Logic"
@@ -61,8 +61,15 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
-Source: "..\Scraps.GUI\bin\Publish\win10-x64\Scraps.GUI.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Scraps.GUI\bin\Publish\win10-x64\Scraps.GUI.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Release\net6.0-windows10.0.17763.0\HtmlAgilityPack.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Release\net6.0-windows10.0.17763.0\Microsoft.Toolkit.Uwp.Notifications.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Release\net6.0-windows10.0.17763.0\Microsoft.Windows.SDK.NET.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Release\net6.0-windows10.0.17763.0\NLog.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Release\net6.0-windows10.0.17763.0\Scraps.GUI.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Release\net6.0-windows10.0.17763.0\Scraps.GUI.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Release\net6.0-windows10.0.17763.0\Scraps.GUI.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Release\net6.0-windows10.0.17763.0\Scraps.GUI.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Release\net6.0-windows10.0.17763.0\WinRT.Runtime.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\license.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [INI]
