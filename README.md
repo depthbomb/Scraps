@@ -28,7 +28,7 @@
 	<img src="https://i.imgur.com/xrXwZj7.png">
 </p>
 
-> **ATTENTION:** Scraps is no longer being updated and will no longer work due to Cloudflare browser checks on the Scrap.TF website (good on them).
+> **ATTENTION:** Scrap.TF has started to occasionally require captcha verification via CloudFlare. In these events Scraps will not function properly.
 
 The idea for Scraps was conceived during one of my periods of "devious programming".
 
