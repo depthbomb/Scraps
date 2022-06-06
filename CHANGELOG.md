@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.8.0.1
+
+- Fixed the Cloudflare warning appearing due to me not removing debug code. Whoops!
+
 ## 4.8.0.0
 
 - Added Cloudflare challenge checking

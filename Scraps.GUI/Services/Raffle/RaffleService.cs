@@ -246,7 +246,7 @@ namespace Scraps.GUI.Services
             {
                 throw await NewAccountBannedException();
             }
-            else if (!html.Contains(Strings.CLOUDFLARE))
+            else if (html.Contains(Strings.CLOUDFLARE))
             {
                 throw new CloudflareException("Scrap.TF is displaying a Cloudflare challenge, Scraps cannot continue.");
             }

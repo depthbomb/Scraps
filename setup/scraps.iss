@@ -1,6 +1,6 @@
 #define MyAppName "Scraps"
 #define MyAppDescription "Scrap.TF Raffle Bot"
-#define MyAppVersion "4.8.0.0"
+#define MyAppVersion "4.8.0.1"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "Scraps.GUI.exe"
 #define MyAppCopyright "Copyright (C) 2022 Caprine Logic"
