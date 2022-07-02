@@ -39,7 +39,6 @@ namespace Scraps.GUI.Services
         private CancellationTokenSource _cancelTokenSource;
 
         private readonly Logger _log;
-        private readonly ProxyService _proxy;
         private readonly HtmlAgilityPack.HtmlDocument _html;
         private readonly LaunchOptions _options;
         private readonly List<string> _raffleQueue = new();
@@ -84,10 +83,9 @@ namespace Scraps.GUI.Services
         public event EventHandler<StoppedArgs> OnStopped;
         #endregion
 
-        public RaffleService(ProxyService proxy, LaunchOptions options)
+        public RaffleService(LaunchOptions options)
         {
             _log = LogManager.GetCurrentClassLogger();
-            _proxy = proxy;
             _html = new HtmlAgilityPack.HtmlDocument();
             _options = options;
         }
@@ -209,25 +207,6 @@ namespace Scraps.GUI.Services
                 CookieContainer = cookies,
                 UseCookies = true,
             };
-
-            if (_proxy.HasProxies())
-            {
-                var (address, port) = _proxy.GetProxy();
-
-                if (address != null)
-                {
-                    handler.Proxy = new WebProxy(address, port);
-                    handler.UseProxy = true;
-
-                    _log.Debug("Using proxy {Proxy}", $"{address}:{port}");
-                }
-                else
-                {
-                    // How do we even get here?
-                    _log.Error("Could not use a valid proxy.");
-                    _cancelTokenSource.Cancel();
-                }
-            }
 
             var client = new HttpClient(handler);
                 client.Timeout = TimeSpan.FromSeconds(30);

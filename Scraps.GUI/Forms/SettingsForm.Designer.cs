@@ -61,15 +61,10 @@ namespace Scraps.GUI.Forms
             this.label2 = new System.Windows.Forms.Label();
             this._SaveButton = new System.Windows.Forms.Button();
             this._ToastToggle = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this._CancelProxyTestButton = new System.Windows.Forms.Button();
-            this._TestProxiesButton = new System.Windows.Forms.Button();
-            this._ProxiesInput = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._JoinDelayInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._PaginateDelayInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._ScanDelayInput)).BeginInit();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -233,7 +228,7 @@ namespace Scraps.GUI.Forms
             // 
             this._SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this._SaveButton.Image = global::Scraps.GUI.Icons.Save;
-            this._SaveButton.Location = new System.Drawing.Point(317, 439);
+            this._SaveButton.Location = new System.Drawing.Point(317, 291);
             this._SaveButton.Name = "_SaveButton";
             this._SaveButton.Size = new System.Drawing.Size(77, 24);
             this._SaveButton.TabIndex = 4;
@@ -253,55 +248,11 @@ namespace Scraps.GUI.Forms
             this._ToastToggle.Text = "Enable Toast Notifications";
             this._ToastToggle.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this._CancelProxyTestButton);
-            this.groupBox1.Controls.Add(this._TestProxiesButton);
-            this.groupBox1.Controls.Add(this._ProxiesInput);
-            this.groupBox1.Location = new System.Drawing.Point(13, 290);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(381, 143);
-            this.groupBox1.TabIndex = 6;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Proxies";
-            // 
-            // _CancelProxyTestButton
-            // 
-            this._CancelProxyTestButton.Location = new System.Drawing.Point(112, 114);
-            this._CancelProxyTestButton.Name = "_CancelProxyTestButton";
-            this._CancelProxyTestButton.Size = new System.Drawing.Size(75, 23);
-            this._CancelProxyTestButton.TabIndex = 2;
-            this._CancelProxyTestButton.Text = "Cancel";
-            this._CancelProxyTestButton.UseVisualStyleBackColor = true;
-            this._CancelProxyTestButton.Visible = false;
-            this._CancelProxyTestButton.Click += new System.EventHandler(this.CancelProxyTestButton_OnClick);
-            // 
-            // _TestProxiesButton
-            // 
-            this._TestProxiesButton.Location = new System.Drawing.Point(7, 114);
-            this._TestProxiesButton.Name = "_TestProxiesButton";
-            this._TestProxiesButton.Size = new System.Drawing.Size(99, 23);
-            this._TestProxiesButton.TabIndex = 1;
-            this._TestProxiesButton.Text = "Test Proxies";
-            this._TestProxiesButton.UseVisualStyleBackColor = true;
-            this._TestProxiesButton.Click += new System.EventHandler(this.TestProxiesButton_OnClick);
-            // 
-            // _ProxiesInput
-            // 
-            this._ProxiesInput.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this._ProxiesInput.Location = new System.Drawing.Point(6, 22);
-            this._ProxiesInput.Multiline = true;
-            this._ProxiesInput.Name = "_ProxiesInput";
-            this._ProxiesInput.Size = new System.Drawing.Size(369, 86);
-            this._ProxiesInput.TabIndex = 0;
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(406, 475);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(406, 327);
             this.Controls.Add(this._ToastToggle);
             this.Controls.Add(this._ParanoidToggle);
             this.Controls.Add(this._SortNewToggle);
@@ -322,8 +273,6 @@ namespace Scraps.GUI.Forms
             ((System.ComponentModel.ISupportInitialize)(this._JoinDelayInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this._PaginateDelayInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this._ScanDelayInput)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -345,9 +294,5 @@ namespace Scraps.GUI.Forms
         private System.Windows.Forms.Button _SaveButton;
         private System.Windows.Forms.CheckBox _SortNewToggle;
         private System.Windows.Forms.CheckBox _ToastToggle;
-        private GroupBox groupBox1;
-        private TextBox _ProxiesInput;
-        private Button _TestProxiesButton;
-        private Button _CancelProxyTestButton;
     }
 }

@@ -12,7 +12,7 @@ namespace Scraps.GUI.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.1.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
     internal sealed partial class UserConfig : global::System.Configuration.ApplicationSettingsBase {
         
         private static UserConfig defaultInstance = ((UserConfig)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new UserConfig())));
@@ -128,18 +128,6 @@ namespace Scraps.GUI.Properties {
             }
             set {
                 this["SortByNew"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Proxies {
-            get {
-                return ((string)(this["Proxies"]));
-            }
-            set {
-                this["Proxies"] = value;
             }
         }
     }

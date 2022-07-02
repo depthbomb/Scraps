@@ -22,17 +22,11 @@ namespace Scraps.GUI.Forms
 {
     public partial class SettingsForm : Form
     {
-        private bool _testingProxies = false;
-        private CancellationToken _cancelToken;
-        private CancellationTokenSource _cancelTokenSource;
-
         private readonly RaffleService _runner;
-        private readonly ProxyService _proxy;
 
-        public SettingsForm(RaffleService runner, ProxyService proxy)
+        public SettingsForm(RaffleService runner)
         {
             _runner = runner;
-            _proxy = proxy;
 
             InitializeComponent();
             PopulateControlValues();
@@ -65,15 +59,6 @@ namespace Scraps.GUI.Forms
             _IncrementScanDelayToggle.HelpRequested += (object s, HelpEventArgs h)
                 => Utils.ShowInfo(this, "Help", "Enabling this will make Scraps increment the Scan Delay by 1 second if a scan operation resulted in no available raffles to join.");
 
-            _ProxiesInput.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo(this, "Help", "Here you may enter HTTP proxy addresses (+ port) that Scraps will use when operating. Separate each address by a single new line.");
-
-            _TestProxiesButton.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo(this, "Help", "Tests the current above proxies to ensure that they don't reveal your IP address.");
-
-            _CancelProxyTestButton.HelpRequested += (object s, HelpEventArgs h)
-                => Utils.ShowInfo(this, "Help", "Cancels the proxy test as soon as it can.");
-
             _SaveButton.HelpRequested += (object s, HelpEventArgs h)
                 => Utils.ShowInfo(this, "Help", "Settings changes made won't take effect until this button is clicked.");
         }
@@ -88,56 +73,6 @@ namespace Scraps.GUI.Forms
             _PaginateDelayInput.Value         = Properties.UserConfig.Default.PaginateDelay;
             _JoinDelayInput.Value             = Properties.UserConfig.Default.JoinDelay;
             _IncrementScanDelayToggle.Checked = Properties.UserConfig.Default.IncrementScanDelay;
-            _ProxiesInput.Text                = Properties.UserConfig.Default.Proxies;
-        }
-
-        private async void TestProxiesButton_OnClick(object sender, EventArgs e)
-        {
-            if (_ProxiesInput.Text.Trim().Length == 0) return;
-
-            _cancelTokenSource = new();
-            _cancelToken = _cancelTokenSource.Token;
-
-            _testingProxies = true;
-            _SaveButton.Enabled = false;
-            _TestProxiesButton.Enabled = false;
-            _CancelProxyTestButton.Visible = true;
-
-            List<string> problematicProxies = new();
-            string[] proxies = _ProxiesInput.Text.Split("\n");
-            foreach (string proxy in proxies)
-            {
-                if (_cancelToken.IsCancellationRequested) break;
-                if (!_proxy.IsAddressValid(proxy.Trim()))
-                {
-                    problematicProxies.Add(proxy);
-                    continue;
-                }
-                if (!await _proxy.TestProxyAsync(proxy.Trim())) problematicProxies.Add(proxy);
-            }
-
-            if (problematicProxies.Count > 0)
-            {
-                string problematicProxiesList = string.Join("\n", problematicProxies);
-                Utils.ShowError(this, "Proxy Test", $"The following proxies won't work because they are invalid, timed out, or didn't hide your IP:\n\n{problematicProxiesList}");
-            }
-            else
-            {
-                Utils.ShowInfo(this, "Proxy Test", "All proxies are working!");
-            }
-
-            _testingProxies = false;
-            _SaveButton.Enabled = true;
-            _TestProxiesButton.Enabled = true;
-            _CancelProxyTestButton.Visible = false;
-            _CancelProxyTestButton.Enabled = true;
-        }
-
-        private void CancelProxyTestButton_OnClick(object sender, EventArgs e)
-        {
-            _CancelProxyTestButton.Enabled = false;
-
-            _cancelTokenSource.Cancel();
         }
 
         private void SaveButton_OnClick(object sender, EventArgs e)
@@ -150,7 +85,6 @@ namespace Scraps.GUI.Forms
             int paginateDelay       = (int)_PaginateDelayInput.Value;
             int joinDelay           = (int)_JoinDelayInput.Value;
             bool incrementScanDelay = _IncrementScanDelayToggle.Checked;
-            string proxies          = _ProxiesInput.Text.Trim();
 
             if (string.IsNullOrEmpty(cookie)) return;
             if (cookie.Contains("scr_session"))
@@ -167,7 +101,6 @@ namespace Scraps.GUI.Forms
             Properties.UserConfig.Default.PaginateDelay = paginateDelay;
             Properties.UserConfig.Default.JoinDelay = joinDelay;
             Properties.UserConfig.Default.IncrementScanDelay = incrementScanDelay;
-            Properties.UserConfig.Default.Proxies = proxies;
             Properties.UserConfig.Default.Save();
             Properties.UserConfig.Default.Reload();
 
@@ -181,11 +114,6 @@ namespace Scraps.GUI.Forms
 
         private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_testingProxies)
-            {
-                e.Cancel = true;
-            }
-
             if (_CookieInput.Text == "" && Properties.UserConfig.Default.Cookie == "")
             {
                 Application.Exit();
