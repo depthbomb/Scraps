@@ -16,18 +16,17 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle
-{
-    public class StoppedArgs : EventArgs
-    {
-        /// <summary>
-        /// The time that the cancellation has finished
-        /// </summary>
-        public DateTime TimeCancelled { get; set; }
+namespace Scraps.GUI.Services.Raffle;
 
-        public StoppedArgs()
-        {
-            TimeCancelled = DateTime.UtcNow;
-        }
+public class StoppedArgs : EventArgs
+{
+    /// <summary>
+    /// The time that the cancellation has finished
+    /// </summary>
+    public DateTime TimeCancelled { get; set; }
+
+    public StoppedArgs()
+    {
+        TimeCancelled = DateTime.UtcNow;
     }
 }

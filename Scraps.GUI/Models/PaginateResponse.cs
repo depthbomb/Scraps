@@ -16,23 +16,22 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Models
+namespace Scraps.GUI.Models;
+
+public class PaginateResponse
 {
-    public class PaginateResponse
-    {
-        [JsonPropertyName("success")]
-        public bool Success { get; set; }
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
 
-        [JsonPropertyName("html")]
-        public string Html { get; set; }
+    [JsonPropertyName("html")]
+    public string Html { get; set; }
 
-        [JsonPropertyName("lastid")]
-        public string LastId { get; set; }
+    [JsonPropertyName("lastid")]
+    public string LastId { get; set; }
 
-        [JsonPropertyName("message")]
-        public string Message { get; set; } = null;
+    [JsonPropertyName("message")]
+    public string Message { get; set; } = null;
 
-        [JsonPropertyName("done")]
-        public bool Done { get; set; }
-    }
+    [JsonPropertyName("done")]
+    public bool Done { get; set; }
 }

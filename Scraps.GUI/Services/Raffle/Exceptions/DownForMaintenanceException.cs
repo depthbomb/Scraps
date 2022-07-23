@@ -16,12 +16,11 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle.Exceptions
+namespace Scraps.GUI.Services.Raffle.Exceptions;
+
+public class DownForMaintenanceException : Exception
 {
-    public class DownForMaintenanceException : Exception
-    {
-        public DownForMaintenanceException() { }
-        public DownForMaintenanceException(string message) : base(message) { }
-        public DownForMaintenanceException(string message, Exception inner) : base(message, inner) { }
-    }
+    public DownForMaintenanceException() { }
+    public DownForMaintenanceException(string message) : base(message) { }
+    public DownForMaintenanceException(string message, Exception inner) : base(message, inner) { }
 }

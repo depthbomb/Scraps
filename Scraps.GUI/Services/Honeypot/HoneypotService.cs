@@ -19,40 +19,36 @@
 using Scraps.GUI.Services.Honeypot;
 using Scraps.GUI.Services.Honeypot.Vectors;
 
-namespace Scraps.GUI.Services
+namespace Scraps.GUI.Services;
+
+public class HoneypotService : IDisposable
 {
-    public class HoneypotService : IDisposable
+    private readonly List<IHoneypotVector> _vectors;
+
+    public bool IsHoneypot { get; private set; }
+    public string Reason { get; private set; }
+
+    public HoneypotService()
     {
-        private readonly List<IHoneypotVector> _vectors;
-
-        public bool IsHoneypot { get; set; }
-        public string Reason { get; set; }
-
-        public HoneypotService()
+        _vectors = new List<IHoneypotVector>
         {
-            _vectors = new()
-            {
-                new BannedEntriesVector(),
-            };
-        }
+            new BannedEntriesVector(),
+        };
+    }
 
-        public void Check(string html)
+    public void Check(string html)
+    {
+        foreach (var vector in _vectors)
         {
-            foreach (var vector in _vectors)
+            vector.Check(html);
+            if (vector.Detected)
             {
-                vector.Check(html);
-                if (vector.Detected)
-                {
-                    IsHoneypot = true;
-                    Reason = vector.DetectReason;
-                    break;
-                }
+                IsHoneypot = true;
+                Reason = vector.DetectReason;
+                break;
             }
         }
-
-        public void Dispose()
-        {
-            _vectors.Clear();
-        }
     }
+
+    public void Dispose() => _vectors.Clear();
 }

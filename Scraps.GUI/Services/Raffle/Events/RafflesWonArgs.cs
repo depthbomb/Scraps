@@ -16,15 +16,14 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle
-{
-    public class RafflesWonArgs : EventArgs
-    {
-        public string Message { get; set; }
+namespace Scraps.GUI.Services.Raffle;
 
-        public RafflesWonArgs(string message)
-        {
-            Message = message;
-        }
+public class RafflesWonArgs : EventArgs
+{
+    public string Message { get; set; }
+
+    public RafflesWonArgs(string message)
+    {
+        Message = message;
     }
 }

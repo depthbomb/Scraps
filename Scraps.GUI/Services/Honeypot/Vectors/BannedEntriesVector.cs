@@ -18,22 +18,21 @@
 
 using Scraps.GUI.Constants;
 
-namespace Scraps.GUI.Services.Honeypot.Vectors
+namespace Scraps.GUI.Services.Honeypot.Vectors;
+
+public class BannedEntriesVector : IHoneypotVector
 {
-    public class BannedEntriesVector : IHoneypotVector
+    public bool Detected { get; private set; }
+    public string DetectReason { get; private set; }
+
+    public void Check(string html)
     {
-        public bool Detected { get; private set; }
-        public string DetectReason { get; private set; }
+        var entries = RegexPatterns.HONEYPOT_RAFFLE_BANNED_USERS.Matches(html);
 
-        public void Check(string html)
+        if (entries.Count > 1)
         {
-            var entries = RegexPatterns.HONEYPOT_RAFFLE_BANNED_USERS.Matches(html);
-
-            if (entries.Count > 1)
-            {
-                Detected = true;
-                DetectReason = $"{entries.Count} users who entered this raffle are now banned";
-            }
+            Detected = true;
+            DetectReason = $"{entries.Count} users who entered this raffle are now banned";
         }
     }
 }

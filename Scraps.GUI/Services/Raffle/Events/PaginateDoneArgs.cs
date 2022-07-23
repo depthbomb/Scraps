@@ -16,10 +16,9 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle
+namespace Scraps.GUI.Services.Raffle;
+
+public class PaginateDoneArgs : EventArgs
 {
-    public class PaginateDoneArgs : EventArgs
-    {
-        public PaginateDoneArgs() { }
-    }
+    public PaginateDoneArgs() { }
 }

@@ -16,20 +16,16 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI
+namespace Scraps.GUI;
+
+public static class Utils
 {
-    public static class Utils
-    {
-        public static DialogResult ShowQuestion(IWin32Window owner, string title, string content, MessageBoxButtons buttons = MessageBoxButtons.OK)
-            => MessageBox.Show(owner, content, title, buttons, MessageBoxIcon.Question);
+    public static DialogResult ShowInfo(IWin32Window owner, string title, string content, MessageBoxButtons buttons = MessageBoxButtons.OK)
+        => MessageBox.Show(owner, content, title, buttons, MessageBoxIcon.Information);
 
-        public static DialogResult ShowInfo(IWin32Window owner, string title, string content, MessageBoxButtons buttons = MessageBoxButtons.OK)
-            => MessageBox.Show(owner, content, title, buttons, MessageBoxIcon.Information);
+    public static DialogResult ShowWarning(IWin32Window owner, string title, string content, MessageBoxButtons buttons = MessageBoxButtons.OK)
+        => MessageBox.Show(owner, content, title, buttons, MessageBoxIcon.Warning);
 
-        public static DialogResult ShowWarning(IWin32Window owner, string title, string content, MessageBoxButtons buttons = MessageBoxButtons.OK)
-            => MessageBox.Show(owner, content, title, buttons, MessageBoxIcon.Warning);
-
-        public static DialogResult ShowError(IWin32Window owner, string title, string content, MessageBoxButtons buttons = MessageBoxButtons.OK)
-            => MessageBox.Show(owner, content, title, buttons, MessageBoxIcon.Error);
-    }
+    public static DialogResult ShowError(IWin32Window owner, string title, string content, MessageBoxButtons buttons = MessageBoxButtons.OK)
+        => MessageBox.Show(owner, content, title, buttons, MessageBoxIcon.Error);
 }

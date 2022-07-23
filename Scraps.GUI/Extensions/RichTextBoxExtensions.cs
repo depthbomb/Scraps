@@ -16,29 +16,28 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Extensions
+namespace Scraps.GUI.Extensions;
+
+public static class RichTextBoxExtensions
 {
-    public static class RichTextBoxExtensions
+    public static void AppendLine(this RichTextBox rtb, string text, Color color)
     {
-        public static void AppendLine(this RichTextBox rtb, string text, Color color)
-        {
-            rtb.AppendText(text, color);
-            rtb.AppendText(Environment.NewLine);
-        }
+        rtb.AppendText(text, color);
+        rtb.AppendText(Environment.NewLine);
+    }
 
-        public static void AppendText(this RichTextBox rtb, string text, Color color)
-        {
-            rtb.SelectionStart = rtb.TextLength;
-            rtb.SelectionLength = 0;
-            rtb.SelectionColor = color;
-            rtb.AppendText(text);
-            rtb.SelectionColor = rtb.ForeColor;
+    public static void AppendText(this RichTextBox rtb, string text, Color color)
+    {
+        rtb.SelectionStart = rtb.TextLength;
+        rtb.SelectionLength = 0;
+        rtb.SelectionColor = color;
+        rtb.AppendText(text);
+        rtb.SelectionColor = rtb.ForeColor;
 
-            // An edge case, but you never know...
-            if (rtb.Text.Length > rtb.MaxLength - 200)
-            {
-                rtb.Clear();
-            }
+        // An edge case, but you never know...
+        if (rtb.Text.Length > rtb.MaxLength - 200)
+        {
+            rtb.Clear();
         }
     }
 }

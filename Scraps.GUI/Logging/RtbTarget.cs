@@ -18,36 +18,35 @@
 
 using Scraps.GUI.Extensions;
 
-namespace Scraps.GUI.Logging
+namespace Scraps.GUI.Logging;
+
+[Target("RTB")]
+public sealed class RtbTarget : TargetWithLayout
 {
-    [Target("RTB")]
-    public sealed class RtbTarget : TargetWithLayout
+    private readonly RichTextBox _rtb;
+
+    public RtbTarget(RichTextBox rtb)
     {
-        private readonly RichTextBox _rtb;
-
-        public RtbTarget(RichTextBox rtb)
-        {
-            _rtb = rtb;
-        }
-
-        protected override void Write(LogEventInfo logEvent)
-        {
-            string level = logEvent.Level.Name;
-            string prefix = DateTime.Now.ToString("HH:mm:ss");
-            string message = RenderLogEvent(Layout, logEvent);
-            _rtb.AppendText($"{prefix} ", Color.DarkGray);
-            _rtb.AppendLine(message, GetColor(level));
-            _rtb.ScrollToCaret();
-        }
-
-        private Color GetColor(string level) => level switch
-        {
-            "Trace" => Color.Gray,
-            "Info"  => Color.FromArgb(239, 246, 255),
-            "Warn"  => Color.FromArgb(234, 88, 12),
-            "Error" => Color.FromArgb(225, 29, 72),
-            "Fatal" => Color.DarkRed,
-            _       => Color.FromArgb(6, 182, 212),
-        };
+        _rtb = rtb;
     }
+
+    protected override void Write(LogEventInfo logEvent)
+    {
+        string level = logEvent.Level.Name;
+        string prefix = DateTime.Now.ToString("HH:mm:ss");
+        string message = RenderLogEvent(Layout, logEvent);
+        _rtb.AppendText($"{prefix} ", Color.DarkGray);
+        _rtb.AppendLine(message, GetColor(level));
+        _rtb.ScrollToCaret();
+    }
+
+    private Color GetColor(string level) => level switch
+    {
+        "Trace" => Color.Gray,
+        "Info"  => Color.FromArgb(239, 246, 255),
+        "Warn"  => Color.FromArgb(234, 88, 12),
+        "Error" => Color.FromArgb(225, 29, 72),
+        "Fatal" => Color.DarkRed,
+        _       => Color.FromArgb(6, 182, 212),
+    };
 }

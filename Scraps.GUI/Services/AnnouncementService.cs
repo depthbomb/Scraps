@@ -16,39 +16,38 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services
+namespace Scraps.GUI.Services;
+
+public class AnnouncementService : IDisposable
 {
-    public class AnnouncementService : IDisposable
+    private readonly string _fileUrl;
+    private readonly HttpClient _http;
+
+    public AnnouncementService()
     {
-        private readonly string _fileUrl;
-        private readonly HttpClient _http;
+        _fileUrl = "https://raw.githubusercontent.com/depthbomb/Scraps/master/ANNOUNCEMENT";
+        _http = new HttpClient();
+        _http.Timeout = TimeSpan.FromSeconds(3);
+        _http.DefaultRequestHeaders.Add("user-agent", "RaffleRunner - depthbomb/RaffleRunner");
+    }
 
-        public AnnouncementService()
+    public async Task<string> GetAnnouncementAsync()
+    {
+        string announcements = string.Empty;
+
+        var request = await _http.GetAsync(_fileUrl);
+        if (request.IsSuccessStatusCode)
         {
-            _fileUrl = "https://raw.githubusercontent.com/depthbomb/Scraps/master/ANNOUNCEMENT";
-            _http = new();
-            _http.Timeout = TimeSpan.FromSeconds(3);
-            _http.DefaultRequestHeaders.Add("user-agent", "RaffleRunner - depthbomb/RaffleRunner");
+            string contents = await request.Content.ReadAsStringAsync();
+
+            announcements = contents.Trim();
         }
 
-        public async Task<string> GetAnnouncementAsync()
-        {
-            string announcements = string.Empty;
+        return announcements;
+    }
 
-            var request = await _http.GetAsync(_fileUrl);
-            if (request.IsSuccessStatusCode)
-            {
-                string contents = await request.Content.ReadAsStringAsync();
-
-                announcements = contents.Trim();
-            }
-
-            return announcements;
-        }
-
-        public void Dispose()
-        {
-            _http.Dispose();
-        }
+    public void Dispose()
+    {
+        _http.Dispose();
     }
 }
