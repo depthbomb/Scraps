@@ -210,7 +210,7 @@ public class RaffleService
 
         var client = new HttpClient(handler);
         client.Timeout = TimeSpan.FromSeconds(30);
-        client.DefaultRequestHeaders.Add("user-agent", Strings.USER_AGENT);
+        client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
         client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _cookie);
 
         _http = client;
@@ -221,15 +221,15 @@ public class RaffleService
         SendStatus("Obtaining CSRF token");
 
         string html = await _http.GetStringAsync("https://scrap.tf", _cancelToken);
-        if (html.Contains(Strings.ACCOUNT_BANNED))
+        if (html.Contains(Strings.AccountBanned))
         {
             throw await NewAccountBannedException();
         }
-        else if (html.Contains(Strings.CLOUDFLARE))
+        else if (html.Contains(Strings.Cloudflare))
         {
             throw new CloudflareException("Scrap.TF is displaying a Cloudflare challenge, Scraps cannot continue.");
         }
-        else if (html.Contains(Strings.PROFILE_SET_UP))
+        else if (html.Contains(Strings.ProfileSetUp))
         {
             throw new ProfileNotSetUpException("Profile is not set up to use Scrap.TF. See the website for more info.");
         }
@@ -243,7 +243,7 @@ public class RaffleService
             }
             else
             {
-                if (html.Contains(Strings.SITE_DOWN))
+                if (html.Contains(Strings.SiteDown))
                 {
                     throw new DownForMaintenanceException("Site appears to be down/under maintenance.");
                 }

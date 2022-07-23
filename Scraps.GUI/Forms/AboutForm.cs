@@ -25,7 +25,7 @@ public partial class AboutForm : Form
 
     public AboutForm()
     {
-        _rng = new();
+        _rng = new Random();
         _images = new[]
         {
             Images.AuthorIcon,
