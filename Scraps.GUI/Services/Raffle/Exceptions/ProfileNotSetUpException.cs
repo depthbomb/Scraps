@@ -16,12 +16,11 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle.Exceptions
+namespace Scraps.GUI.Services.Raffle.Exceptions;
+
+public class ProfileNotSetUpException : Exception
 {
-    public class ProfileNotSetUpException : Exception
-    {
-        public ProfileNotSetUpException() { }
-        public ProfileNotSetUpException(string message) : base(message) { }
-        public ProfileNotSetUpException(string message, Exception inner) : base(message, inner) { }
-    }
+    public ProfileNotSetUpException() { }
+    public ProfileNotSetUpException(string message) : base(message) { }
+    public ProfileNotSetUpException(string message, Exception inner) : base(message, inner) { }
 }

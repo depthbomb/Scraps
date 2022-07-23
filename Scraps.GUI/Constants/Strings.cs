@@ -16,14 +16,13 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Constants
+namespace Scraps.GUI.Constants;
+
+public static class Strings
 {
-    public static class Strings
-    {
-        public const string USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36";
-        public const string ACCOUNT_BANNED = "You have received a site-ban";
-        public const string PROFILE_SET_UP = "Scrap.TF requires your Steam profile and inventory set to <b>Public</b> visibility.";
-        public const string SITE_DOWN = "<div class=\"dialog-title\">We're down!</div>";
-        public const string CLOUDFLARE = "cf-wrapper"; // Not air-tight but should work for now
-    }
+    public const string USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36";
+    public const string ACCOUNT_BANNED = "You have received a site-ban";
+    public const string PROFILE_SET_UP = "Scrap.TF requires your Steam profile and inventory set to <b>Public</b> visibility.";
+    public const string SITE_DOWN = "<div class=\"dialog-title\">We're down!</div>";
+    public const string CLOUDFLARE = "cf-wrapper"; // Not air-tight but should work for now
 }

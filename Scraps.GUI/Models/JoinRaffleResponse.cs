@@ -16,20 +16,19 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Models
+namespace Scraps.GUI.Models;
+
+public class JoinRaffleResponse
 {
-    public class JoinRaffleResponse
-    {
-        [JsonPropertyName("message")]
-        public string Message { get; set; }
+    [JsonPropertyName("message")]
+    public string Message { get; set; }
 
-        [JsonPropertyName("entered_message")]
-        public string EnteredMessage { get; set; }
+    [JsonPropertyName("entered_message")]
+    public string EnteredMessage { get; set; }
 
-        [JsonPropertyName("can_comment")]
-        public bool CanComment { get; set; }
+    [JsonPropertyName("can_comment")]
+    public bool CanComment { get; set; }
 
-        [JsonPropertyName("success")]
-        public bool Success { get; set; }
-    }
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
 }

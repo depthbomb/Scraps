@@ -16,15 +16,14 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Models
+namespace Scraps.GUI.Models;
+
+public class LaunchOptions
 {
-    public class LaunchOptions
-    {
-        public bool Debug { get; set; } = false;
-        public bool Silent { get; set; } = false;
-        public bool SkipUpdates { get; set; } = false;
-        public bool AutoReconnect { get; set; } = false;
-        public bool SkipAnnouncements { get; set; } = false;
-        public bool UseProxies { get; set; } = false;
-    }
+    public bool Debug { get; set; } = false;
+    public bool Silent { get; set; } = false;
+    public bool SkipUpdates { get; set; } = false;
+    public bool AutoReconnect { get; set; } = false;
+    public bool SkipAnnouncements { get; set; } = false;
+    public bool UseProxies { get; set; } = false;
 }

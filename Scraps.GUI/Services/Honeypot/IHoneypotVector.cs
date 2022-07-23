@@ -16,12 +16,11 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Honeypot
+namespace Scraps.GUI.Services.Honeypot;
+
+interface IHoneypotVector
 {
-    interface IHoneypotVector
-    {
-        bool Detected { get; }
-        string DetectReason { get; }
-        void Check(string html);
-    }
+    bool Detected { get; }
+    string DetectReason { get; }
+    void Check(string html);
 }

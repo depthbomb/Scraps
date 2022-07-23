@@ -21,19 +21,20 @@ using Scraps.GUI.Models;
 using Scraps.GUI.Services;
 using Scraps.GUI.Constants;
 
-namespace Scraps.GUI
-{
-    internal static class Bootstrapper
-    {
-        private static LaunchOptions _options;
+namespace Scraps.GUI;
 
-        [STAThread]
-        static async Task Main(string[] args)
+internal static class Bootstrapper
+{
+    private static LaunchOptions _options;
+
+    [STAThread]
+    static async Task Main(string[] args)
+    {
+        using (var mutex = new Mutex(false, "RaffleRunner Windows"))
         {
-            using var mutex = new Mutex(false, "RaffleRunner Windows");
             if (!mutex.WaitOne(0))
             {
-                IntPtr intPtr = Native.FindWindowByCaption(IntPtr.Zero, string.Format("Scraps - {0}", Constants.Version.Full));
+                IntPtr intPtr = Native.FindWindowByCaption(IntPtr.Zero, $"Scraps - {Constants.Version.Full}");
                 Native.SendMessage(intPtr, Native.WM_RAFFLERUNNER_SHOWME, IntPtr.Zero, IntPtr.Zero);
                 Environment.Exit(0);
             }
@@ -67,31 +68,31 @@ namespace Scraps.GUI
             }
 
             Application.Run(new MainForm(_options));
-        }
+        };
+    }
 
-        private static void EnsureFileSystem()
+    private static void EnsureFileSystem()
+    {
+        foreach (string path in new[] { Paths.LOGS_PATH, Paths.DATA_PATH })
         {
-            foreach (string path in new[] { Paths.LOGS_PATH, Paths.DATA_PATH })
+            if (!Directory.Exists(path))
             {
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
+                Directory.CreateDirectory(path);
             }
         }
+    }
 
-        private static LaunchOptions ParseOptions(string[] args)
+    private static LaunchOptions ParseOptions(string[] args)
+    {
+        var options = new LaunchOptions
         {
-            var options = new LaunchOptions
-            {
-                Debug = args.Any(a => a == "/Debug"),
-                Silent = args.Any(a => a == "/Silent"),
-                SkipUpdates = args.Any(a => a == "/SkipUpdate"),
-                AutoReconnect = args.Any(a => a == "/AutoReconnect"),
-                SkipAnnouncements = args.Any(a => a == "/SkipAnnouncements"),
-            };
+            Debug = args.Any(a => a == "/Debug"),
+            Silent = args.Any(a => a == "/Silent"),
+            SkipUpdates = args.Any(a => a == "/SkipUpdate"),
+            AutoReconnect = args.Any(a => a == "/AutoReconnect"),
+            SkipAnnouncements = args.Any(a => a == "/SkipAnnouncements"),
+        };
 
-            return options;
-        }
+        return options;
     }
 }

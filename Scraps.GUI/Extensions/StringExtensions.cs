@@ -16,10 +16,9 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Extensions
+namespace Scraps.GUI.Extensions;
+
+public static class StringExtensions
 {
-    public static class StringExtensions
-    {
-        public static bool IsNullOrEmpty(this string str) => string.IsNullOrEmpty(str);
-    }
+    public static bool IsNullOrEmpty(this string str) => string.IsNullOrEmpty(str);
 }

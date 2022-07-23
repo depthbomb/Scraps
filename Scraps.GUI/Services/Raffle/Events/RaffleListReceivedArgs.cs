@@ -16,22 +16,21 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle
-{
-    /// <summary>
-    /// An event that contains a list of available raffle IDs
-    /// </summary>
-    public class RaffleListReceivedArgs : EventArgs
-    {
-        public List<string> AvailableRaffles { get; set; }
+namespace Scraps.GUI.Services.Raffle;
 
-        /// <summary>
-        /// Raised when a list of available raffle IDs is received
-        /// </summary>
-        /// <param name="availableRaffles"></param>
-        public RaffleListReceivedArgs(List<string> availableRaffles)
-        {
-            AvailableRaffles = availableRaffles;
-        }
+/// <summary>
+/// An event that contains a list of available raffle IDs
+/// </summary>
+public class RaffleListReceivedArgs : EventArgs
+{
+    public List<string> AvailableRaffles { get; set; }
+
+    /// <summary>
+    /// Raised when a list of available raffle IDs is received
+    /// </summary>
+    /// <param name="availableRaffles"></param>
+    public RaffleListReceivedArgs(List<string> availableRaffles)
+    {
+        AvailableRaffles = availableRaffles;
     }
 }

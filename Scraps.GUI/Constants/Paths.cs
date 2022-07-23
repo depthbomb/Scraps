@@ -16,12 +16,11 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Constants
+namespace Scraps.GUI.Constants;
+
+public static class Paths
 {
-    public static class Paths
-    {
-        public static readonly string STORE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Caprine Logic", "Scraps");
-        public static readonly string LOGS_PATH = Path.Combine(STORE_PATH, "Logs");
-        public static readonly string DATA_PATH = Path.Combine(STORE_PATH, "Data");
-    }
+    public static readonly string STORE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Caprine Logic", "Scraps");
+    public static readonly string LOGS_PATH = Path.Combine(STORE_PATH, "Logs");
+    public static readonly string DATA_PATH = Path.Combine(STORE_PATH, "Data");
 }

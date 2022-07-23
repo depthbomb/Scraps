@@ -16,38 +16,37 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Forms
+namespace Scraps.GUI.Forms;
+
+public partial class AboutForm : Form
 {
-    public partial class AboutForm : Form
+    private readonly Random _rng;
+    private readonly Bitmap[] _images;
+
+    public AboutForm()
     {
-        private readonly Random _rng;
-        private readonly Bitmap[] _images;
-
-        public AboutForm()
+        _rng = new();
+        _images = new[]
         {
-            _rng = new();
-            _images = new[]
-            {
-                Images.AuthorIcon,
-                Images.AuthorIcon2,
-            };
+            Images.AuthorIcon,
+            Images.AuthorIcon2,
+        };
 
-            InitializeComponent();
+        InitializeComponent();
 
-            Shown += AboutForm_OnShown;
-        }
+        Shown += AboutForm_OnShown;
+    }
 
-        private void AboutForm_OnShown(object sender, EventArgs e)
-        {
-            _AuthorIcon.Image = _images[_rng.Next(_images.Length)];
+    private void AboutForm_OnShown(object sender, EventArgs e)
+    {
+        _AuthorIcon.Image = _images[_rng.Next(_images.Length)];
 
-            _VersionLabel.Text = $"v{Constants.Version.Full} by depthbomb";
+        _VersionLabel.Text = $"v{Constants.Version.Full} by depthbomb";
 
-            _GithubLink.Click += (_, _)
-                => Process.Start("explorer", "https://github.com/depthbomb/Scraps");
+        _GithubLink.Click += (_, _)
+            => Process.Start("explorer", "https://github.com/depthbomb/Scraps");
 
-            _PatreonLink.Click += (_, _)
-                => Process.Start("explorer", "https://patreon.com/depthbomb");
-        }
+        _PatreonLink.Click += (_, _)
+            => Process.Start("explorer", "https://patreon.com/depthbomb");
     }
 }

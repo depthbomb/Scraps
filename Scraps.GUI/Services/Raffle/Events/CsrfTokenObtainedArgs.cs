@@ -16,18 +16,17 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle
-{
-    public class CsrfTokenObtainedArgs : EventArgs
-    {
-        /// <summary>
-        /// The parsed CSRF token
-        /// </summary>
-        public string CsrfToken { get; set; }
+namespace Scraps.GUI.Services.Raffle;
 
-        public CsrfTokenObtainedArgs(string csrfToken)
-        {
-            CsrfToken = csrfToken;
-        }
+public class CsrfTokenObtainedArgs : EventArgs
+{
+    /// <summary>
+    /// The parsed CSRF token
+    /// </summary>
+    public string CsrfToken { get; set; }
+
+    public CsrfTokenObtainedArgs(string csrfToken)
+    {
+        CsrfToken = csrfToken;
     }
 }

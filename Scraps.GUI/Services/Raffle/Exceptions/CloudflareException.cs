@@ -16,12 +16,11 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle.Exceptions
+namespace Scraps.GUI.Services.Raffle.Exceptions;
+
+public class CloudflareException : Exception
 {
-    public class CloudflareException : Exception
-    {
-        public CloudflareException() { }
-        public CloudflareException(string message) : base(message) { }
-        public CloudflareException(string message, Exception inner) : base(message, inner) { }
-    }
+    public CloudflareException() { }
+    public CloudflareException(string message) : base(message) { }
+    public CloudflareException(string message, Exception inner) : base(message, inner) { }
 }

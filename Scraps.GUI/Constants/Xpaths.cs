@@ -16,10 +16,9 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Constants
+namespace Scraps.GUI.Constants;
+
+public static class Xpaths
 {
-    public static class Xpaths
-    {
-        public const string UNENTERED_RAFFLES = "//*[contains(@class, 'panel-raffle') and not(contains(@class, 'raffle-entered'))]";
-    }
+    public const string UNENTERED_RAFFLES = "//*[contains(@class, 'panel-raffle') and not(contains(@class, 'raffle-entered'))]";
 }

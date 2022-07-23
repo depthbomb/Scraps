@@ -16,36 +16,35 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Services.Raffle
+namespace Scraps.GUI.Services.Raffle;
+
+public class RaffleJoinedArgs : EventArgs
 {
-    public class RaffleJoinedArgs : EventArgs
+    /// <summary>
+    /// Number of queued raffles entered at this point
+    /// </summary>
+    public int Entered { get; set; }
+
+    /// <summary>
+    /// Total number of raffles in queue
+    /// </summary>
+    public int Total { get; set; }
+
+    /// <summary>
+    /// ID of the raffle that was entered
+    /// </summary>
+    public string RaffleId { get; set; }
+
+    /// <summary>
+    /// The HTML of the raffle page
+    /// </summary>
+    public string PageHtml { get; set; }
+
+    public RaffleJoinedArgs(string raffleId, string pageHtml, int entered, int total)
     {
-        /// <summary>
-        /// Number of queued raffles entered at this point
-        /// </summary>
-        public int Entered { get; set; }
-
-        /// <summary>
-        /// Total number of raffles in queue
-        /// </summary>
-        public int Total { get; set; }
-
-        /// <summary>
-        /// ID of the raffle that was entered
-        /// </summary>
-        public string RaffleId { get; set; }
-
-        /// <summary>
-        /// The HTML of the raffle page
-        /// </summary>
-        public string PageHtml { get; set; }
-
-        public RaffleJoinedArgs(string raffleId, string pageHtml, int entered, int total)
-        {
-            RaffleId = raffleId;
-            PageHtml = pageHtml;
-            Entered = entered;
-            Total = total;
-        }
+        RaffleId = raffleId;
+        PageHtml = pageHtml;
+        Entered = entered;
+        Total = total;
     }
 }

@@ -16,10 +16,9 @@
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion License
 
-namespace Scraps.GUI.Constants
+namespace Scraps.GUI.Constants;
+
+public static class Files
 {
-    public static class Files
-    {
-        public static readonly string LOGO_FILE = Path.Combine(Paths.DATA_PATH, "Logo.png");
-    }
+    public static readonly string LOGO_FILE = Path.Combine(Paths.DATA_PATH, "Logo.png");
 }
