@@ -26,15 +26,15 @@ namespace Scraps.GUI.Services
 {
     public class RaffleService
     {
-        public bool Running = false;
+        public bool Running;
 
         private string _cookie;
         private string _csrfToken;
         private HttpClient _http;
         private int _scanDelay;
         private int _joinDelay;
-        private bool _stoppedFromError = false;
-        private bool _alertedOfWonRaffles = false;
+        private bool _stoppedFromError;
+        private bool _alertedOfWonRaffles;
         private CancellationToken _cancelToken;
         private CancellationTokenSource _cancelTokenSource;
 
@@ -103,7 +103,7 @@ namespace Scraps.GUI.Services
 
             OnStarting?.Invoke(this, new());
 
-            CreateHTTPClient();
+            CreateHttpClient();
 
             try
             {
@@ -194,7 +194,7 @@ namespace Scraps.GUI.Services
         #endregion
 
         #region Private Methods
-        private void CreateHTTPClient()
+        private void CreateHttpClient()
         {
             _http?.Dispose();
 
@@ -220,7 +220,7 @@ namespace Scraps.GUI.Services
         {
             SendStatus("Obtaining CSRF token");
 
-            string html = await _http.GetStringAsync("https://scrap.tf");
+            string html = await _http.GetStringAsync("https://scrap.tf", _cancelToken);
             if (html.Contains(Strings.ACCOUNT_BANNED))
             {
                 throw await NewAccountBannedException();
@@ -247,10 +247,8 @@ namespace Scraps.GUI.Services
                     {
                         throw new DownForMaintenanceException("Site appears to be down/under maintenance.");
                     }
-                    else
-                    {
-                        throw new Exception("Unable to retreive CSRF token. Please check your cookie value.");
-                    }
+                    
+                    throw new Exception("Unable to retrieve CSRF token. Please check your cookie value.");
                 }
             }
         }
@@ -262,7 +260,7 @@ namespace Scraps.GUI.Services
             _log.Debug("Scanning raffles");
 
             bool doneScanning = false;
-            string html = await _http.GetStringAsync("https://scrap.tf/raffles");
+            string html = await _http.GetStringAsync("https://scrap.tf/raffles", _cancelToken);
             string lastId = string.Empty;
 
             while (!doneScanning && !_cancelToken.IsCancellationRequested)
@@ -279,7 +277,7 @@ namespace Scraps.GUI.Services
                     try
                     {
                         var paginateResponse = JsonSerializer.Deserialize<PaginateResponse>(json);
-                        if (paginateResponse.Success)
+                        if (paginateResponse is { Success: true })
                         {
                             html += paginateResponse.Html;
                             lastId = paginateResponse.LastId;
@@ -328,18 +326,16 @@ namespace Scraps.GUI.Services
                         }
                         else
                         {
-                            if (paginateResponse.Message != null)
+                            if (paginateResponse is { Message: { } })
                             {
                                 if (paginateResponse.Message.Contains("active site ban"))
                                 {
                                     throw await NewAccountBannedException();
                                 }
-                                else
-                                {
-                                    _log.Error("Encountered an error while paginating: {Message} - Waiting 10 seconds", paginateResponse.Message);
+                                
+                                _log.Error("Encountered an error while paginating: {Message} - Waiting 10 seconds", paginateResponse.Message);
 
-                                    await Task.Delay(10_000, _cancelToken);
-                                }
+                                await Task.Delay(10_000, _cancelToken);
                             }
                             else
                             {
@@ -380,10 +376,8 @@ namespace Scraps.GUI.Services
 
                 return html;
             }
-            else
-            {
-                return null;
-            }
+            
+            return null;
         }
 
         private void CheckForWonRaffles(string html)
@@ -480,7 +474,7 @@ namespace Scraps.GUI.Services
                     string json = await response.Content.ReadAsStringAsync();
 
                     var joinRaffleResponse = JsonSerializer.Deserialize<JoinRaffleResponse>(json);
-                    if (joinRaffleResponse.Success)
+                    if (joinRaffleResponse is { Success: true })
                     {
                         entered++;
 
@@ -516,7 +510,7 @@ namespace Scraps.GUI.Services
         private async Task<string> GetBanReason()
         {
             string reason = "Could not obtain reason";
-            string html = await _http.GetStringAsync("https://scrap.tf/banappeal");
+            string html = await _http.GetStringAsync("https://scrap.tf/banappeal", _cancelToken);
             var match = RegexPatterns.BAN_REASON.Match(html);
             if (match.Success)
             {
@@ -526,9 +520,9 @@ namespace Scraps.GUI.Services
             return reason;
         }
 
-        private void SendStatus(string message) => OnStatus?.Invoke(this, new(message));
+        private void SendStatus(string message) => OnStatus?.Invoke(this, new StatusArgs(message));
 
-        async Task<AccountBannedException> NewAccountBannedException()
+        private async Task<AccountBannedException> NewAccountBannedException()
         {
             return new AccountBannedException(await GetBanReason());
         }

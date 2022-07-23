@@ -25,7 +25,7 @@ namespace Scraps.GUI.Services
     {
         private readonly List<IHoneypotVector> _vectors;
 
-        public bool IsHoneypot { get; set; } = false;
+        public bool IsHoneypot { get; set; }
         public string Reason { get; set; }
 
         public HoneypotService()

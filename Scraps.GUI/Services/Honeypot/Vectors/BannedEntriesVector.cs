@@ -22,8 +22,8 @@ namespace Scraps.GUI.Services.Honeypot.Vectors
 {
     public class BannedEntriesVector : IHoneypotVector
     {
-        public bool Detected { get; set; } = false;
-        public string DetectReason { get; set; }
+        public bool Detected { get; private set; }
+        public string DetectReason { get; private set; }
 
         public void Check(string html)
         {
@@ -32,7 +32,7 @@ namespace Scraps.GUI.Services.Honeypot.Vectors
             if (entries.Count > 1)
             {
                 Detected = true;
-                DetectReason = string.Format("{0} users who entered this raffle are now banned", entries.Count);
+                DetectReason = $"{entries.Count} users who entered this raffle are now banned";
             }
         }
     }

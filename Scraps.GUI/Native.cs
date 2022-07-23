@@ -22,14 +22,14 @@ namespace Scraps.GUI
 {
     public static class Native
     {
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern int RegisterWindowMessage(string lpString);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+        public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
-        [DllImport("user32", EntryPoint = "FindWindow", SetLastError = true)]
-        public static extern IntPtr FindWindowByCaption(IntPtr ZeroOnly, string lpWindowName);
+        [DllImport("user32", EntryPoint = "FindWindow", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern IntPtr FindWindowByCaption(IntPtr zeroOnly, string lpWindowName);
 
         public static readonly int WM_RAFFLERUNNER_SHOWME = RegisterWindowMessage("WM_RAFFLERUNNER_SHOWME");
     }

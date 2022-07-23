@@ -23,56 +23,55 @@ using Scraps.GUI.Constants;
 
 namespace Scraps.GUI
 {
-    static class Bootstrapper
+    internal static class Bootstrapper
     {
-        public static LaunchOptions _options;
+        private static LaunchOptions _options;
 
         [STAThread]
         static async Task Main(string[] args)
         {
-            using (var mutex = new Mutex(false, "RaffleRunner Windows"))
+            using var mutex = new Mutex(false, "RaffleRunner Windows");
+            if (!mutex.WaitOne(0))
             {
-                if (!mutex.WaitOne(0))
-                {
-                    IntPtr intPtr = Native.FindWindowByCaption(IntPtr.Zero, string.Format("Scraps - {0}", Constants.Version.Full));
-                    Native.SendMessage(intPtr, Native.WM_RAFFLERUNNER_SHOWME, IntPtr.Zero, IntPtr.Zero);
-                    Environment.Exit(0);
-                }
-
-                _options = ParseOptions(args);
-
-                EnsureFileSystem();
-
-                if (Properties.UserConfig.Default.UpgradeRequired)
-                {
-                    Properties.UserConfig.Default.Upgrade();
-                    Properties.UserConfig.Default.UpgradeRequired = false;
-                    Properties.UserConfig.Default.Save();
-                }
-
-                Application.SetHighDpiMode(HighDpiMode.SystemAware);
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-
-                try
-                {
-                    if (!_options.SkipUpdates)
-                    {
-                        using (var updater = new UpdaterService())
-                        {
-                            await updater.CheckForUpdatesAsync();
-                        }
-                    }
-                }
-                catch { }
-
-                Application.Run(new MainForm(_options));
+                IntPtr intPtr = Native.FindWindowByCaption(IntPtr.Zero, string.Format("Scraps - {0}", Constants.Version.Full));
+                Native.SendMessage(intPtr, Native.WM_RAFFLERUNNER_SHOWME, IntPtr.Zero, IntPtr.Zero);
+                Environment.Exit(0);
             }
+
+            _options = ParseOptions(args);
+
+            EnsureFileSystem();
+
+            if (Properties.UserConfig.Default.UpgradeRequired)
+            {
+                Properties.UserConfig.Default.Upgrade();
+                Properties.UserConfig.Default.UpgradeRequired = false;
+                Properties.UserConfig.Default.Save();
+            }
+
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            try
+            {
+                if (!_options.SkipUpdates)
+                {
+                    using var updater = new UpdaterService();
+                    await updater.CheckForUpdatesAsync();
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+
+            Application.Run(new MainForm(_options));
         }
 
         private static void EnsureFileSystem()
         {
-            foreach (string path in new string[] { Paths.LOGS_PATH, Paths.DATA_PATH })
+            foreach (string path in new[] { Paths.LOGS_PATH, Paths.DATA_PATH })
             {
                 if (!Directory.Exists(path))
                 {

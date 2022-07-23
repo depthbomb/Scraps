@@ -18,7 +18,7 @@
 
 namespace Scraps.GUI.Constants
 {
-    public class Xpaths
+    public static class Xpaths
     {
         public const string UNENTERED_RAFFLES = "//*[contains(@class, 'panel-raffle') and not(contains(@class, 'raffle-entered'))]";
     }

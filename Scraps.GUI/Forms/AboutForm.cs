@@ -26,7 +26,7 @@ namespace Scraps.GUI.Forms
         public AboutForm()
         {
             _rng = new();
-            _images = new Bitmap[]
+            _images = new[]
             {
                 Images.AuthorIcon,
                 Images.AuthorIcon2,
@@ -34,19 +34,19 @@ namespace Scraps.GUI.Forms
 
             InitializeComponent();
 
-            this.Shown += AboutForm_OnShown;
+            Shown += AboutForm_OnShown;
         }
 
         private void AboutForm_OnShown(object sender, EventArgs e)
         {
             _AuthorIcon.Image = _images[_rng.Next(_images.Length)];
 
-            _VersionLabel.Text = string.Format("v{0} by depthbomb", Constants.Version.Full);
+            _VersionLabel.Text = $"v{Constants.Version.Full} by depthbomb";
 
-            _GithubLink.Click += (object sender, EventArgs e)
+            _GithubLink.Click += (_, _)
                 => Process.Start("explorer", "https://github.com/depthbomb/Scraps");
 
-            _PatreonLink.Click += (object sender, EventArgs e)
+            _PatreonLink.Click += (_, _)
                 => Process.Start("explorer", "https://patreon.com/depthbomb");
         }
     }
