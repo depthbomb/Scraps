@@ -22,7 +22,7 @@ namespace Scraps.GUI.Services
 {
     public class UpdaterService : IDisposable
     {
-        private const string URL = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
+        private const string Url = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
 
         private readonly Logger _log;
         private readonly HttpClient _http;
@@ -32,7 +32,7 @@ namespace Scraps.GUI.Services
         public UpdaterService()
         {
             _log = LogManager.GetCurrentClassLogger();
-            _http = new();
+            _http = new HttpClient();
             _http.DefaultRequestHeaders.Add("user-agent", "Scraps - depthbomb/Scraps");
         }
 
@@ -44,78 +44,81 @@ namespace Scraps.GUI.Services
         {
             _log.Debug("Checking for updates");
 
-            string json = await _http.GetStringAsync(URL);
+            string json = await _http.GetStringAsync(Url);
 
             _latestRelease = JsonSerializer.Deserialize<LatestRelease>(json);
-            var latestVersion = new Version(_latestRelease.tag_name.Replace("v", ""));
-            string body = _latestRelease.body;
-            string releaseURL = $"https://github.com/depthbomb/Scraps/releases/tag/{latestVersion}";
-            var compare = Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
-            if (compare < 0)
+            if (_latestRelease != null)
             {
-                var updateAvailablePage = new TaskDialogPage
+                var latestVersion = new Version(_latestRelease.tag_name.Replace("v", ""));
+                string body = _latestRelease.body;
+                string releaseUrl = $"https://github.com/depthbomb/Scraps/releases/tag/{latestVersion}";
+                var compare = Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
+                if (compare < 0)
                 {
-                    Caption = "Scraps",
-                    Heading = "Update Available",
-                    Text = string.Format("Scraps {0} is available to download.", latestVersion),
-                    Icon = TaskDialogIcon.ShieldBlueBar,
-                    SizeToContent = true,
-                    Expander = new TaskDialogExpander
+                    var updateAvailablePage = new TaskDialogPage
                     {
-                        Text = body,
-                        CollapsedButtonText = "View Changelog",
-                        ExpandedButtonText = "Hide Changelog"
-                    },
-                };
-                var progressPage = new TaskDialogPage
-                {
-                    Caption = "Scraps",
-                    Heading = "Downloading installer...",
-                    ProgressBar = new(TaskDialogProgressBarState.Marquee)
-                };
-                var downloadButton = new TaskDialogCommandLinkButton
-                {
-                    Text = "Update",
-                    DescriptionText = "Download and run the installer automatically",
-                    AllowCloseDialog = false,
-                };
-                var dismissButton = new TaskDialogCommandLinkButton
-                {
-                    Text = "Dismiss"
-                };
-
-                downloadButton.Click += async (s, e) =>
-                {
-                    _log.Debug("Downloading installer");
-
-                    updateAvailablePage.Navigate(progressPage);
-
-                    string tempLocation = Path.GetTempFileName();
-                    string windowsAsset = _latestRelease.assets.Where(a => a.name.StartsWith("scraps_setup")).First().browser_download_url;
-                    byte[] data = await _http.GetByteArrayAsync(windowsAsset);
-                    using (var fs = new FileStream(tempLocation, FileMode.Create, FileAccess.Write, FileShare.None))
+                        Caption = "Scraps",
+                        Heading = "Update Available",
+                        Text = $"Scraps {latestVersion} is available to download.",
+                        Icon = TaskDialogIcon.ShieldBlueBar,
+                        SizeToContent = true,
+                        Expander = new TaskDialogExpander
+                        {
+                            Text = body,
+                            CollapsedButtonText = "View Changelog",
+                            ExpandedButtonText = "Hide Changelog"
+                        },
+                    };
+                    var progressPage = new TaskDialogPage
                     {
-                        fs.Write(data, 0, data.Length);
-                    }
-
-                    _log.Debug("Installer downloaded to {Path}", tempLocation);
-
-                    progressPage.BoundDialog.Close();
-
-                    Process.Start(new ProcessStartInfo
+                        Caption = "Scraps",
+                        Heading = "Downloading installer...",
+                        ProgressBar = new TaskDialogProgressBar(TaskDialogProgressBarState.Marquee)
+                    };
+                    var downloadButton = new TaskDialogCommandLinkButton
                     {
-                        FileName = tempLocation,
-                        Arguments = "/update=yes"
-                    });
+                        Text = "Update",
+                        DescriptionText = "Download and run the installer automatically",
+                        AllowCloseDialog = false,
+                    };
+                    var dismissButton = new TaskDialogCommandLinkButton
+                    {
+                        Text = "Dismiss"
+                    };
 
-                    Application.Exit();
-                };
+                    downloadButton.Click += async (s, e) =>
+                    {
+                        _log.Debug("Downloading installer");
 
-                updateAvailablePage.Buttons.Add(downloadButton);
-                updateAvailablePage.Buttons.Add(dismissButton);
-                updateAvailablePage.DefaultButton = downloadButton;
+                        updateAvailablePage.Navigate(progressPage);
 
-                var res = TaskDialog.ShowDialog(updateAvailablePage);
+                        string tempLocation = Path.GetTempFileName();
+                        string windowsAsset = _latestRelease.assets.First(a => a.name.StartsWith("scraps_setup")).browser_download_url;
+                        byte[] data = await _http.GetByteArrayAsync(windowsAsset);
+                        await using (var fs = new FileStream(tempLocation, FileMode.Create, FileAccess.Write, FileShare.None))
+                        {
+                            fs.Write(data, 0, data.Length);
+                        }
+
+                        _log.Debug("Installer downloaded to {Path}", tempLocation);
+
+                        if (progressPage.BoundDialog != null) progressPage.BoundDialog.Close();
+
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = tempLocation,
+                            Arguments = "/update=yes"
+                        });
+
+                        Application.Exit();
+                    };
+
+                    updateAvailablePage.Buttons.Add(downloadButton);
+                    updateAvailablePage.Buttons.Add(dismissButton);
+                    updateAvailablePage.DefaultButton = downloadButton;
+
+                    var res = TaskDialog.ShowDialog(updateAvailablePage);
+                }
             }
         }
 

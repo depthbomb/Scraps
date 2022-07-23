@@ -18,9 +18,8 @@
 
 namespace Scraps.GUI.Constants
 {
-    public class Files
+    public static class Files
     {
-        public static readonly string CONFIG_FILE = Path.Combine(Paths.STORE_PATH, "Config.json");
         public static readonly string LOGO_FILE = Path.Combine(Paths.DATA_PATH, "Logo.png");
     }
 }

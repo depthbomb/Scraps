@@ -29,7 +29,7 @@ namespace Scraps.GUI.Forms
 {
     public partial class MainForm : Form
     {
-        private bool _running = false;
+        private bool _running;
 
         private readonly LaunchOptions _options;
         private readonly RaffleService _runner;
@@ -43,15 +43,15 @@ namespace Scraps.GUI.Forms
             InitializeLogger();
             InitializeSettings();
 
-            _runner = new(_options);
+            _runner = new RaffleService(_options);
             _runner.OnStatus += OnStatus;
             _runner.OnStarting += OnStarting;
             _runner.OnRunning += OnRunning;
             _runner.OnRafflesWon += OnRafflesWon;
             _runner.OnStopped += OnStopped;
 
-            this.Text = string.Format("Scraps - {0}", Constants.Version.Full);
-            this.FormClosing += MainForm_OnClosing;
+            Text = $"Scraps - {Constants.Version.Full}";
+            FormClosing += MainForm_OnClosing;
 
             ToastNotificationManagerCompat.OnActivated += Toast_OnActivated;
         }
@@ -60,7 +60,7 @@ namespace Scraps.GUI.Forms
         {
             if (string.IsNullOrEmpty(Properties.UserConfig.Default.Cookie))
             {
-                var settingsWindow = new SettingsForm(_runner ?? null);
+                var settingsWindow = new SettingsForm(_runner);
                     settingsWindow.ShowDialog(this);
             }
         }
@@ -303,14 +303,14 @@ namespace Scraps.GUI.Forms
         {
             if (m.Msg == Native.WM_RAFFLERUNNER_SHOWME)
             {
-                if (this.WindowState == FormWindowState.Minimized)
+                if (WindowState == FormWindowState.Minimized)
                 {
-                    this.WindowState = FormWindowState.Normal;
+                    WindowState = FormWindowState.Normal;
                 }
 
-                this.Show();
-                this.Activate();
-                this.BringToFront();
+                Show();
+                Activate();
+                BringToFront();
             }
 
             base.WndProc(ref m);

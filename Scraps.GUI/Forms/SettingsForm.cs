@@ -35,31 +35,31 @@ namespace Scraps.GUI.Forms
 
         private void SubscribeToHelpEvents()
         {
-            _CookieInput.HelpRequested += (object s, HelpEventArgs h)
+            _CookieInput.HelpRequested += (_, _)
                 => Utils.ShowInfo(this, "Help", "This is where you paste your Scrap.TF cookie value. This is required for operation.");
 
-            _SortNewToggle.HelpRequested += (object s, HelpEventArgs h)
+            _SortNewToggle.HelpRequested += (_, _)
                 => Utils.ShowInfo(this, "Help", "Enabling this will make Scraps load newer raffles rather than by time remaining.");
 
-            _ParanoidToggle.HelpRequested += (object s, HelpEventArgs h)
+            _ParanoidToggle.HelpRequested += (_, _)
                 => Utils.ShowInfo(this, "Help", "Enabling this will make Scraps be extra strict when checking raffles as to avoid honeypots.");
 
-            _ToastToggle.HelpRequested += (object s, HelpEventArgs h)
+            _ToastToggle.HelpRequested += (_, _)
                 => Utils.ShowInfo(this, "Help", "Enabling this will enable toast notifications for various events.");
 
-            _ScanDelayInput.HelpRequested += (object s, HelpEventArgs h)
+            _ScanDelayInput.HelpRequested += (_, _)
                 => Utils.ShowInfo(this, "Help", "This is where you can change the delay between scan operations (in milliseconds).");
 
-            _PaginateDelayInput.HelpRequested += (object s, HelpEventArgs h)
+            _PaginateDelayInput.HelpRequested += (_, _)
                 => Utils.ShowInfo(this, "Help", "This is where you can change the delay between loading raffle index page results (in milliseconds).");
 
-            _JoinDelayInput.HelpRequested += (object s, HelpEventArgs h)
+            _JoinDelayInput.HelpRequested += (_, _)
                 => Utils.ShowInfo(this, "Help", "This is where you can change the delay between joining queued raffles (in milliseconds).");
 
-            _IncrementScanDelayToggle.HelpRequested += (object s, HelpEventArgs h)
+            _IncrementScanDelayToggle.HelpRequested += (_, _)
                 => Utils.ShowInfo(this, "Help", "Enabling this will make Scraps increment the Scan Delay by 1 second if a scan operation resulted in no available raffles to join.");
 
-            _SaveButton.HelpRequested += (object s, HelpEventArgs h)
+            _SaveButton.HelpRequested += (_, _)
                 => Utils.ShowInfo(this, "Help", "Settings changes made won't take effect until this button is clicked.");
         }
 
@@ -104,7 +104,7 @@ namespace Scraps.GUI.Forms
             Properties.UserConfig.Default.Save();
             Properties.UserConfig.Default.Reload();
 
-            if (_runner is RaffleService && _runner.Running)
+            if (_runner is { Running: true })
             {
                 Utils.ShowWarning(this, "Warning", "Some changes won't go into effect until the raffle runner is restarted.");
             }

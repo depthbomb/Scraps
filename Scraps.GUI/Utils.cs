@@ -18,7 +18,7 @@
 
 namespace Scraps.GUI
 {
-    public class Utils
+    public static class Utils
     {
         public static DialogResult ShowQuestion(IWin32Window owner, string title, string content, MessageBoxButtons buttons = MessageBoxButtons.OK)
             => MessageBox.Show(owner, content, title, buttons, MessageBoxIcon.Question);

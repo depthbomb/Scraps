@@ -18,7 +18,7 @@
 
 namespace Scraps.GUI.Constants
 {
-    public class Paths
+    public static class Paths
     {
         public static readonly string STORE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Caprine Logic", "Scraps");
         public static readonly string LOGS_PATH = Path.Combine(STORE_PATH, "Logs");
