@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.9.0.0
+
+- Migrated to .NET 7
+- Removed proxy system
+
+As .NET 7 isn't officially released, this version of Scraps is bundled as self-contained so you do not need to install anything else to run it. This does, however, mean that the file size is quite large. Releases after .NET 7 is released will require the runtime to work.
+
 ## 4.8.0.1
 
 - Fixed the Cloudflare warning appearing due to me not removing debug code. Whoops!

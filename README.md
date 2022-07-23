@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-	<img src="https://i.imgur.com/xrXwZj7.png">
+	<img src="https://files.catbox.moe/07ec3d.png">
 </p>
 
 The idea for Scraps was conceived during one of my periods of "devious programming".
@@ -41,15 +41,11 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Requirements
 
-- [.NET Desktop Runtime 6.x](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+As of 4.9.0.0, Scraps runs on a preview version of .NET 7. Version 4.9.0.0 is self-contained and requires no additional runtime to be installed. However, future releases of Scraps will be framework-dependent and require the .NET 7 Desktop Runtime which you can download [here.](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
 
 ## Finding your Cookie
 
 Scraps requires your Scrap.TF session cookie, `scr_session` to function. This can be found by accessing your browers's dev tools (usually by pressing `F12`), going to **Application** and then **Cookies**. This process may differ depending on your browser.
-
-## Using Proxies
-
-As of 4.7.0.0, Scraps comes with experimental proxy support. You may supply a newline-delimited list of _HTTP/S_ proxies in the settings. You must provide your own proxy addresses and proxies found in public lists are normally unreliable. There is also a good chance that CloudFlare blocks requests made with proxies. Consider using a VPN alongside Scraps instead.
 
 ## Launch Arguments
 

@@ -1,2 +1,1 @@
 Scrap.TF has started to occasionally require captcha verification via Cloudflare. In these events Scraps will not function properly.
-Proxy support will be removed in the next release due to codebase cleanup. Please find an alternate solution before then.
