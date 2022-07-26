@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,6 +15,7 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 using Scraps.GUI.Constants;
@@ -22,7 +24,7 @@ namespace Scraps.GUI.Services.Honeypot.Vectors;
 
 public class BannedEntriesVector : IHoneypotVector
 {
-    public bool Detected { get; private set; }
+    public bool   Detected     { get; private set; }
     public string DetectReason { get; private set; }
 
     public void Check(string html)
@@ -31,7 +33,7 @@ public class BannedEntriesVector : IHoneypotVector
 
         if (entries.Count > 1)
         {
-            Detected = true;
+            Detected     = true;
             DetectReason = $"{entries.Count} users who entered this raffle are now banned";
         }
     }

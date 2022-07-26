@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,10 +15,10 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 using Microsoft.Toolkit.Uwp.Notifications;
-
 using Scraps.GUI.Models;
 using Scraps.GUI.Logging;
 using Scraps.GUI.Services;
@@ -43,14 +44,14 @@ public partial class MainForm : Form
         InitializeLogger();
         InitializeSettings();
 
-        _runner = new RaffleService(_options);
-        _runner.OnStatus += OnStatus;
-        _runner.OnStarting += OnStarting;
-        _runner.OnRunning += OnRunning;
+        _runner              =  new RaffleService(_options);
+        _runner.OnStatus     += OnStatus;
+        _runner.OnStarting   += OnStarting;
+        _runner.OnRunning    += OnRunning;
         _runner.OnRafflesWon += OnRafflesWon;
-        _runner.OnStopped += OnStopped;
+        _runner.OnStopped    += OnStopped;
 
-        Text = $"Scraps - {Constants.Version.Full}";
+        Text        =  $"Scraps - {Constants.Version.Full}";
         FormClosing += MainForm_OnClosing;
 
         ToastNotificationManagerCompat.OnActivated += Toast_OnActivated;
@@ -74,15 +75,15 @@ public partial class MainForm : Form
         };
         var fileTarget = new FileTarget
         {
-            Layout = @"${longdate} | ${pad:padding=5:inner=${level:uppercase=true}} | [${logger:shortName=true}] ${message}${exception}",
-            ArchiveEvery = FileArchivePeriod.Month,
-            ArchiveFileName = "backup.{#}.zip",
-            ArchiveNumbering = ArchiveNumberingMode.Date,
-            ArchiveDateFormat = "yyyyMMddHHmm",
+            Layout                       = @"${longdate} | ${pad:padding=5:inner=${level:uppercase=true}} | [${logger:shortName=true}] ${message}${exception}",
+            ArchiveEvery                 = FileArchivePeriod.Month,
+            ArchiveFileName              = "backup.{#}.zip",
+            ArchiveNumbering             = ArchiveNumberingMode.Date,
+            ArchiveDateFormat            = "yyyyMMddHHmm",
             EnableArchiveFileCompression = true,
-            FileName = Path.Combine(Paths.LOGS_PATH, "Scraps.${date:format=yyyy-MM}.log"),
-            CreateDirs = true,
-            MaxArchiveFiles = 5,
+            FileName                     = Path.Combine(Paths.LOGS_PATH, "Scraps.${date:format=yyyy-MM}.log"),
+            CreateDirs                   = true,
+            MaxArchiveFiles              = 5,
         };
 
         config.AddTarget("RTB", rtbTarget);
@@ -97,20 +98,21 @@ public partial class MainForm : Form
         => _Status.Text = " "; // Set text to a space rather than null/empty so the status strip doesn't collapse
 
     #region Raffle Runner Event Subscriptions
+
     private void OnStatus(object sender, StatusArgs e) => _Status.Text = e.Message;
 
     private void OnStarting(object sender, StartingArgs e)
     {
         _StartStopButton.Enabled = false;
-        _StartStopButton.Text = "Starting...";
+        _StartStopButton.Text    = "Starting...";
     }
 
     private void OnRunning(object sender, RunningArgs e)
     {
-        _running = true;
-        _StartStopButton.Image = Icons.Stop;
+        _running                 = true;
+        _StartStopButton.Image   = Icons.Stop;
         _StartStopButton.Enabled = true;
-        _StartStopButton.Text = "Stop";
+        _StartStopButton.Text    = "Stop";
     }
 
     private void OnRafflesWon(object sender, RafflesWonArgs e)
@@ -123,14 +125,14 @@ public partial class MainForm : Form
             {
                 using (var http = new HttpClient())
                 {
-                    string url = string.Format("https://scrap.tf/apple-touch-icon.png?{0}", Guid.NewGuid());
+                    string url  = string.Format("https://scrap.tf/apple-touch-icon.png?{0}", Guid.NewGuid());
                     byte[] data = http.GetByteArrayAsync(url).Result;
                     File.WriteAllBytes(logo, data);
                 }
             }
 
-            string message = e.Message;
-            var viewButton = new ToastButton();
+            string message    = e.Message;
+            var    viewButton = new ToastButton();
             viewButton.AddArgument("action", "viewRafflesWonPage");
             viewButton.SetContent("View Won Raffles");
 
@@ -151,16 +153,18 @@ public partial class MainForm : Form
 
     private void OnStopped(object sender, StoppedArgs e)
     {
-        _running = false;
-        _StartStopButton.Image = Icons.Start;
+        _running                 = false;
+        _StartStopButton.Image   = Icons.Start;
         _StartStopButton.Enabled = true;
-        _StartStopButton.Text = "Start";
+        _StartStopButton.Text    = "Start";
 
         ResetStatus();
     }
+
     #endregion
 
     #region Control Event Subscriptions
+
     private async void MainForm_OnShown(object sender, EventArgs e)
     {
         if (await IsOnline())
@@ -229,8 +233,8 @@ public partial class MainForm : Form
                 _runner.Cancel();
 
                 _StartStopButton.Enabled = true;
-                _StartStopButton.Text = "Start";
-                _StartStopButton.Image = Icons.Start;
+                _StartStopButton.Text    = "Start";
+                _StartStopButton.Image   = Icons.Start;
             }
         }
     }
@@ -249,6 +253,7 @@ public partial class MainForm : Form
         var aboutWindow = new AboutForm();
         aboutWindow.ShowDialog(this);
     }
+
     #endregion
 
     private void Toast_OnActivated(ToastNotificationActivatedEventArgsCompat e)
@@ -256,7 +261,7 @@ public partial class MainForm : Form
         var parsed = ToastArguments.Parse(e.Argument);
         switch (parsed["action"])
         {
-            case "viewRafflesWonPage":
+            case"viewRafflesWonPage":
                 Process.Start("explorer.exe", "https://scrap.tf/raffles/won");
                 break;
         }

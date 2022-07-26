@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,6 +15,7 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 namespace Scraps.GUI.Services.Raffle;
@@ -23,7 +25,7 @@ public class StartingArgs : EventArgs
     /// <summary>
     /// The time that the start was initiated
     /// </summary>
-    public DateTime Time { get; set; }
+    public DateTime Time { get; }
 
     public StartingArgs()
     {

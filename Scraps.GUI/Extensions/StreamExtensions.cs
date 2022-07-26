@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,7 +15,10 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
+
+using System;
 
 namespace Scraps.GUI.Extensions;
 
@@ -33,12 +37,12 @@ public static class StreamExtensions
         if (bufferSize < 0)
             throw new ArgumentOutOfRangeException(nameof(bufferSize));
 
-        var buffer = new byte[bufferSize];
+        var  buffer         = new byte[bufferSize];
         long totalBytesRead = 0;
-        int bytesRead;
-        while ((bytesRead = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) != 0)
+        int  bytesRead;
+        while ((bytesRead = await source.ReadAsync(buffer, cancellationToken).ConfigureAwait(false)) != 0)
         {
-            await destination.WriteAsync(buffer, 0, bytesRead, cancellationToken).ConfigureAwait(false);
+            await destination.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken).ConfigureAwait(false);
             totalBytesRead += bytesRead;
             progress?.Report(totalBytesRead);
         }

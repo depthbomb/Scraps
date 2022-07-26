@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,23 +15,28 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 namespace Scraps.GUI.Services;
 
 public class AnnouncementService : IDisposable
 {
-    private readonly string _fileUrl;
+    private readonly string     _fileUrl;
     private readonly HttpClient _http;
 
     public AnnouncementService()
     {
-        _fileUrl = "https://raw.githubusercontent.com/depthbomb/Scraps/master/ANNOUNCEMENT";
-        _http = new HttpClient();
+        _fileUrl      = "https://raw.githubusercontent.com/depthbomb/Scraps/master/ANNOUNCEMENT";
+        _http         = new HttpClient();
         _http.Timeout = TimeSpan.FromSeconds(3);
         _http.DefaultRequestHeaders.Add("user-agent", "RaffleRunner - depthbomb/RaffleRunner");
     }
 
+    /// <summary>
+    /// Fetches announcements from the GitHub repo
+    /// </summary>
+    /// <returns>The announcements as a single string</returns>
     public async Task<string> GetAnnouncementAsync()
     {
         string announcements = string.Empty;
@@ -46,8 +52,6 @@ public class AnnouncementService : IDisposable
         return announcements;
     }
 
-    public void Dispose()
-    {
-        _http.Dispose();
-    }
+    /// <inheritdoc />
+    public void Dispose() => _http.Dispose();
 }

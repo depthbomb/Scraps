@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,6 +15,7 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 using Scraps.GUI.Extensions;
@@ -32,8 +34,8 @@ public sealed class RtbTarget : TargetWithLayout
 
     protected override void Write(LogEventInfo logEvent)
     {
-        string level = logEvent.Level.Name;
-        string prefix = DateTime.Now.ToString("HH:mm:ss");
+        string level   = logEvent.Level.Name;
+        string prefix  = DateTime.Now.ToString("HH:mm:ss");
         string message = RenderLogEvent(Layout, logEvent);
         _rtb.AppendText($"{prefix} ", Color.DarkGray);
         _rtb.AppendLine(message, GetColor(level));

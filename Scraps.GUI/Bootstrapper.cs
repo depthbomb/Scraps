@@ -1,4 +1,5 @@
 #region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,6 +15,7 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 using Scraps.GUI.Forms;
@@ -68,7 +70,9 @@ internal static class Bootstrapper
             }
 
             Application.Run(new MainForm(_options));
-        };
+        }
+
+        ;
     }
 
     private static void EnsureFileSystem()
@@ -86,10 +90,10 @@ internal static class Bootstrapper
     {
         var options = new LaunchOptions
         {
-            Debug = args.Any(a => a == "/Debug"),
-            Silent = args.Any(a => a == "/Silent"),
-            SkipUpdates = args.Any(a => a == "/SkipUpdate"),
-            AutoReconnect = args.Any(a => a == "/AutoReconnect"),
+            Debug             = args.Any(a => a == "/Debug"),
+            Silent            = args.Any(a => a == "/Silent"),
+            SkipUpdates       = args.Any(a => a == "/SkipUpdate"),
+            AutoReconnect     = args.Any(a => a == "/AutoReconnect"),
             SkipAnnouncements = args.Any(a => a == "/SkipAnnouncements"),
         };
 

@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,6 +15,7 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 namespace Scraps.GUI.Services.Raffle;
@@ -23,12 +25,12 @@ public class PaginateArgs : EventArgs
     /// <summary>
     /// The raffle ID used to paginate
     /// </summary>
-    public string Apex { get; set; }
+    public string Apex { get; }
 
     /// <summary>
     /// The HTML content of the pagination response
     /// </summary>
-    public string Html { get; set; }
+    public string Html { get; }
 
     public PaginateArgs(string apex, string html)
     {

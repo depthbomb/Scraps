@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,6 +15,7 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 namespace Scraps.GUI.Services.Raffle;
@@ -23,28 +25,28 @@ public class RaffleJoinedArgs : EventArgs
     /// <summary>
     /// Number of queued raffles entered at this point
     /// </summary>
-    public int Entered { get; set; }
+    public int Entered { get; }
 
     /// <summary>
     /// Total number of raffles in queue
     /// </summary>
-    public int Total { get; set; }
+    public int Total { get; }
 
     /// <summary>
     /// ID of the raffle that was entered
     /// </summary>
-    public string RaffleId { get; set; }
+    public string RaffleId { get; }
 
     /// <summary>
     /// The HTML of the raffle page
     /// </summary>
-    public string PageHtml { get; set; }
+    public string PageHtml { get; }
 
     public RaffleJoinedArgs(string raffleId, string pageHtml, int entered, int total)
     {
         RaffleId = raffleId;
         PageHtml = pageHtml;
-        Entered = entered;
-        Total = total;
+        Entered  = entered;
+        Total    = total;
     }
 }

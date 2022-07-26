@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,6 +15,7 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 using Scraps.GUI.Services.Updater.Models;
@@ -24,14 +26,14 @@ public class UpdaterService : IDisposable
 {
     private const string Url = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
 
-    private readonly Logger _log;
+    private readonly Logger     _log;
     private readonly HttpClient _http;
 
     private LatestRelease _latestRelease;
 
     public UpdaterService()
     {
-        _log = LogManager.GetCurrentClassLogger();
+        _log  = LogManager.GetCurrentClassLogger();
         _http = new HttpClient();
         _http.DefaultRequestHeaders.Add("user-agent", "Scraps - depthbomb/Scraps");
     }
@@ -49,36 +51,36 @@ public class UpdaterService : IDisposable
         _latestRelease = JsonSerializer.Deserialize<LatestRelease>(json);
         if (_latestRelease != null)
         {
-            var latestVersion = new Version(_latestRelease.tag_name.Replace("v", ""));
-            string body = _latestRelease.body;
-            string releaseUrl = $"https://github.com/depthbomb/Scraps/releases/tag/{latestVersion}";
-            var compare = Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
+            var    latestVersion = new Version(_latestRelease.tag_name.Replace("v", ""));
+            string body          = _latestRelease.body;
+            string releaseUrl    = $"https://github.com/depthbomb/Scraps/releases/tag/{latestVersion}";
+            var    compare       = Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
             if (compare < 0)
             {
                 var updateAvailablePage = new TaskDialogPage
                 {
-                    Caption = "Scraps",
-                    Heading = "Update Available",
-                    Text = $"Scraps {latestVersion} is available to download.",
-                    Icon = TaskDialogIcon.ShieldBlueBar,
+                    Caption       = "Scraps",
+                    Heading       = "Update Available",
+                    Text          = $"Scraps {latestVersion} is available to download.",
+                    Icon          = TaskDialogIcon.ShieldBlueBar,
                     SizeToContent = true,
                     Expander = new TaskDialogExpander
                     {
-                        Text = body,
+                        Text                = body,
                         CollapsedButtonText = "View Changelog",
-                        ExpandedButtonText = "Hide Changelog"
+                        ExpandedButtonText  = "Hide Changelog"
                     },
                 };
                 var progressPage = new TaskDialogPage
                 {
-                    Caption = "Scraps",
-                    Heading = "Downloading installer...",
+                    Caption     = "Scraps",
+                    Heading     = "Downloading installer...",
                     ProgressBar = new TaskDialogProgressBar(TaskDialogProgressBarState.Marquee)
                 };
                 var downloadButton = new TaskDialogCommandLinkButton
                 {
-                    Text = "Update",
-                    DescriptionText = "Download and run the installer automatically",
+                    Text             = "Update",
+                    DescriptionText  = "Download and run the installer automatically",
                     AllowCloseDialog = false,
                 };
                 var dismissButton = new TaskDialogCommandLinkButton
@@ -94,7 +96,7 @@ public class UpdaterService : IDisposable
 
                     string tempLocation = Path.GetTempFileName();
                     string windowsAsset = _latestRelease.assets.First(a => a.name.StartsWith("scraps_setup")).browser_download_url;
-                    byte[] data = await _http.GetByteArrayAsync(windowsAsset);
+                    byte[] data         = await _http.GetByteArrayAsync(windowsAsset);
                     await using (var fs = new FileStream(tempLocation, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
                         fs.Write(data, 0, data.Length);
@@ -106,7 +108,7 @@ public class UpdaterService : IDisposable
 
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = tempLocation,
+                        FileName  = tempLocation,
                         Arguments = "/update=yes"
                     });
 
@@ -122,8 +124,6 @@ public class UpdaterService : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        _http.Dispose();
-    }
+    /// <inheritdoc />
+    public void Dispose() => _http.Dispose();
 }

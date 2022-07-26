@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,6 +15,7 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 using Scraps.GUI.Models;
@@ -28,73 +30,84 @@ public class RaffleService
 {
     public bool Running;
 
-    private string _cookie;
-    private string _csrfToken;
-    private HttpClient _http;
-    private int _scanDelay;
-    private int _joinDelay;
-    private bool _stoppedFromError;
-    private bool _alertedOfWonRaffles;
-    private CancellationToken _cancelToken;
+    private string                  _cookie;
+    private string                  _csrfToken;
+    private HttpClient              _http;
+    private int                     _scanDelay;
+    private int                     _joinDelay;
+    private bool                    _stoppedFromError;
+    private bool                    _alertedOfWonRaffles;
+    private CancellationToken       _cancelToken;
     private CancellationTokenSource _cancelTokenSource;
 
-    private readonly Logger _log;
+    private readonly Logger                       _log;
     private readonly HtmlAgilityPack.HtmlDocument _html;
-    private readonly LaunchOptions _options;
-    private readonly List<string> _raffleQueue = new();
-    private readonly List<string> _enteredRaffles = new();
+    private readonly LaunchOptions                _options;
+    private readonly List<string>                 _raffleQueue    = new();
+    private readonly List<string>                 _enteredRaffles = new();
 
     #region Events
+
     /// <summary>
     /// Raised when a status is sent
     /// </summary>
     public event EventHandler<StatusArgs> OnStatus;
+
     /// <summary>
     /// Raised when a start is requested
     /// </summary>
     public event EventHandler<StartingArgs> OnStarting;
+
     /// <summary>
     /// Raised when the main loop has officially started
     /// </summary>
     public event EventHandler<RunningArgs> OnRunning;
+
     /// <summary>
     /// Raised when the CSRF token has been parsed from the site
     /// </summary>
     public event EventHandler<CsrfTokenObtainedArgs> OnCsrfTokenObtained;
+
     /// <summary>
     /// Raised when the bot receives a response from paginating the raffle index
     /// </summary>
     public event EventHandler<PaginateArgs> OnPaginate;
+
     /// <summary>
     /// Raised when pagination has completed before processing the results
     /// </summary>
     public event EventHandler<PaginateDoneArgs> OnPaginateDone;
+
     /// <summary>
     /// Raised when a raffle has been successfully joined
     /// </summary>
     public event EventHandler<RaffleJoinedArgs> OnRaffleJoined;
+
     /// <summary>
     /// Raised when one or more raffles have been won
     /// </summary>
     public event EventHandler<RafflesWonArgs> OnRafflesWon;
+
     /// <summary>
     /// Raised when cancellation has succeeded
     /// </summary>
     public event EventHandler<StoppedArgs> OnStopped;
+
     #endregion
 
     public RaffleService(LaunchOptions options)
     {
-        _log = LogManager.GetCurrentClassLogger();
-        _html = new HtmlAgilityPack.HtmlDocument();
+        _log     = LogManager.GetCurrentClassLogger();
+        _html    = new HtmlAgilityPack.HtmlDocument();
         _options = options;
     }
 
     #region Public Methods
+
     public async Task StartAsync()
     {
         _cancelTokenSource = new CancellationTokenSource();
-        _cancelToken = _cancelTokenSource.Token;
+        _cancelToken       = _cancelTokenSource.Token;
 
         Running = true;
 
@@ -149,20 +162,20 @@ public class RaffleService
         {
             if (ex is not TaskCanceledException || _options.Debug)
             {
-                if (ex is AccountBannedException)
+                switch (ex)
                 {
-                    _stoppedFromError = false; // So we don't try to restart for no reason
-                    _log.Error("Account banned: {Reason}", ex.Message);
-                }
-                else if (ex is CloudflareException)
-                {
-                    _stoppedFromError = false;
-                    _log.Error(ex.Message);
-                }
-                else
-                {
-                    _stoppedFromError = true;
-                    _log.Error("{Err}", ex.ToString());
+                    case AccountBannedException:
+                        _stoppedFromError = false; // So we don't try to restart for no reason
+                        _log.Error("Account banned: {Reason}", ex.Message);
+                        break;
+                    case CloudflareException:
+                        _stoppedFromError = false;
+                        _log.Error(ex.Message);
+                        break;
+                    default:
+                        _stoppedFromError = true;
+                        _log.Error("{Err}", ex.ToString());
+                        break;
                 }
             }
 
@@ -191,9 +204,11 @@ public class RaffleService
             _cancelTokenSource.Cancel();
         }
     }
+
     #endregion
 
     #region Private Methods
+
     private void CreateHttpClient()
     {
         _http?.Dispose();
@@ -205,7 +220,7 @@ public class RaffleService
         var handler = new HttpClientHandler
         {
             CookieContainer = cookies,
-            UseCookies = true,
+            UseCookies      = true,
         };
 
         var client = new HttpClient(handler);
@@ -247,7 +262,7 @@ public class RaffleService
                 {
                     throw new DownForMaintenanceException("Site appears to be down/under maintenance.");
                 }
-                    
+
                 throw new Exception("Unable to retrieve CSRF token. Please check your cookie value.");
             }
         }
@@ -259,9 +274,9 @@ public class RaffleService
 
         _log.Debug("Scanning raffles");
 
-        bool doneScanning = false;
-        string html = await _http.GetStringAsync("https://scrap.tf/raffles", _cancelToken);
-        string lastId = string.Empty;
+        bool   doneScanning = false;
+        string html         = await _http.GetStringAsync("https://scrap.tf/raffles", _cancelToken);
+        string lastId       = string.Empty;
 
         while (!doneScanning && !_cancelToken.IsCancellationRequested)
         {
@@ -279,8 +294,8 @@ public class RaffleService
                     var paginateResponse = JsonSerializer.Deserialize<PaginateResponse>(json);
                     if (paginateResponse is { Success: true })
                     {
-                        html += paginateResponse.Html;
-                        lastId = paginateResponse.LastId;
+                        html   += paginateResponse.Html;
+                        lastId =  paginateResponse.LastId;
 
                         if (!paginateResponse.Done)
                         {
@@ -289,16 +304,14 @@ public class RaffleService
                             await Task.Delay(Properties.UserConfig.Default.PaginateDelay, _cancelToken);
                             continue;
                         }
-                        else
-                        {
-                            doneScanning = true;
-                        }
+
+                        doneScanning = true;
 
                         _log.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles");
                         _html.LoadHtml(html);
 
-                        var document = _html.DocumentNode;
-                        var raffleElements = document.SelectNodes(Xpaths.UNENTERED_RAFFLES);
+                        var document       = _html.DocumentNode;
+                        var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
                         if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
                         {
                             CheckForWonRaffles(html);
@@ -311,9 +324,9 @@ public class RaffleService
                         foreach (var el in raffleElements)
                         {
                             string elementHtml = el.InnerHtml.Trim();
-                            string raffleId = RegexPatterns.RAFFLE_ENTRY.Match(elementHtml).Groups[1].Value.Trim();
+                            string raffleId    = RegexPatterns.RAFFLE_ENTRY.Match(elementHtml).Groups[1].Value.Trim();
                             if (
-                                !raffleId.IsNullOrEmpty() &&
+                                !raffleId.IsNullOrEmpty()        &&
                                 !_raffleQueue.Contains(raffleId) &&
                                 !_enteredRaffles.Contains(raffleId)
                             )
@@ -332,7 +345,7 @@ public class RaffleService
                             {
                                 throw await NewAccountBannedException();
                             }
-                                
+
                             _log.Error("Encountered an error while paginating: {Message} - Waiting 10 seconds", paginateResponse.Message);
 
                             await Task.Delay(10_000, _cancelToken);
@@ -357,7 +370,7 @@ public class RaffleService
         SendStatus("Paginating");
 
         string sort = Properties.UserConfig.Default.SortByNew ? "1" : "0";
-        string url = "https://scrap.tf/ajax/raffles/Paginate";
+        string url  = "https://scrap.tf/ajax/raffles/Paginate";
         var content = new FormUrlEncodedContent(new[]
         {
             new KeyValuePair<string, string>("start", apex),
@@ -376,7 +389,7 @@ public class RaffleService
 
             return html;
         }
-            
+
         return null;
     }
 
@@ -384,7 +397,7 @@ public class RaffleService
     {
         if (!_alertedOfWonRaffles)
         {
-            var match = RegexPatterns.WON_RAFFLES_ALERT.Match(html);
+            var    match   = RegexPatterns.WON_RAFFLES_ALERT.Match(html);
             string message = match.Groups[0].Value;
 
             OnRafflesWon?.Invoke(this, new RafflesWonArgs(message));
@@ -397,17 +410,17 @@ public class RaffleService
     private async Task JoinRafflesAsync()
     {
         int entered = 0;
-        int total = _raffleQueue.Count;
+        int total   = _raffleQueue.Count;
 
         var queue = _raffleQueue.Where(r => !_enteredRaffles.Contains(r));
         foreach (string raffle in queue)
         {
             SendStatus($"Joining raffle {raffle}");
 
-            string html = await _http.GetStringAsync($"https://scrap.tf/raffles/{raffle}");
-            var hash = RegexPatterns.RAFFLE_HASH.Match(html);
-            var limits = RegexPatterns.RAFFLE_LIMIT.Match(html);
-            bool hasEnded = html.Contains("data-time=\"Raffle Ended\"");
+            string html     = await _http.GetStringAsync($"https://scrap.tf/raffles/{raffle}");
+            var    hash     = RegexPatterns.RAFFLE_HASH.Match(html);
+            var    limits   = RegexPatterns.RAFFLE_LIMIT.Match(html);
+            bool   hasEnded = html.Contains("data-time=\"Raffle Ended\"");
 
             using (var hp = new HoneypotService())
             {
@@ -467,7 +480,7 @@ public class RaffleService
                 });
 
                 var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
-                httpRequest.Content = content;
+                httpRequest.Content          = content;
                 httpRequest.Headers.Referrer = new Uri($"https://scrap.tf/raffles/{raffle}");
                 var response = await _http.SendAsync(httpRequest);
 
@@ -509,15 +522,10 @@ public class RaffleService
 
     private async Task<string> GetBanReason()
     {
-        string reason = "Could not obtain reason";
-        string html = await _http.GetStringAsync("https://scrap.tf/banappeal", _cancelToken);
-        var match = RegexPatterns.BAN_REASON.Match(html);
-        if (match.Success)
-        {
-            return match.Groups[1].Value.Trim();
-        }
-
-        return reason;
+        const string reason = "Could not obtain reason";
+        string       html   = await _http.GetStringAsync("https://scrap.tf/banappeal", _cancelToken);
+        var          match  = RegexPatterns.BAN_REASON.Match(html);
+        return match.Success ? match.Groups[1].Value.Trim() : reason;
     }
 
     private void SendStatus(string message) => OnStatus?.Invoke(this, new StatusArgs(message));
@@ -526,5 +534,6 @@ public class RaffleService
     {
         return new AccountBannedException(await GetBanReason());
     }
+
     #endregion
 }

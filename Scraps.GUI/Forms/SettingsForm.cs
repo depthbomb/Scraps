@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,6 +15,7 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 using Scraps.GUI.Services;
@@ -77,14 +79,14 @@ public partial class SettingsForm : Form
 
     private void SaveButton_OnClick(object sender, EventArgs e)
     {
-        string cookie           = _CookieInput.Text.Trim();
-        bool sortByNew          = _SortNewToggle.Checked;
-        bool paranoid           = _ParanoidToggle.Checked;
-        bool toast              = _ToastToggle.Checked;
-        int scanDelay           = (int)_ScanDelayInput.Value;
-        int paginateDelay       = (int)_PaginateDelayInput.Value;
-        int joinDelay           = (int)_JoinDelayInput.Value;
-        bool incrementScanDelay = _IncrementScanDelayToggle.Checked;
+        string cookie             = _CookieInput.Text.Trim();
+        bool   sortByNew          = _SortNewToggle.Checked;
+        bool   paranoid           = _ParanoidToggle.Checked;
+        bool   toast              = _ToastToggle.Checked;
+        int    scanDelay          = (int)_ScanDelayInput.Value;
+        int    paginateDelay      = (int)_PaginateDelayInput.Value;
+        int    joinDelay          = (int)_JoinDelayInput.Value;
+        bool   incrementScanDelay = _IncrementScanDelayToggle.Checked;
 
         if (string.IsNullOrEmpty(cookie)) return;
         if (cookie.Contains("scr_session"))
@@ -93,13 +95,13 @@ public partial class SettingsForm : Form
             return;
         }
 
-        Properties.UserConfig.Default.Cookie = cookie;
-        Properties.UserConfig.Default.SortByNew = sortByNew;
-        Properties.UserConfig.Default.Paranoid = paranoid;
+        Properties.UserConfig.Default.Cookie             = cookie;
+        Properties.UserConfig.Default.SortByNew          = sortByNew;
+        Properties.UserConfig.Default.Paranoid           = paranoid;
         Properties.UserConfig.Default.ToastNotifications = toast;
-        Properties.UserConfig.Default.ScanDelay = scanDelay;
-        Properties.UserConfig.Default.PaginateDelay = paginateDelay;
-        Properties.UserConfig.Default.JoinDelay = joinDelay;
+        Properties.UserConfig.Default.ScanDelay          = scanDelay;
+        Properties.UserConfig.Default.PaginateDelay      = paginateDelay;
+        Properties.UserConfig.Default.JoinDelay          = joinDelay;
         Properties.UserConfig.Default.IncrementScanDelay = incrementScanDelay;
         Properties.UserConfig.Default.Save();
         Properties.UserConfig.Default.Reload();
@@ -109,7 +111,7 @@ public partial class SettingsForm : Form
             Utils.ShowWarning(this, "Warning", "Some changes won't go into effect until the raffle runner is restarted.");
         }
 
-        this.Close();
+        Close();
     }
 
     private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)

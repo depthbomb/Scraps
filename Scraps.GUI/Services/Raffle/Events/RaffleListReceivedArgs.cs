@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,6 +15,7 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 namespace Scraps.GUI.Services.Raffle;
@@ -23,7 +25,7 @@ namespace Scraps.GUI.Services.Raffle;
 /// </summary>
 public class RaffleListReceivedArgs : EventArgs
 {
-    public List<string> AvailableRaffles { get; set; }
+    public List<string> AvailableRaffles { get; }
 
     /// <summary>
     /// Raised when a list of available raffle IDs is received

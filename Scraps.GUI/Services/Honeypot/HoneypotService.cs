@@ -1,4 +1,5 @@
 ﻿#region License
+
 /// Scraps - Scrap.TF Raffle Bot
 /// Copyright(C) 2022 Caprine Logic
 
@@ -14,6 +15,7 @@
 
 /// You should have received a copy of the GNU General Public License
 /// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 #endregion License
 
 using Scraps.GUI.Services.Honeypot;
@@ -25,8 +27,8 @@ public class HoneypotService : IDisposable
 {
     private readonly List<IHoneypotVector> _vectors;
 
-    public bool IsHoneypot { get; private set; }
-    public string Reason { get; private set; }
+    public bool   IsHoneypot { get; private set; }
+    public string Reason     { get; private set; }
 
     public HoneypotService()
     {
@@ -44,11 +46,12 @@ public class HoneypotService : IDisposable
             if (vector.Detected)
             {
                 IsHoneypot = true;
-                Reason = vector.DetectReason;
+                Reason     = vector.DetectReason;
                 break;
             }
         }
     }
 
+    /// <inheritdoc />
     public void Dispose() => _vectors.Clear();
 }
