@@ -1,22 +1,20 @@
 ﻿#region License
-
-/// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2022 Caprine Logic
-
-/// This program is free software: you can redistribute it and/or modify
-/// it under the terms of the GNU General Public License as published by
-/// the Free Software Foundation, either version 3 of the License, or
-/// (at your option) any later version.
-
-/// This program is distributed in the hope that it will be useful,
-/// but WITHOUT ANY WARRANTY; without even the implied warranty of
-/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-/// GNU General Public License for more details.
-
-/// You should have received a copy of the GNU General Public License
-/// along with this program. If not, see <https://www.gnu.org/licenses/>.
-
-#endregion License
+// Scraps - Scrap.TF Raffle Bot
+// Copyright(C) 2022 Caprine Logic
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
+#endregion
 
 using Scraps.GUI.Models;
 using Scraps.GUI.Constants;
@@ -229,6 +227,8 @@ public class RaffleService
         client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _cookie);
 
         _http = client;
+
+        _log.Debug("Created HTTP client (cookie={First20},{Length})", _cookie[..20], _cookie.Length);
     }
 
     private async Task GetCsrfTokenAsync()
@@ -383,7 +383,7 @@ public class RaffleService
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
-            string html = await response.Content.ReadAsStringAsync();
+            string html = await response.Content.ReadAsStringAsync(_cancelToken);
 
             OnPaginate?.Invoke(this, new PaginateArgs(apex, html));
 
@@ -417,7 +417,7 @@ public class RaffleService
         {
             SendStatus($"Joining raffle {raffle}");
 
-            string html     = await _http.GetStringAsync($"https://scrap.tf/raffles/{raffle}");
+            string html     = await _http.GetStringAsync($"https://scrap.tf/raffles/{raffle}", _cancelToken);
             var    hash     = RegexPatterns.RAFFLE_HASH.Match(html);
             var    limits   = RegexPatterns.RAFFLE_LIMIT.Match(html);
             bool   hasEnded = html.Contains("data-time=\"Raffle Ended\"");
@@ -482,9 +482,9 @@ public class RaffleService
                 var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
                 httpRequest.Content          = content;
                 httpRequest.Headers.Referrer = new Uri($"https://scrap.tf/raffles/{raffle}");
-                var response = await _http.SendAsync(httpRequest);
+                var response = await _http.SendAsync(httpRequest, _cancelToken);
 
-                string json = await response.Content.ReadAsStringAsync();
+                string json = await response.Content.ReadAsStringAsync(_cancelToken);
 
                 var joinRaffleResponse = JsonSerializer.Deserialize<JoinRaffleResponse>(json);
                 if (joinRaffleResponse is { Success: true })

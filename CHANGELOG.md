@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.9.1.0
+
+- Re-added cookie value length validation when saving settings
+- Added logging related to announcement fetching
+- Very basic info about your cookie value (first 20 characters and total length) is logged upon starting runner
+- Made more tasks cancellable when you stop the runner
+- Updated dependencies
+
 ## 4.9.0.0
 
 - Migrated to .NET 7

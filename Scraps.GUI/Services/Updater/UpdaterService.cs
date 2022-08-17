@@ -1,22 +1,20 @@
 ﻿#region License
-
-/// Scraps - Scrap.TF Raffle Bot
-/// Copyright(C) 2022 Caprine Logic
-
-/// This program is free software: you can redistribute it and/or modify
-/// it under the terms of the GNU General Public License as published by
-/// the Free Software Foundation, either version 3 of the License, or
-/// (at your option) any later version.
-
-/// This program is distributed in the hope that it will be useful,
-/// but WITHOUT ANY WARRANTY; without even the implied warranty of
-/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-/// GNU General Public License for more details.
-
-/// You should have received a copy of the GNU General Public License
-/// along with this program. If not, see <https://www.gnu.org/licenses/>.
-
-#endregion License
+// Scraps - Scrap.TF Raffle Bot
+// Copyright(C) 2022 Caprine Logic
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
+#endregion
 
 using Scraps.GUI.Services.Updater.Models;
 
@@ -53,7 +51,6 @@ public class UpdaterService : IDisposable
         {
             var    latestVersion = new Version(_latestRelease.tag_name.Replace("v", ""));
             string body          = _latestRelease.body;
-            string releaseUrl    = $"https://github.com/depthbomb/Scraps/releases/tag/{latestVersion}";
             var    compare       = Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
             if (compare < 0)
             {
@@ -88,7 +85,7 @@ public class UpdaterService : IDisposable
                     Text = "Dismiss"
                 };
 
-                downloadButton.Click += async (s, e) =>
+                downloadButton.Click += async (_, _) =>
                 {
                     _log.Debug("Downloading installer");
 
@@ -104,7 +101,7 @@ public class UpdaterService : IDisposable
 
                     _log.Debug("Installer downloaded to {Path}", tempLocation);
 
-                    if (progressPage.BoundDialog != null) progressPage.BoundDialog.Close();
+                    progressPage.BoundDialog?.Close();
 
                     Process.Start(new ProcessStartInfo
                     {
