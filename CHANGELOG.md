@@ -2,7 +2,7 @@
 
 ## 4.10.0.0
 
-The .NET 7 Desktop Runtime is now required to run Scraps.
+**The .NET 7 Desktop Runtime is now required to run Scraps.**
 
 - General code cleanup
 - Now uses AngleSharp for HTML parsing
