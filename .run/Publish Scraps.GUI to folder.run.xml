@@ -1,0 +1,6 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Publish Scraps.GUI to folder" type="DotNetFolderPublish" factoryName="Publish to folder">
+    <riderPublish configuration="Release" delete_existing_files="true" include_native_libs_for_self_extract="true" platform="x64" produce_single_file="true" runtime="win-x64" target_folder="$PROJECT_DIR$/Scraps.GUI/bin/Publish/win-x64" target_framework="net7.0-windows10.0.22621.0" uuid_high="-2985148909261795812" uuid_low="-8516287580991285868" />
+    <method v="2" />
+  </configuration>
+</component>

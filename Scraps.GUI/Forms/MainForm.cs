@@ -17,10 +17,10 @@
 #endregion
 
 using Microsoft.Toolkit.Uwp.Notifications;
+
 using Scraps.GUI.Models;
 using Scraps.GUI.Logging;
 using Scraps.GUI.Services;
-using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
 using Scraps.GUI.Services.Raffle;
 
@@ -49,7 +49,7 @@ public partial class MainForm : Form
         _runner.OnRafflesWon += OnRafflesWon;
         _runner.OnStopped    += OnStopped;
 
-        Text        =  $"Scraps - {Constants.Version.Full}";
+        Text        =  $"Scraps - {GlobalShared.FullVersion}";
         FormClosing += MainForm_OnClosing;
 
         ToastNotificationManagerCompat.OnActivated += Toast_OnActivated;
@@ -79,7 +79,7 @@ public partial class MainForm : Form
             ArchiveNumbering             = ArchiveNumberingMode.Date,
             ArchiveDateFormat            = "yyyyMMddHHmm",
             EnableArchiveFileCompression = true,
-            FileName                     = Path.Combine(Paths.LOGS_PATH, "Scraps.${date:format=yyyy-MM}.log"),
+            FileName                     = Path.Combine(GlobalShared.LogsPath, "Scraps.${date:format=yyyy-MM}.log"),
             CreateDirs                   = true,
             MaxArchiveFiles              = 5,
         };
@@ -92,8 +92,7 @@ public partial class MainForm : Form
         LogManager.Configuration = config;
     }
 
-    private void ResetStatus()
-        => _Status.Text = " "; // Set text to a space rather than null/empty so the status strip doesn't collapse
+    private void ResetStatus() => _Status.Text = "...";
 
     #region Raffle Runner Event Subscriptions
 
@@ -118,12 +117,12 @@ public partial class MainForm : Form
         bool enableToast = Properties.UserConfig.Default.ToastNotifications;
         if (enableToast)
         {
-            string logo = Files.LOGO_FILE;
+            string logo = GlobalShared.LogoPath;
             if (!File.Exists(logo))
             {
                 using (var http = new HttpClient())
                 {
-                    string url  = string.Format("https://scrap.tf/apple-touch-icon.png?{0}", Guid.NewGuid());
+                    string url  = $"https://scrap.tf/apple-touch-icon.png?{Guid.NewGuid()}";
                     byte[] data = http.GetByteArrayAsync(url).Result;
                     File.WriteAllBytes(logo, data);
                 }
@@ -140,7 +139,7 @@ public partial class MainForm : Form
 
             var toast = new ToastContentBuilder();
             toast.AddAppLogoOverride(new Uri(logo), ToastGenericAppLogoCrop.Circle, null, false);
-            toast.AddAttributionText(string.Format("Scraps {0}", Constants.Version.Full));
+            toast.AddAttributionText($"Scraps {GlobalShared.FullVersion}");
             toast.AddText("Items Need Withdrawing");
             toast.AddText(message);
             toast.AddButton(viewButton);
@@ -269,7 +268,7 @@ public partial class MainForm : Form
     {
         using (var ann = new AnnouncementService())
         {
-            if (await ann.GetAnnouncementAsync() is string announcement && !string.IsNullOrEmpty(announcement))
+            if (await ann.GetAnnouncementAsync() is { } announcement && !string.IsNullOrEmpty(announcement))
             {
                 string[] announcementLines = announcement.Split('\n');
                 for (int i = 0; i < announcementLines.Length; i++)

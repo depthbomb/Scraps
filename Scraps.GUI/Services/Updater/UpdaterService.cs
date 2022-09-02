@@ -49,9 +49,9 @@ public class UpdaterService : IDisposable
         _latestRelease = JsonSerializer.Deserialize<LatestRelease>(json);
         if (_latestRelease != null)
         {
-            var    latestVersion = new Version(_latestRelease.tag_name.Replace("v", ""));
-            string body          = _latestRelease.body;
-            var    compare       = Constants.Version.AsDotNetVersion().CompareTo(latestVersion);
+            var    latestVersion = new Version(_latestRelease.TagName.Replace("v", ""));
+            string body          = _latestRelease.Body;
+            var    compare       = GlobalShared.VersionAsDotNet().CompareTo(latestVersion);
             if (compare < 0)
             {
                 var updateAvailablePage = new TaskDialogPage
@@ -92,7 +92,7 @@ public class UpdaterService : IDisposable
                     updateAvailablePage.Navigate(progressPage);
 
                     string tempLocation = Path.GetTempFileName();
-                    string windowsAsset = _latestRelease.assets.First(a => a.name.StartsWith("scraps_setup")).browser_download_url;
+                    string windowsAsset = _latestRelease.Assets.First(a => a.name.StartsWith("scraps_setup")).BrowserDownloadUrl;
                     byte[] data         = await _http.GetByteArrayAsync(windowsAsset);
                     await using (var fs = new FileStream(tempLocation, FileMode.Create, FileAccess.Write, FileShare.None))
                     {

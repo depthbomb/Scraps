@@ -16,8 +16,11 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
+using System.Text.RegularExpressions;
+
+using AngleSharp.Html.Parser;
+
 using Scraps.GUI.Models;
-using Scraps.GUI.Constants;
 using Scraps.GUI.Extensions;
 using Scraps.GUI.Services.Raffle;
 using Scraps.GUI.Services.Raffle.Exceptions;
@@ -27,6 +30,12 @@ namespace Scraps.GUI.Services;
 public class RaffleService
 {
     public bool Running;
+    
+    private const string RafflePanelSelector   = ".panel-raffle:not(.raffle-entered)";
+    private const string AccountBannedString   = "You have received a site-ban";
+    private const string ProfileNotSetUpString = "Scrap.TF requires your Steam profile and inventory set to <b>Public</b> visibility.";
+    private const string SiteDownString        = "<div class=\"dialog-title\">We're down!</div>";
+    private const string CloudflareString      = "cf-wrapper";
 
     private string                  _cookie;
     private string                  _csrfToken;
@@ -38,11 +47,17 @@ public class RaffleService
     private CancellationToken       _cancelToken;
     private CancellationTokenSource _cancelTokenSource;
 
-    private readonly Logger                       _log;
-    private readonly HtmlAgilityPack.HtmlDocument _html;
-    private readonly LaunchOptions                _options;
-    private readonly List<string>                 _raffleQueue    = new();
-    private readonly List<string>                 _enteredRaffles = new();
+    private readonly LaunchOptions _options;
+    private readonly Logger        _log               = LogManager.GetCurrentClassLogger();
+    private readonly HtmlParser    _html              = new();
+    private readonly List<string>  _raffleQueue       = new();
+    private readonly List<string>  _enteredRaffles    = new();
+    private readonly Regex         _csrfPattern       = new(@"value=""(?<CsrfToken>[a-f\d]{64})""");
+    private readonly Regex         _banReasonPattern  = new(@"<b>Reason:<\/b> (?<Reason>[\w\s]+)");
+    private readonly Regex         _wonRafflesPattern = new(@"You've won \d raffles? that must be withdrawn");
+    private readonly Regex         _entryPattern      = new(@"ScrapTF\.Raffles\.RedirectToRaffle\('(?<RaffleId>[A-Z0-9]{6,})'\)", RegexOptions.Compiled);
+    private readonly Regex         _hashPattern       = new(@"EnterRaffle\('(?<RaffleId>[A-Z0-9]{6,})', '(?<RaffleHash>[a-f0-9]{64})'", RegexOptions.Compiled);
+    private readonly Regex         _limitPattern      = new(@"total=""(?<Entered>\d+)"" data-max=""(?<Max>\d+)", RegexOptions.Compiled);
 
     #region Events
 
@@ -95,8 +110,6 @@ public class RaffleService
 
     public RaffleService(LaunchOptions options)
     {
-        _log     = LogManager.GetCurrentClassLogger();
-        _html    = new HtmlAgilityPack.HtmlDocument();
         _options = options;
     }
 
@@ -181,7 +194,7 @@ public class RaffleService
         }
         finally
         {
-            OnStopped?.Invoke(this, new());
+            OnStopped?.Invoke(this, new StoppedArgs());
             _log.Info("Stopped");
             SendStatus(null);
             Running = false;
@@ -222,8 +235,8 @@ public class RaffleService
         };
 
         var client = new HttpClient(handler);
-        client.Timeout = TimeSpan.FromSeconds(30);
-        client.DefaultRequestHeaders.Add("user-agent", Strings.UserAgent);
+        client.BaseAddress = new Uri("https://scrap.tf");
+        client.DefaultRequestHeaders.Add("user-agent", GlobalShared.MimicUserAgent);
         client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _cookie);
 
         _http = client;
@@ -235,36 +248,46 @@ public class RaffleService
     {
         SendStatus("Obtaining CSRF token");
 
-        string html = await _http.GetStringAsync("https://scrap.tf", _cancelToken);
-        if (html.Contains(Strings.AccountBanned))
+        string html = await GetStringAsync();
+        if (html.Contains(AccountBannedString))
         {
             throw await NewAccountBannedException();
         }
-        else if (html.Contains(Strings.Cloudflare))
+        
+        if (html.Contains(CloudflareString))
         {
             throw new CloudflareException("Scrap.TF is displaying a Cloudflare challenge, Scraps cannot continue.");
         }
-        else if (html.Contains(Strings.ProfileSetUp))
+        
+        if (html.Contains(ProfileNotSetUpString))
         {
             throw new ProfileNotSetUpException("Profile is not set up to use Scrap.TF. See the website for more info.");
         }
+        
+        var csrf = _csrfPattern.Match(html);
+        if (csrf.Success)
+        {
+            _csrfToken = csrf.Groups["CsrfToken"].Value;
+            OnCsrfTokenObtained?.Invoke(this, new CsrfTokenObtainedArgs(_csrfToken));
+
+            using (var document = await _html.ParseDocumentAsync(html, _cancelToken))
+            {
+                var usernameElement = document.QuerySelector("li.dropdown.nav-userinfo");
+                if (usernameElement != null)
+                {
+                    var username = usernameElement.GetAttribute("title");
+                    _log.Info("Logged in as {Username}", username);
+                }
+            }
+        }
         else
         {
-            var csrf = RegexPatterns.CSRF.Match(html);
-            if (csrf.Success)
+            if (html.Contains(SiteDownString))
             {
-                _csrfToken = csrf.Groups[1].Value;
-                OnCsrfTokenObtained?.Invoke(this, new CsrfTokenObtainedArgs(_csrfToken));
+                throw new DownForMaintenanceException("Site appears to be down/under maintenance.");
             }
-            else
-            {
-                if (html.Contains(Strings.SiteDown))
-                {
-                    throw new DownForMaintenanceException("Site appears to be down/under maintenance.");
-                }
 
-                throw new Exception("Unable to retrieve CSRF token. Please check your cookie value.");
-            }
+            throw new Exception("Unable to retrieve CSRF token. Please check your cookie value.");
         }
     }
 
@@ -275,7 +298,7 @@ public class RaffleService
         _log.Debug("Scanning raffles");
 
         bool   doneScanning = false;
-        string html         = await _http.GetStringAsync("https://scrap.tf/raffles", _cancelToken);
+        string html         = await GetStringAsync("/raffles");
         string lastId       = string.Empty;
 
         while (!doneScanning && !_cancelToken.IsCancellationRequested)
@@ -292,68 +315,69 @@ public class RaffleService
                 try
                 {
                     var paginateResponse = JsonSerializer.Deserialize<PaginateResponse>(json);
-                    if (paginateResponse is { Success: true })
+                    switch (paginateResponse)
                     {
-                        html   += paginateResponse.Html;
-                        lastId =  paginateResponse.LastId;
-
-                        if (!paginateResponse.Done)
+                        case { Success: true }:
                         {
-                            _log.Debug("Scanning next page (apex = {Apex})", lastId);
+                            html   += paginateResponse.Html;
+                            lastId =  paginateResponse.LastId;
 
-                            await Task.Delay(Properties.UserConfig.Default.PaginateDelay, _cancelToken);
-                            continue;
-                        }
-
-                        doneScanning = true;
-
-                        _log.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles");
-                        _html.LoadHtml(html);
-
-                        var document       = _html.DocumentNode;
-                        var raffleElements = document.SelectNodes(Xpaths.UnenteredRaffles);
-                        if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
-                        {
-                            CheckForWonRaffles(html);
-                        }
-                        else
-                        {
-                            _alertedOfWonRaffles = false;
-                        }
-
-                        foreach (var el in raffleElements)
-                        {
-                            string elementHtml = el.InnerHtml.Trim();
-                            string raffleId    = RegexPatterns.RAFFLE_ENTRY.Match(elementHtml).Groups[1].Value.Trim();
-                            if (
-                                !raffleId.IsNullOrEmpty()        &&
-                                !_raffleQueue.Contains(raffleId) &&
-                                !_enteredRaffles.Contains(raffleId)
-                            )
+                            if (!paginateResponse.Done)
                             {
-                                SendStatus($"Adding raffle {raffleId} to queue");
+                                _log.Debug("Scanning next page (apex = {Apex})", lastId);
 
-                                _raffleQueue.Add(raffleId);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (paginateResponse is { Message: { } })
-                        {
-                            if (paginateResponse.Message.Contains("active site ban"))
-                            {
-                                throw await NewAccountBannedException();
+                                await Task.Delay(Properties.UserConfig.Default.PaginateDelay, _cancelToken);
+                                continue;
                             }
 
+                            doneScanning = true;
+
+                            _log.Debug("Done scanning all raffles, grabbing IDs of un-entered raffles");
+
+                            using (var document = await _html.ParseDocumentAsync(html, _cancelToken))
+                            {
+                                var raffleElements = document.QuerySelectorAll(RafflePanelSelector);
+                                if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
+                                {
+                                    CheckForWonRaffles(html);
+                                }
+                                else
+                                {
+                                    _alertedOfWonRaffles = false;
+                                }
+
+                                foreach (var raffleElement in raffleElements)
+                                {
+                                    string elementHtml   = raffleElement.InnerHtml;
+                                    var    raffleIdMatch = _entryPattern.Match(elementHtml);
+                                    if (!raffleIdMatch.Success)
+                                    {
+                                        _log.Error("Unable to find raffle ID from {Html}", elementHtml);
+                                        continue;
+                                    }
+                            
+                                    string raffleId = raffleIdMatch.Groups["RaffleId"].Value;
+
+                                    if (_raffleQueue.Contains(raffleId) || _enteredRaffles.Contains(raffleId)) continue;
+                            
+                                    SendStatus($"Adding raffle {raffleId} to queue");
+
+                                    _raffleQueue.Add(raffleId);
+                                }
+                            }
+
+                            break;
+                        }
+                        case { Message: { } } when paginateResponse.Message.Contains("active site ban"):
+                            throw await NewAccountBannedException();
+                        case { Message: { } }:
                             _log.Error("Encountered an error while paginating: {Message} - Waiting 10 seconds", paginateResponse.Message);
 
                             await Task.Delay(10_000, _cancelToken);
-                        }
-                        else
-                        {
+                            break;
+                        default:
                             _log.Error("Paginate response for apex {Apex} was unsuccessful", lastId.IsNullOrEmpty() ? "<empty>" : lastId);
-                        }
+                            break;
                     }
                 }
                 catch (JsonException ex)
@@ -370,7 +394,6 @@ public class RaffleService
         SendStatus("Paginating");
 
         string sort = Properties.UserConfig.Default.SortByNew ? "1" : "0";
-        string url  = "https://scrap.tf/ajax/raffles/Paginate";
         var content = new FormUrlEncodedContent(new[]
         {
             new KeyValuePair<string, string>("start", apex),
@@ -379,48 +402,44 @@ public class RaffleService
             new KeyValuePair<string, string>("csrf", _csrfToken),
         });
 
-        var response = await _http.PostAsync(url, content);
+        var response = await _http.PostAsync("/ajax/raffles/Paginate", content, _cancelToken);
 
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            string html = await response.Content.ReadAsStringAsync(_cancelToken);
+        if (response.StatusCode != HttpStatusCode.OK) return null;
+        
+        string html = await response.Content.ReadAsStringAsync(_cancelToken);
+        OnPaginate?.Invoke(this, new PaginateArgs(apex, html));
 
-            OnPaginate?.Invoke(this, new PaginateArgs(apex, html));
+        return html;
 
-            return html;
-        }
-
-        return null;
     }
 
     private void CheckForWonRaffles(string html)
     {
-        if (!_alertedOfWonRaffles)
-        {
-            var    match   = RegexPatterns.WON_RAFFLES_ALERT.Match(html);
-            string message = match.Groups[0].Value;
+        if (_alertedOfWonRaffles) return;
+        
+        var    match   = _wonRafflesPattern.Match(html);
+        string message = match.Groups[0].Value;
 
-            OnRafflesWon?.Invoke(this, new RafflesWonArgs(message));
+        OnRafflesWon?.Invoke(this, new RafflesWonArgs(message));
 
-            _log.Info(message);
-            _alertedOfWonRaffles = true;
-        }
+        _log.Info(message);
+        _alertedOfWonRaffles = true;
     }
 
     private async Task JoinRafflesAsync()
     {
         int entered = 0;
         int total   = _raffleQueue.Count;
-
-        var queue = _raffleQueue.Where(r => !_enteredRaffles.Contains(r));
+        var queue   = _raffleQueue.Where(r => !_enteredRaffles.Contains(r));
+        
         foreach (string raffle in queue)
         {
             SendStatus($"Joining raffle {raffle}");
 
-            string html     = await _http.GetStringAsync($"https://scrap.tf/raffles/{raffle}", _cancelToken);
-            var    hash     = RegexPatterns.RAFFLE_HASH.Match(html);
-            var    limits   = RegexPatterns.RAFFLE_LIMIT.Match(html);
-            bool   hasEnded = html.Contains("data-time=\"Raffle Ended\"");
+            string html        = await GetStringAsync($"/raffles/{raffle}");
+            var    hashMatch   = _hashPattern.Match(html);
+            var    limitsMatch = _limitPattern.Match(html);
+            bool   hasEnded    = html.Contains(@"data-time=""Raffle Ended""");
 
             using (var hp = new HoneypotService())
             {
@@ -444,11 +463,10 @@ public class RaffleService
                 continue;
             }
 
-            if (limits.Success)
+            if (limitsMatch.Success)
             {
-                int num = int.Parse(limits.Groups[1].Value);
-                int max = int.Parse(limits.Groups[2].Value);
-
+                int num = int.Parse(limitsMatch.Groups["Entered"].Value);
+                int max = int.Parse(limitsMatch.Groups["Max"].Value);
                 if (Properties.UserConfig.Default.Paranoid && num < 2)
                 {
                     _log.Info("Raffle {Id} has too few entries", raffle);
@@ -467,26 +485,25 @@ public class RaffleService
                 }
             }
 
-            if (hash.Success)
+            if (hashMatch.Success)
             {
-                string url = "https://scrap.tf/ajax/viewraffle/EnterRaffle";
+                var hash = hashMatch.Groups["RaffleHash"].Value;
                 var content = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("raffle", raffle),
                     new KeyValuePair<string, string>("captcha", ""),
-                    new KeyValuePair<string, string>("hash", hash.Groups[1].Value),
+                    new KeyValuePair<string, string>("hash", hash),
                     new KeyValuePair<string, string>("flag", ""),
                     new KeyValuePair<string, string>("csrf", _csrfToken),
                 });
 
-                var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
+                var httpRequest = new HttpRequestMessage(HttpMethod.Post, "/ajax/viewraffle/EnterRaffle");
                 httpRequest.Content          = content;
                 httpRequest.Headers.Referrer = new Uri($"https://scrap.tf/raffles/{raffle}");
                 var response = await _http.SendAsync(httpRequest, _cancelToken);
 
-                string json = await response.Content.ReadAsStringAsync(_cancelToken);
-
-                var joinRaffleResponse = JsonSerializer.Deserialize<JoinRaffleResponse>(json);
+                string json               = await response.Content.ReadAsStringAsync(_cancelToken);
+                var    joinRaffleResponse = JsonSerializer.Deserialize<JoinRaffleResponse>(json);
                 if (joinRaffleResponse is { Success: true })
                 {
                     entered++;
@@ -522,10 +539,9 @@ public class RaffleService
 
     private async Task<string> GetBanReason()
     {
-        const string reason = "Could not obtain reason";
-        string       html   = await _http.GetStringAsync("https://scrap.tf/banappeal", _cancelToken);
-        var          match  = RegexPatterns.BAN_REASON.Match(html);
-        return match.Success ? match.Groups[1].Value.Trim() : reason;
+        string       html   = await GetStringAsync("/banappeal");
+        var          match  = _banReasonPattern.Match(html);
+        return match.Success ? match.Groups["Reason"].Value.Trim() : "Could not obtain reason";
     }
 
     private void SendStatus(string message) => OnStatus?.Invoke(this, new StatusArgs(message));
@@ -533,6 +549,19 @@ public class RaffleService
     private async Task<AccountBannedException> NewAccountBannedException()
     {
         return new AccountBannedException(await GetBanReason());
+    }
+    
+    private async Task<string> GetStringAsync(string path = "/")
+    {
+        _log.Debug("Sending GET request to {Path}", path);
+        
+        var res = await _http.GetAsync(path, _cancelToken);
+        if (res.StatusCode == HttpStatusCode.OK)
+        {
+            return await res.Content.ReadAsStringAsync(_cancelToken);
+        }
+        
+        throw new HttpRequestException($"Unable to get string: {res.ReasonPhrase}");
     }
 
     #endregion

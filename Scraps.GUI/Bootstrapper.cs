@@ -19,7 +19,6 @@
 using Scraps.GUI.Forms;
 using Scraps.GUI.Models;
 using Scraps.GUI.Services;
-using Scraps.GUI.Constants;
 
 namespace Scraps.GUI;
 
@@ -28,13 +27,13 @@ internal static class Bootstrapper
     private static LaunchOptions _options;
 
     [STAThread]
-    static async Task Main(string[] args)
+    private static async Task Main(string[] args)
     {
         using (var mutex = new Mutex(false, "RaffleRunner Windows"))
         {
             if (!mutex.WaitOne(0))
             {
-                var intPtr = Native.FindWindowByCaption(IntPtr.Zero, $"Scraps - {Constants.Version.Full}");
+                var intPtr = Native.FindWindowByCaption(IntPtr.Zero, $"Scraps - {GlobalShared.FullVersion}");
                 Native.SendMessage(intPtr, Native.WM_RAFFLERUNNER_SHOWME, IntPtr.Zero, IntPtr.Zero);
                 Environment.Exit(0);
             }
@@ -54,28 +53,25 @@ internal static class Bootstrapper
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            try
+            if (!_options.SkipUpdates)
             {
-                if (!_options.SkipUpdates)
+                try
                 {
-                    using var updater = new UpdaterService();
-                    await updater.CheckForUpdatesAsync();
+                    using (var updater = new UpdaterService())
+                    {
+                        await updater.CheckForUpdatesAsync();
+                    }
                 }
-            }
-            catch
-            {
-                // ignored
+                catch { }
             }
 
             Application.Run(new MainForm(_options));
         }
-
-        ;
     }
 
     private static void EnsureFileSystem()
     {
-        foreach (string path in new[] { Paths.LOGS_PATH, Paths.DATA_PATH })
+        foreach (string path in GlobalShared.RequiredPaths)
         {
             if (!Directory.Exists(path))
             {

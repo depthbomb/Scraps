@@ -1,6 +1,6 @@
 #define MyAppName "Scraps"
 #define MyAppDescription "Scrap.TF Raffle Bot"
-#define MyAppVersion "4.9.1.0"
+#define MyAppVersion "4.10.0.0"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "Scraps.GUI.exe"
 #define MyAppCopyright "Copyright (C) 2022 Caprine Logic"
@@ -61,7 +61,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
-Source: "..\Scraps.GUI\bin\Publish\win10-x64\*"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.GUI\bin\Publish\win-x64\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\license.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [INI]

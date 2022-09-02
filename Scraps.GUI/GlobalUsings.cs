@@ -16,13 +16,13 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
-namespace Scraps.GUI.Constants;
+global using System.Net;
+global using System.Text.Json;
+global using System.Diagnostics;
+global using System.Text.Json.Serialization;
 
-public static class Strings
-{
-    public const string UserAgent     = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36";
-    public const string AccountBanned = "You have received a site-ban";
-    public const string ProfileSetUp  = "Scrap.TF requires your Steam profile and inventory set to <b>Public</b> visibility.";
-    public const string SiteDown      = "<div class=\"dialog-title\">We're down!</div>";
-    public const string Cloudflare    = "cf-wrapper"; // Not air-tight but should work for now
-}
+global using NLog;
+global using NLog.Config;
+global using NLog.Targets;
+
+global using JetBrains.Annotations;

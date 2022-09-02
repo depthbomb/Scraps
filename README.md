@@ -34,15 +34,14 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Features
 
-- Cross-platform, CLI version available [here.](https://github.com/depthbomb/RaffleRunner)
+- Cross-platform CLI version available [here.](https://github.com/depthbomb/RaffleRunner)
 - Fast and lighweight; no need to install Python/Node.JS/Java/etc, doesn't use browser automation
 - Configurable
 - Detailed logging so you can see everything it does and makes it easier to report problems
-- Honeypot/trap raffle detection; avoids fake raffles created by staff members that will get you banned
 
 ## Requirements
 
-As of 4.9.0.0, Scraps runs on a preview version of .NET 7. Version 4.9.0.0 is self-contained and requires no additional runtime to be installed. However, future releases of Scraps will be framework-dependent and require the .NET 7 Desktop Runtime which you can download [here.](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+Scraps simply requires the .NET 7 Desktop Runtime which you can download [here.](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
 
 ## Finding your Cookie
 

@@ -16,7 +16,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
-using Scraps.GUI.Constants;
+using System.Text.RegularExpressions;
 
 namespace Scraps.GUI.Services.Honeypot.Vectors;
 
@@ -24,10 +24,12 @@ public class BannedEntriesVector : IHoneypotVector
 {
     public bool   Detected     { get; private set; }
     public string DetectReason { get; private set; }
+    
+    private readonly Regex _bannedUsersPattern = new (@"<img class='tiny-raffle-avatar\s?' style='border-color:\s?#CC1100;?' src='(.*)' loading=""lazy""\s?\/>");
 
     public void Check(string html)
     {
-        var entries = RegexPatterns.HONEYPOT_RAFFLE_BANNED_USERS.Matches(html);
+        var entries = _bannedUsersPattern.Matches(html);
 
         if (entries.Count > 1)
         {

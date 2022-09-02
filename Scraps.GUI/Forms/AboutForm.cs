@@ -40,7 +40,7 @@ public partial class AboutForm : Form
     private void AboutForm_OnShown(object sender, EventArgs e)
     {
         _AuthorIcon.Image  =  _images[_rng.Next(_images.Length)];
-        _VersionLabel.Text =  $"v{Constants.Version.Full} by depthbomb";
+        _VersionLabel.Text =  $"v{GlobalShared.FullVersion} by depthbomb";
         _GithubLink.Click  += (_, _) => Process.Start("explorer", "https://github.com/depthbomb/Scraps");
         _PatreonLink.Click += (_, _) => Process.Start("explorer", "https://patreon.com/depthbomb");
     }
