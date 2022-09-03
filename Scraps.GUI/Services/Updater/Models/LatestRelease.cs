@@ -18,7 +18,7 @@
 
 namespace Scraps.GUI.Services.Updater.Models;
 
-public class LatestRelease
+public record LatestRelease
 {
     [JsonPropertyName("url")]
     public string Url { get; set; }
@@ -75,7 +75,7 @@ public class LatestRelease
     public string Body { get; set; }
 }
 
-public class Author
+public record Author
 {
     [JsonPropertyName("login")]
     public string Login { get; set; }
@@ -132,7 +132,7 @@ public class Author
     public bool SiteAdmin { get; set; }
 }
 
-public class Asset
+public record Asset
 {
     [JsonPropertyName("url")]
     public string Url { get; set; }

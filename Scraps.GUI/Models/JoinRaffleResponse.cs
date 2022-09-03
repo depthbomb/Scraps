@@ -18,7 +18,7 @@
 
 namespace Scraps.GUI.Models;
 
-public class JoinRaffleResponse
+public record JoinRaffleResponse
 {
     [JsonPropertyName("message")]
     public string Message { get; set; }

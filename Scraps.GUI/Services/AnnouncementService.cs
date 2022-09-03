@@ -30,7 +30,7 @@ public class AnnouncementService : IDisposable
         _fileUrl      = "https://raw.githubusercontent.com/depthbomb/Scraps/master/ANNOUNCEMENT";
         _http         = new HttpClient();
         _http.Timeout = TimeSpan.FromSeconds(3);
-        _http.DefaultRequestHeaders.Add("user-agent", "RaffleRunner - depthbomb/RaffleRunner");
+        _http.DefaultRequestHeaders.Add("user-agent", GlobalShared.UserAgent);
     }
 
     /// <summary>

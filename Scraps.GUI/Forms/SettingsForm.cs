@@ -16,6 +16,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
+using System.Text.RegularExpressions;
 using Scraps.GUI.Services;
 
 namespace Scraps.GUI.Forms;
@@ -23,6 +24,7 @@ namespace Scraps.GUI.Forms;
 public partial class SettingsForm : Form
 {
     private readonly RaffleService _runner;
+    private readonly Regex         _webhookUrlPattern = new(@"(^https:\/\/(?:(?:canary|ptb).)?discord(?:app)?.com\/api(?:\/v\d+)?\/webhooks\/(\d+)\/([\w-]+)\/?$)");
 
     public SettingsForm(RaffleService runner)
     {
@@ -61,30 +63,40 @@ public partial class SettingsForm : Form
 
         _SaveButton.HelpRequested += (_, _)
             => Utils.ShowInfo(this, "Help", "Settings changes made won't take effect until this button is clicked.");
+
+        _EnableDiscordWebhooksToggle.HelpRequested += (_, _)
+            => Utils.ShowInfo(this, "Help", "This enables the sending of some events to a Discord channel via webhooks.\nA valid webhook URL is required.");
+
+        _WebhookUrlInput.HelpRequested += (_, _)
+            => Utils.ShowInfo(this, "Help", "Paste a Discord channel webhook URL here. Events will be sent to the channel through this URL.");
     }
 
     private void PopulateControlValues()
     {
-        _CookieInput.Text                 = Properties.UserConfig.Default.Cookie;
-        _SortNewToggle.Checked            = Properties.UserConfig.Default.SortByNew;
-        _ParanoidToggle.Checked           = Properties.UserConfig.Default.Paranoid;
-        _ToastToggle.Checked              = Properties.UserConfig.Default.ToastNotifications;
-        _ScanDelayInput.Value             = Properties.UserConfig.Default.ScanDelay;
-        _PaginateDelayInput.Value         = Properties.UserConfig.Default.PaginateDelay;
-        _JoinDelayInput.Value             = Properties.UserConfig.Default.JoinDelay;
-        _IncrementScanDelayToggle.Checked = Properties.UserConfig.Default.IncrementScanDelay;
+        _CookieInput.Text                    = Properties.UserConfig.Default.Cookie;
+        _SortNewToggle.Checked               = Properties.UserConfig.Default.SortByNew;
+        _ParanoidToggle.Checked              = Properties.UserConfig.Default.Paranoid;
+        _ToastToggle.Checked                 = Properties.UserConfig.Default.ToastNotifications;
+        _ScanDelayInput.Value                = Properties.UserConfig.Default.ScanDelay;
+        _PaginateDelayInput.Value            = Properties.UserConfig.Default.PaginateDelay;
+        _JoinDelayInput.Value                = Properties.UserConfig.Default.JoinDelay;
+        _IncrementScanDelayToggle.Checked    = Properties.UserConfig.Default.IncrementScanDelay;
+        _EnableDiscordWebhooksToggle.Checked = Properties.UserConfig.Default.SendWebhooks;
+        _WebhookUrlInput.Text                = Properties.UserConfig.Default.WebhookUrl;
     }
 
     private void SaveButton_OnClick(object sender, EventArgs e)
     {
-        string cookie             = _CookieInput.Text.Trim();
-        bool   sortByNew          = _SortNewToggle.Checked;
-        bool   paranoid           = _ParanoidToggle.Checked;
-        bool   toast              = _ToastToggle.Checked;
-        int    scanDelay          = (int)_ScanDelayInput.Value;
-        int    paginateDelay      = (int)_PaginateDelayInput.Value;
-        int    joinDelay          = (int)_JoinDelayInput.Value;
-        bool   incrementScanDelay = _IncrementScanDelayToggle.Checked;
+        string cookie                = _CookieInput.Text.Trim();
+        bool   sortByNew             = _SortNewToggle.Checked;
+        bool   paranoid              = _ParanoidToggle.Checked;
+        bool   toast                 = _ToastToggle.Checked;
+        int    scanDelay             = (int)_ScanDelayInput.Value;
+        int    paginateDelay         = (int)_PaginateDelayInput.Value;
+        int    joinDelay             = (int)_JoinDelayInput.Value;
+        bool   incrementScanDelay    = _IncrementScanDelayToggle.Checked;
+        bool   enableDiscordWebhooks = _EnableDiscordWebhooksToggle.Checked;
+        string webhookUrl            = _WebhookUrlInput.Text.Trim();
 
         if (string.IsNullOrEmpty(cookie)) return;
         if (cookie.Contains("scr_session"))
@@ -107,6 +119,21 @@ public partial class SettingsForm : Form
         Properties.UserConfig.Default.PaginateDelay      = paginateDelay;
         Properties.UserConfig.Default.JoinDelay          = joinDelay;
         Properties.UserConfig.Default.IncrementScanDelay = incrementScanDelay;
+        Properties.UserConfig.Default.SendWebhooks       = enableDiscordWebhooks;
+        Properties.UserConfig.Default.WebhookUrl         = webhookUrl;
+
+        if (enableDiscordWebhooks)
+        {
+            var webhookUrlMatch = _webhookUrlPattern.Match(webhookUrl);
+            if (!webhookUrlMatch.Success)
+            {
+                Utils.ShowWarning(this, "Invalid Webhook URL", "The webhook URL you provided is not valid.");
+                _WebhookUrlInput.Text = "";
+
+                return;
+            }
+        }
+        
         Properties.UserConfig.Default.Save();
         Properties.UserConfig.Default.Reload();
 

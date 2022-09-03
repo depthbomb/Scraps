@@ -47,17 +47,19 @@ public class RaffleService
     private CancellationToken       _cancelToken;
     private CancellationTokenSource _cancelTokenSource;
 
-    private readonly LaunchOptions _options;
-    private readonly Logger        _log               = LogManager.GetCurrentClassLogger();
-    private readonly HtmlParser    _html              = new();
-    private readonly List<string>  _raffleQueue       = new();
-    private readonly List<string>  _enteredRaffles    = new();
-    private readonly Regex         _csrfPattern       = new(@"value=""(?<CsrfToken>[a-f\d]{64})""");
-    private readonly Regex         _banReasonPattern  = new(@"<b>Reason:<\/b> (?<Reason>[\w\s]+)");
-    private readonly Regex         _wonRafflesPattern = new(@"You've won \d raffles? that must be withdrawn");
-    private readonly Regex         _entryPattern      = new(@"ScrapTF\.Raffles\.RedirectToRaffle\('(?<RaffleId>[A-Z0-9]{6,})'\)", RegexOptions.Compiled);
-    private readonly Regex         _hashPattern       = new(@"EnterRaffle\('(?<RaffleId>[A-Z0-9]{6,})', '(?<RaffleHash>[a-f0-9]{64})'", RegexOptions.Compiled);
-    private readonly Regex         _limitPattern      = new(@"total=""(?<Entered>\d+)"" data-max=""(?<Max>\d+)", RegexOptions.Compiled);
+    private readonly             LaunchOptions  _options;
+    [CanBeNull]
+    private readonly WebhookService _webhook;
+    private readonly             Logger         _log               = LogManager.GetCurrentClassLogger();
+    private readonly             HtmlParser     _html              = new();
+    private readonly             List<string>   _raffleQueue       = new();
+    private readonly             List<string>   _enteredRaffles    = new();
+    private readonly             Regex          _csrfPattern       = new(@"value=""(?<CsrfToken>[a-f\d]{64})""");
+    private readonly             Regex          _banReasonPattern  = new(@"<b>Reason:<\/b> (?<Reason>[\w\s]+)");
+    private readonly             Regex          _wonRafflesPattern = new(@"You've won \d raffles? that must be withdrawn");
+    private readonly             Regex          _entryPattern      = new(@"ScrapTF\.Raffles\.RedirectToRaffle\('(?<RaffleId>[A-Z0-9]{6,})'\)", RegexOptions.Compiled);
+    private readonly             Regex          _hashPattern       = new(@"EnterRaffle\('(?<RaffleId>[A-Z0-9]{6,})', '(?<RaffleHash>[a-f0-9]{64})'", RegexOptions.Compiled);
+    private readonly             Regex          _limitPattern      = new(@"total=""(?<Entered>\d+)"" data-max=""(?<Max>\d+)", RegexOptions.Compiled);
 
     #region Events
 
@@ -110,7 +112,12 @@ public class RaffleService
 
     public RaffleService(LaunchOptions options)
     {
-        _options = options;
+        _options  = options;
+
+        if (Properties.UserConfig.Default.SendWebhooks)
+        {
+            _webhook = new WebhookService();
+        }
     }
 
     #region Public Methods
@@ -339,7 +346,7 @@ public class RaffleService
                                 var raffleElements = document.QuerySelectorAll(RafflePanelSelector);
                                 if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
                                 {
-                                    CheckForWonRaffles(html);
+                                    await CheckForWonRafflesAsync(html);
                                 }
                                 else
                                 {
@@ -413,7 +420,7 @@ public class RaffleService
 
     }
 
-    private void CheckForWonRaffles(string html)
+    private async Task CheckForWonRafflesAsync(string html)
     {
         if (_alertedOfWonRaffles) return;
         
@@ -421,6 +428,8 @@ public class RaffleService
         string message = match.Groups[0].Value;
 
         OnRafflesWon?.Invoke(this, new RafflesWonArgs(message));
+
+        await SendWebhookAsync(message);
 
         _log.Info(message);
         _alertedOfWonRaffles = true;
@@ -537,7 +546,7 @@ public class RaffleService
         }
     }
 
-    private async Task<string> GetBanReason()
+    private async Task<string> GetBanReasonAsync()
     {
         string       html   = await GetStringAsync("/banappeal");
         var          match  = _banReasonPattern.Match(html);
@@ -548,7 +557,9 @@ public class RaffleService
 
     private async Task<AccountBannedException> NewAccountBannedException()
     {
-        return new AccountBannedException(await GetBanReason());
+        string banReason = await GetBanReasonAsync();
+        await SendWebhookAsync($"Account has been banned: {banReason}");
+        return new AccountBannedException(banReason);
     }
     
     private async Task<string> GetStringAsync(string path = "/")
@@ -562,6 +573,14 @@ public class RaffleService
         }
         
         throw new HttpRequestException($"Unable to get string: {res.ReasonPhrase}");
+    }
+
+    private async Task SendWebhookAsync(string message)
+    {
+        if (_webhook != null)
+        {
+            await _webhook.SendAsync(message, _cancelToken);
+        }
     }
 
     #endregion

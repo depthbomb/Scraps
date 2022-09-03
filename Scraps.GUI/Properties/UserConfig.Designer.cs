@@ -12,8 +12,8 @@ namespace Scraps.GUI.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
-    internal sealed partial class UserConfig : global::System.Configuration.ApplicationSettingsBase {
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.3.0.0")]
+    public sealed partial class UserConfig : global::System.Configuration.ApplicationSettingsBase {
         
         private static UserConfig defaultInstance = ((UserConfig)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new UserConfig())));
         
@@ -128,6 +128,30 @@ namespace Scraps.GUI.Properties {
             }
             set {
                 this["SortByNew"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SendWebhooks {
+            get {
+                return ((bool)(this["SendWebhooks"]));
+            }
+            set {
+                this["SendWebhooks"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string WebhookUrl {
+            get {
+                return ((string)(this["WebhookUrl"]));
+            }
+            set {
+                this["WebhookUrl"] = value;
             }
         }
     }

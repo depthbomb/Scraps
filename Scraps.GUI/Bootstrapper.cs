@@ -22,7 +22,7 @@ using Scraps.GUI.Services;
 
 namespace Scraps.GUI;
 
-internal static class Bootstrapper
+public static class Bootstrapper
 {
     private static LaunchOptions _options;
 

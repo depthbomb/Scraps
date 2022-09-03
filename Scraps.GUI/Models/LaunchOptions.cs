@@ -18,7 +18,7 @@
 
 namespace Scraps.GUI.Models;
 
-public class LaunchOptions
+public record LaunchOptions
 {
     public bool Debug             { get; set; }
     public bool Silent            { get; set; }

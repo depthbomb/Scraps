@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.11.0.0 DEV
+
+- Added option to send some events to a Discord channel via webhooks
+
 ## 4.10.0.0
 
 **The .NET 7 Desktop Runtime is now required to run Scraps.**

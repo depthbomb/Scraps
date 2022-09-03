@@ -18,7 +18,7 @@
 
 namespace Scraps.GUI.Services.Honeypot;
 
-internal interface IHoneypotVector
+public interface IHoneypotVector
 {
     bool   Detected     { get; }
     string DetectReason { get; }

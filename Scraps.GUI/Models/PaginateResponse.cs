@@ -18,7 +18,7 @@
 
 namespace Scraps.GUI.Models;
 
-public class PaginateResponse
+public record PaginateResponse
 {
     [JsonPropertyName("success")]
     public bool Success { get; set; }

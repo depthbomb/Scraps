@@ -116,7 +116,7 @@ public class UpdaterService : IDisposable
                 updateAvailablePage.Buttons.Add(dismissButton);
                 updateAvailablePage.DefaultButton = downloadButton;
 
-                var res = TaskDialog.ShowDialog(updateAvailablePage);
+                TaskDialog.ShowDialog(updateAvailablePage);
             }
         }
     }
