@@ -27,6 +27,4 @@ Add any other context about the problem here.
 
 <!--
 Please provide an excerpt from your logs where this behavior happens or attach your log file with your submission.
-
-!! Ensure that the logs you submit with this bug have your cookie value redacted !!
 -->
