@@ -64,5 +64,7 @@ public class AnnouncementService : IDisposable
     }
 
     /// <inheritdoc />
-    public void Dispose() => _http.Dispose();
+    public void Dispose() => _http?.Dispose();
+
+    ~AnnouncementService() => Dispose();
 }

@@ -122,5 +122,7 @@ public class UpdaterService : IDisposable
     }
 
     /// <inheritdoc />
-    public void Dispose() => _http.Dispose();
+    public void Dispose() => _http?.Dispose();
+
+    ~UpdaterService() => Dispose();
 }

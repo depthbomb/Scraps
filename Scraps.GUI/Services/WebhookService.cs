@@ -54,7 +54,7 @@ public class WebhookService : IDisposable
         }
     }
 
-    public void Dispose() => _http.Dispose();
+    public void Dispose() => _http?.Dispose();
 
     ~WebhookService() => Dispose();
 }

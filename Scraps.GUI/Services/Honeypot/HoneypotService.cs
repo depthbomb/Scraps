@@ -52,4 +52,6 @@ public class HoneypotService : IDisposable
 
     /// <inheritdoc />
     public void Dispose() => _vectors.Clear();
+    
+    ~HoneypotService() => Dispose();
 }
