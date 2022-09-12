@@ -1,0 +1,5 @@
+﻿AllocConsole
+FreeConsole
+RegisterWindowMessage
+SendMessage
+FindWindow

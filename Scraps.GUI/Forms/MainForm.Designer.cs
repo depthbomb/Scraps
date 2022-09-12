@@ -93,8 +93,7 @@ namespace Scraps.GUI.Forms
             // _LogWindow
             // 
             this._LogWindow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(27)))));
-            this._LogWindow.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this._LogWindow.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this._LogWindow.Cursor = System.Windows.Forms.Cursors.IBeam;
             this._LogWindow.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this._LogWindow.ForeColor = System.Drawing.Color.White;
             this._LogWindow.Location = new System.Drawing.Point(13, 13);
@@ -102,6 +101,7 @@ namespace Scraps.GUI.Forms
             this._LogWindow.ReadOnly = true;
             this._LogWindow.Size = new System.Drawing.Size(602, 281);
             this._LogWindow.TabIndex = 6;
+            this._LogWindow.TabStop = false;
             this._LogWindow.Text = "";
             // 
             // _SettingsButton

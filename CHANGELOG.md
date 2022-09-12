@@ -1,8 +1,26 @@
 # Changelog
 
-## 4.11.0.0 DEV
 
-- Added option to send some events to a Discord channel via webhooks
+## 5.0.0.0 BETA
+
+This major release includes a complete rewrite and reorganization of the application's backend which allows for rapid development of new features. This release also includes a overhauled UI to better convey information and make it more pleasant to interact with. Detailed changes are below.
+
+- The main (runner), settings, and about views are now accessed via tabs
+- The window can now be resized and maximized
+- Runner button now disables itself and warns you if your cookie is missing/invalid
+- Cookie input textbox now hides its contents and reveals them when the mouse is hovering
+- WebView2 runtime is now required and will be installed on launch if it isn't already
+- More granular logging
+- New app icon
+- Added in-app won raffle viewing
+- Added option to always display Scraps on top of all other windows
+- Added option to skip automatic update checking
+- Added option to skip announcement fetching
+- Added button to reset your settings to their default values
+- Added button to About view to manually check for updates
+- Added button to About view to open the New Issue page on GitHub
+- Added button to About view to open the folder containing your logs
+- Added a warning disclaimer that appears on first run
 
 ## 4.10.0.0
 
