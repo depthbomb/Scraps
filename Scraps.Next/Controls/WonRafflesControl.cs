@@ -27,6 +27,8 @@ public partial class WonRafflesControl : UserControl
 {
     private const string SourceUrl = "https://scrap.tf/raffles/won";
 
+    private bool _hasCookie;
+
     private readonly SettingsService _settings;
     private readonly Logger          _log = LogManager.GetCurrentClassLogger();
     
@@ -40,7 +42,9 @@ public partial class WonRafflesControl : UserControl
         _settings.OnReset += SettingsOnReset;
         
         InitializeComponent();
+        #pragma warning disable CS4014
         InitializeWebViewAsync();
+        #pragma warning restore CS4014
 
         _WebView.NavigationStarting += WebViewOnNavigationStarting;
     }
@@ -58,14 +62,24 @@ public partial class WonRafflesControl : UserControl
             _WebView.CoreWebView2.Settings.IsStatusBarEnabled            = false;
             _WebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             #endif
-            
-            NavigateToWonRafflesPage();
         }
         catch (Exception ex)
         {
             _log.Fatal(ex, "Failed to initialize WebView2");
             throw;
         }
+    }
+
+    /// <summary>
+    /// Adds the user's saved cookie to WebView2
+    /// </summary>
+    private void AddCookie()
+    {
+        ClearBrowserData();
+        _WebView.CoreWebView2.CookieManager.DeleteAllCookies();
+        _WebView.CoreWebView2.CookieManager.AddOrUpdateCookie(
+            _WebView.CoreWebView2.CookieManager.CreateCookie("scr_session", _settings.Get<string>("Cookie"), "scrap.tf", "/")
+        );
     }
 
     private void NavigateToWonRafflesPage(bool addCookie = true)
@@ -79,22 +93,53 @@ public partial class WonRafflesControl : UserControl
         
         _WebView.CoreWebView2.Navigate(SourceUrl);
     }
-    
+
+    private void ClearBrowserData() => _WebView.CoreWebView2?.Profile.ClearBrowsingDataAsync();
+
+    private void SetStatusFromCookie(string cookie)
+    {
+        if (Utils.IsValidCookie(cookie))
+        {
+            AddCookie();
+            
+            _hasCookie           = true;
+            _StatusLabel.Visible = false;
+            _StatusLabel.Enabled = false;
+            _WebView.CoreWebView2.Navigate(SourceUrl);
+        }
+        else
+        {
+            _hasCookie           = false;
+            _StatusLabel.Visible = true;
+            _StatusLabel.Enabled = true;
+        }
+    }
+
+    #region Service Event Subscriptions
     private void RunnerOnWithdrawalAvailable(object sender, RaffleServiceWithdrawalAvailableArgs e)
         => NavigateToWonRafflesPage(false);
 
     private void SettingsOnSaved(object sender, SettingsServiceSavedArgs e)
-        => NavigateToWonRafflesPage();
-    
+        => SetStatusFromCookie(e.Settings.Cookie);
+
     private void SettingsOnReset(object sender, SettingsServiceResetArgs e)
-        => NavigateToWonRafflesPage();
+        => SetStatusFromCookie(e.Settings.Cookie);
+    #endregion
+    
+    #region Control Event Subscriptions
+    private void WonRafflesControl_Load(object sender, EventArgs e)
+        => SetStatusFromCookie(_settings.Get<string>("Cookie"));
     
     private void WebViewOnNavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
     {
-        string url = e.Uri;
-        if (!url.StartsWith("https://scrap.tf"))
+        if (_hasCookie)
         {
-            e.Cancel = true;
+            string url = e.Uri;
+            if (!url.StartsWith("https://scrap.tf"))
+            {
+                e.Cancel = true;
+            }
         }
     }
+    #endregion
 }

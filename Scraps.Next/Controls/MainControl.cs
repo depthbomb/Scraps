@@ -148,15 +148,15 @@ public partial class MainControl : UserControl
     {
         if (!_runner.Running)
         {
-            if (settings.Cookie.IsNullOrEmpty() || settings.Cookie.Length < 200)
-            {
-                SetRunnerButtonState(RunnerButtonState.Error, false);
-                SetAlert(AlertState.InvalidCookie);
-            }
-            else
+            if (Utils.IsValidCookie(settings.Cookie))
             {
                 SetRunnerButtonState(RunnerButtonState.Stopped, true);
                 SetAlert();
+            }
+            else
+            {
+                SetRunnerButtonState(RunnerButtonState.Error, false);
+                SetAlert(AlertState.InvalidCookie);
             }
         }
     }

@@ -42,7 +42,9 @@ public partial class AboutControl : UserControl
 
     private string GetAssemblyBuildDate()
     {
+        #pragma warning disable IL3000
         string assLocation = Assembly.GetExecutingAssembly().Location;
+        #pragma warning restore IL3000
         if (assLocation.IsNullOrEmpty())
         {
             assLocation = Path.Combine(AppContext.BaseDirectory, "scraps.exe");

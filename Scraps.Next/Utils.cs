@@ -17,6 +17,7 @@
 #endregion
 
 using System.Diagnostics;
+using Scraps.Next.Extensions;
 
 namespace Scraps.Next;
 
@@ -33,4 +34,11 @@ public static class Utils
 
     public static Process OpenUrl(string url)
         => Process.Start(new ProcessStartInfo("cmd", $"/c start {url}"));
+
+    /// <summary>
+    /// Returns `true` if the provided cookie value is valid.
+    /// </summary>
+    /// <param name="cookie">Cookie value string</param>
+    public static bool IsValidCookie(string cookie)
+        => !cookie.IsNullOrEmpty() && cookie.Length > 200;
 }

@@ -33,6 +33,7 @@ partial class WonRafflesControl
     private void InitializeComponent()
     {
             this._WebView = new Microsoft.Web.WebView2.WinForms.WebView2();
+            this._StatusLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this._WebView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -49,14 +50,27 @@ partial class WonRafflesControl
             this._WebView.TabIndex = 0;
             this._WebView.ZoomFactor = 1D;
             // 
+            // _StatusLabel
+            // 
+            this._StatusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._StatusLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this._StatusLabel.Location = new System.Drawing.Point(0, 0);
+            this._StatusLabel.Name = "_StatusLabel";
+            this._StatusLabel.Size = new System.Drawing.Size(1112, 685);
+            this._StatusLabel.TabIndex = 1;
+            this._StatusLabel.Text = "Add a valid cookie to display your won raffles.";
+            this._StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // WonRafflesControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this._StatusLabel);
             this.Controls.Add(this._WebView);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "WonRafflesControl";
             this.Size = new System.Drawing.Size(1112, 685);
+            this.Load += new System.EventHandler(this.WonRafflesControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this._WebView)).EndInit();
             this.ResumeLayout(false);
 
@@ -65,4 +79,5 @@ partial class WonRafflesControl
     #endregion
 
     private WebView2 _WebView;
+    private Label _StatusLabel;
 }
