@@ -7,7 +7,7 @@ This major release includes a complete rewrite and reorganization of the applica
 
 - The main (runner), settings, and about views are now accessed via tabs
 - The window can now be resized and maximized
-- Runner button now disables itself and warns you if your cookie is missing/invalid
+- Runner button now disables itself if your cookie is missing or invalid
 - Cookie input textbox now hides its contents and reveals them when the mouse is hovering
 - WebView2 runtime is now required and will be installed on launch if it isn't already
 - More granular logging

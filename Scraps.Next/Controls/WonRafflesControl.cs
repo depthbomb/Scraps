@@ -53,7 +53,11 @@ public partial class WonRafflesControl : UserControl
             
             await _WebView.EnsureCoreWebView2Async(environment);
 
-            _WebView.CoreWebView2.Settings.AreDevToolsEnabled = false;
+            #if RELEASE
+            _WebView.CoreWebView2.Settings.AreDevToolsEnabled            = false;
+            _WebView.CoreWebView2.Settings.IsStatusBarEnabled            = false;
+            _WebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            #endif
             
             NavigateToWonRafflesPage();
         }

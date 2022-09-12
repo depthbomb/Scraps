@@ -438,7 +438,7 @@ public class RaffleService : IDisposable
                 int max = int.Parse(limitsMatch.Groups["Max"].Value);
                 if (paranoid && num < 2)
                 {
-                    _log.Info("Raffle {Id} has too few entries", raffle);
+                    _log.Info("Skipping raffle {Id} because it has too few entries (paranoid mode)", raffle);
 
                     queueCount--;
                     continue;

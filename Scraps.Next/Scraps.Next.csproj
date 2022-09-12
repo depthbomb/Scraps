@@ -32,6 +32,7 @@
     <Folder Include="Exceptions\" />
     <Folder Include="Events\" />
     <Folder Include="Services\" />
+    <Folder Include="Services\Honeypot" />
   </ItemGroup>
 
   <ItemGroup>

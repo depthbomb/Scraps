@@ -30,7 +30,7 @@ public partial class MainControl : UserControl
     private const string StartingText = "Starting";
     private const string StopText     = "Stop";
     private const string StoppingText = "Stopping";
-    private const string ErrorText    = "Invalid";
+    private const string ErrorText    = "Error";
 
     private readonly AnnouncementService _announcement;
     private readonly RaffleService       _runner;
@@ -42,11 +42,18 @@ public partial class MainControl : UserControl
 
     private enum RunnerButtonState
     {
-        Starting = 0,
-        Started  = 1,
-        Stopping = 2,
-        Stopped  = 3,
-        Error    = 4
+        Starting,
+        Started,
+        Stopping,
+        Stopped,
+        Error
+    }
+
+    private enum AlertState
+    {
+        Default,
+        InvalidCookie,
+        AccountBanned
     }
 
     public MainControl(AnnouncementService announcement, RaffleService runner, SettingsService settings, FlagsService flags)
@@ -118,6 +125,25 @@ public partial class MainControl : UserControl
         _RunnerButton.Enabled = enable;
     }
 
+    private void SetAlert(AlertState state = AlertState.Default)
+    {
+        switch (state)
+        {
+            case AlertState.InvalidCookie:
+                _AlertLabel.Text      = "Invalid or missing cookie";
+                _AlertLabel.ForeColor = Color.Crimson;
+                break;
+            case AlertState.AccountBanned:
+                _AlertLabel.ForeColor = Color.Crimson;
+                _AlertLabel.Text      = "Account banned";
+                break;
+            default:
+            case AlertState.Default:
+                _AlertLabel.Text = "";
+                break;
+        }
+    }
+
     private void ValidateCookie(UserSettings settings)
     {
         if (!_runner.Running)
@@ -125,10 +151,12 @@ public partial class MainControl : UserControl
             if (settings.Cookie.IsNullOrEmpty() || settings.Cookie.Length < 200)
             {
                 SetRunnerButtonState(RunnerButtonState.Error, false);
+                SetAlert(AlertState.InvalidCookie);
             }
             else
             {
                 SetRunnerButtonState(RunnerButtonState.Stopped, true);
+                SetAlert();
             }
         }
     }

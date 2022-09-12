@@ -39,14 +39,13 @@ partial class WonRafflesControl
             // _WebView
             // 
             this._WebView.AllowExternalDrop = true;
-            this._WebView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this._WebView.CreationProperties = null;
             this._WebView.DefaultBackgroundColor = System.Drawing.Color.White;
-            this._WebView.Location = new System.Drawing.Point(6, 6);
+            this._WebView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._WebView.Location = new System.Drawing.Point(0, 0);
+            this._WebView.Margin = new System.Windows.Forms.Padding(0);
             this._WebView.Name = "_WebView";
-            this._WebView.Size = new System.Drawing.Size(1100, 673);
+            this._WebView.Size = new System.Drawing.Size(1112, 685);
             this._WebView.TabIndex = 0;
             this._WebView.ZoomFactor = 1D;
             // 
@@ -55,8 +54,8 @@ partial class WonRafflesControl
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this._WebView);
+            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "WonRafflesControl";
-            this.Padding = new System.Windows.Forms.Padding(3);
             this.Size = new System.Drawing.Size(1112, 685);
             ((System.ComponentModel.ISupportInitialize)(this._WebView)).EndInit();
             this.ResumeLayout(false);
