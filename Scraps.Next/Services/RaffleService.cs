@@ -23,6 +23,7 @@ using Scraps.Next.Models;
 using Scraps.Next.Exceptions;
 using Scraps.Next.Extensions;
 using Scraps.Next.Notifications;
+using Scraps.Next.Services.Honeypot;
 
 namespace Scraps.Next.Services;
 
@@ -456,6 +457,19 @@ public class RaffleService : IDisposable
             
             if (hashMatch.Success)
             {
+                using (var honeypot = new HoneypotService())
+                {
+                    honeypot.Check(html);
+                    if (honeypot.IsHoneypot)
+                    {
+                        _log.Info("Raffle {Id} is likely a honeypot: {Reason:l}", raffle, honeypot.Reason);
+
+                        queueCount--;
+                        _enteredRaffles.Add(raffle);
+                        continue;
+                    }
+                }
+                
                 var hash = hashMatch.Groups["RaffleHash"].Value;
                 var content = new FormUrlEncodedContent(new[]
                 {
