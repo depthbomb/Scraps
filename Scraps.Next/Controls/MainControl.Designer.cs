@@ -42,7 +42,7 @@ namespace Scraps.Next.Controls
             this._RunnerButton.Location = new System.Drawing.Point(6, 371);
             this._RunnerButton.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
             this._RunnerButton.Name = "_RunnerButton";
-            this._RunnerButton.Size = new System.Drawing.Size(97, 24);
+            this._RunnerButton.Size = new System.Drawing.Size(100, 24);
             this._RunnerButton.TabIndex = 0;
             this._RunnerButton.Text = "Start";
             this._RunnerButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -70,11 +70,10 @@ namespace Scraps.Next.Controls
             // 
             this._AlertLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._AlertLabel.Location = new System.Drawing.Point(112, 371);
+            this._AlertLabel.Location = new System.Drawing.Point(115, 371);
             this._AlertLabel.Name = "_AlertLabel";
-            this._AlertLabel.Size = new System.Drawing.Size(706, 24);
+            this._AlertLabel.Size = new System.Drawing.Size(703, 24);
             this._AlertLabel.TabIndex = 3;
-            this._AlertLabel.Text = "label1";
             this._AlertLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // MainControl
