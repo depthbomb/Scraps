@@ -9,7 +9,6 @@ assignees: depthbomb
 
 <!--
 - Please do not submit bug reports about encountering captchas, these cannot be bypassed.
-- Before submitting bugs related to the raffle runner not starting, please ensure that your cookie value is correct.
 -->
 
 **Describe the bug**
@@ -26,7 +25,6 @@ Steps to reproduce the behavior:
 Add any other context about the problem here.
 
 <!--
-Please provide an excerpt from your logs where this behavior happens or attach your log file with your submission.
-
-Make sure to redact your FULL cookie value in your logs if the excerpt you provide contains it.
+- Please provide an excerpt from your logs where this behavior happens or attach your log file with your submission.
+- Make sure to redact your FULL cookie value in your logs if the excerpt you provide contains it.
 -->
