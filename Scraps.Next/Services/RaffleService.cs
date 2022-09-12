@@ -16,13 +16,16 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
+using System.Media;
+
 using AngleSharp.Html.Parser;
+using Windows.Win32.Foundation;
 
 using Scraps.Next.Events;
 using Scraps.Next.Models;
+using Scraps.Next.Resources;
 using Scraps.Next.Exceptions;
 using Scraps.Next.Extensions;
-using Scraps.Next.Notifications;
 using Scraps.Next.Services.Honeypot;
 
 namespace Scraps.Next.Services;
@@ -105,22 +108,23 @@ public class RaffleService : IDisposable
     private CancellationToken       _cancelToken;
     private CancellationTokenSource _cancelTokenSource;
     
-    private readonly SettingsService       _settings;
-    private readonly Logger                _log               = LogManager.GetCurrentClassLogger();
-    private readonly HtmlParser            _html              = new();
-    private readonly List<string>          _raffleQueue       = new();
-    private readonly List<string>          _enteredRaffles    = new();
-    private readonly RaffleWonNotification _raffleWonToast    = new();
-    private readonly Regex                 _csrfPattern       = new(@"value=""(?<CsrfToken>[a-f\d]{64})""");
-    private readonly Regex                 _banReasonPattern  = new(@"<b>Reason:<\/b> (?<Reason>[\w\s]+)");
-    private readonly Regex                 _wonRafflesPattern = new(@"You've won \d raffles? that must be withdrawn");
-    private readonly Regex                 _entryPattern      = new(@"ScrapTF\.Raffles\.RedirectToRaffle\('(?<RaffleId>[A-Z0-9]{6,})'\)", RegexOptions.Compiled);
-    private readonly Regex                 _hashPattern       = new(@"EnterRaffle\('(?<RaffleId>[A-Z0-9]{6,})', '(?<RaffleHash>[a-f0-9]{64})'", RegexOptions.Compiled);
-    private readonly Regex                 _limitPattern      = new(@"total=""(?<Entered>\d+)"" data-max=""(?<Max>\d+)", RegexOptions.Compiled);
+    private readonly SettingsService _settings;
+    private readonly SoundPlayer     _alertPlayer;
+    private readonly Logger          _log               = LogManager.GetCurrentClassLogger();
+    private readonly HtmlParser      _html              = new();
+    private readonly List<string>    _raffleQueue       = new();
+    private readonly List<string>    _enteredRaffles    = new();
+    private readonly Regex           _csrfPattern       = new(@"value=""(?<CsrfToken>[a-f\d]{64})""");
+    private readonly Regex           _banReasonPattern  = new(@"<b>Reason:<\/b> (?<Reason>[\w\s]+)");
+    private readonly Regex           _wonRafflesPattern = new(@"You've won \d raffles? that must be withdrawn");
+    private readonly Regex           _entryPattern      = new(@"ScrapTF\.Raffles\.RedirectToRaffle\('(?<RaffleId>[A-Z0-9]{6,})'\)", RegexOptions.Compiled);
+    private readonly Regex           _hashPattern       = new(@"EnterRaffle\('(?<RaffleId>[A-Z0-9]{6,})', '(?<RaffleHash>[a-f0-9]{64})'", RegexOptions.Compiled);
+    private readonly Regex           _limitPattern      = new(@"total=""(?<Entered>\d+)"" data-max=""(?<Max>\d+)", RegexOptions.Compiled);
 
     public RaffleService(SettingsService settings)
     {
-        _settings = settings;
+        _settings    = settings;
+        _alertPlayer = new SoundPlayer(Audio.alert);
     }
     
     ~RaffleService() => Dispose();
@@ -355,7 +359,7 @@ public class RaffleService : IDisposable
             {
                 await Task.Delay(_paginateDelay, _cancelToken);
 
-                _log.Debug("Scanning next page (apex = {Apex})", lastId);
+                _log.Debug("Scanning next page (apex={Apex})", lastId);
                 continue;
             }
 
@@ -366,21 +370,22 @@ public class RaffleService : IDisposable
             using (var document = await _html.ParseDocumentAsync(html, _cancelToken))
             {
                 var raffleElements = document.QuerySelectorAll(RafflePanelSelector);
-                if (html.Contains("ScrapTF.Raffles.WithdrawRaffle") && !_alertedOfWonRaffles)
+                if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
                 {
                     var    wonRafflesMatch   = _wonRafflesPattern.Match(html);
                     string wonRafflesMessage = wonRafflesMatch.Groups[0].Value;
 
                     OnWithdrawalAvailable?.Invoke(this, new RaffleServiceWithdrawalAvailableArgs(wonRafflesMessage));
 
-                    if (_settings.Get<bool>("EnableToastNotifications"))
-                    {
-                        _raffleWonToast.Show();
-                    }
-        
                     _log.Info(wonRafflesMessage);
 
-                    _alertedOfWonRaffles = true;
+                    if (!_alertedOfWonRaffles)
+                    {
+                        Native.FlashWindow((HWND)Utils.GetMainForm().Handle, true);
+                    
+                        _alertPlayer.Play();
+                        _alertedOfWonRaffles = true;
+                    }
                 }
                 else
                 {

@@ -38,7 +38,7 @@ public partial class MainControl : UserControl
     private readonly FlagsService        _flags;
     private readonly Image               _startIcon = Images.control;
     private readonly Image               _stopIcon  = Images.control_stop_square;
-    private readonly Image               _errorIcon = Images.exclamation;
+    private readonly Image               _errorIcon = Images.exclamation__frame;
 
     private enum RunnerButtonState
     {
@@ -53,6 +53,7 @@ public partial class MainControl : UserControl
     {
         Default,
         InvalidCookie,
+        WonRaffle,
         AccountBanned
     }
 
@@ -69,6 +70,7 @@ public partial class MainControl : UserControl
         _runner.OnStarted  += RaffleOnStarted;
         _runner.OnStopping += RaffleOnStopping;
         _runner.OnStopped  += RaffleOnStopped;
+        _runner.OnWithdrawalAvailable += RunnerOnWithdrawalAvailable;
 
         _settings.OnSaved += SettingsOnSaved;
         _settings.OnReset += SettingsOnReset;
@@ -125,17 +127,21 @@ public partial class MainControl : UserControl
         _RunnerButton.Enabled = enable;
     }
 
-    private void SetAlert(AlertState state = AlertState.Default)
+    private void SetAlert(AlertState state = AlertState.Default, string message = null)
     {
         switch (state)
         {
             case AlertState.InvalidCookie:
-                _AlertLabel.Text      = "Invalid or missing cookie";
+                _AlertLabel.Text      = message ?? "Invalid or missing cookie";
                 _AlertLabel.ForeColor = Color.Crimson;
                 break;
             case AlertState.AccountBanned:
-                _AlertLabel.Text      = "Account banned";
+                _AlertLabel.Text      = message ?? "Account banned";
                 _AlertLabel.ForeColor = Color.Crimson;
+                break;
+            case AlertState.WonRaffle:
+                _AlertLabel.Text      = message ?? "You've won raffles that need withdrawing";
+                _AlertLabel.ForeColor = Color.SeaGreen;
                 break;
             default:
             case AlertState.Default:
@@ -168,15 +174,24 @@ public partial class MainControl : UserControl
     
     private void RaffleOnStarting(object sender, RaffleServiceStartingArgs e)
         => SetRunnerButtonState(RunnerButtonState.Starting, false);
-    
+
     private void RaffleOnStarted(object sender, RaffleServiceStartedArgs e)
-        => SetRunnerButtonState(RunnerButtonState.Started, true);
+    {
+        SetAlert();
+        SetRunnerButtonState(RunnerButtonState.Started, true);
+    }
     
     private void RaffleOnStopping(object sender, RaffleServiceStoppingArgs e)
         => SetRunnerButtonState(RunnerButtonState.Stopping, false);
-    
+
     private void RaffleOnStopped(object sender, RaffleServiceStoppedArgs e)
-        => SetRunnerButtonState(RunnerButtonState.Stopped, true);
+    {
+        SetAlert();
+        SetRunnerButtonState(RunnerButtonState.Stopped, true);
+    }
+    
+    private void RunnerOnWithdrawalAvailable(object sender, RaffleServiceWithdrawalAvailableArgs e)
+        => SetAlert(AlertState.WonRaffle, e.Message);
 
     private void SettingsOnSaved(object sender, SettingsServiceSavedArgs e)
         => ValidateCookie(e.Settings);

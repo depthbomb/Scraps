@@ -60,18 +60,6 @@ namespace Scraps.Next.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool EnableToastNotifications {
-            get {
-                return ((bool)(this["EnableToastNotifications"]));
-            }
-            set {
-                this["EnableToastNotifications"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool Paranoid {
             get {

@@ -17,6 +17,7 @@
 #endregion
 
 using System.Diagnostics;
+
 using Scraps.Next.Extensions;
 
 namespace Scraps.Next;
@@ -31,6 +32,12 @@ public static class Utils
     
     public static DialogResult ShowError(IWin32Window owner, string title, string content, MessageBoxButtons buttons = MessageBoxButtons.OK)
         => MessageBox.Show(owner, content, title, buttons, MessageBoxIcon.Error);
+
+    public static Form GetMainForm()
+        => GetFormByTitle(GlobalShared.WindowTitle);
+
+    public static Form GetFormByTitle(string title)
+        => Application.OpenForms.Cast<Form>().FirstOrDefault(form => form.Text == title);
 
     public static Process OpenUrl(string url)
         => Process.Start(new ProcessStartInfo("cmd", $"/c start {url}"));

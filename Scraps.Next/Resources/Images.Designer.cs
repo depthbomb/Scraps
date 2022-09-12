@@ -8,15 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.CodeDom.Compiler;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Resources;
-using System.Runtime.CompilerServices;
-
 namespace Scraps.Next.Resources {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -24,27 +19,27 @@ namespace Scraps.Next.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [GeneratedCode("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
-    [DebuggerNonUserCode()]
-    [CompilerGenerated()]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Images {
         
-        private static ResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
-        private static CultureInfo resourceCulture;
+        private static global::System.Globalization.CultureInfo resourceCulture;
         
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Images() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        internal static ResourceManager ResourceManager {
+        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
-                if (ReferenceEquals(resourceMan, null)) {
-                    ResourceManager temp = new ResourceManager("Scraps.Next.Resources.Images", typeof(Images).Assembly);
+                if (object.ReferenceEquals(resourceMan, null)) {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Scraps.Next.Resources.Images", typeof(Images).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -55,8 +50,8 @@ namespace Scraps.Next.Resources {
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        internal static CultureInfo Culture {
+        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -68,550 +63,160 @@ namespace Scraps.Next.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap application {
-            get {
-                object obj = ResourceManager.GetObject("application", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap application_blue {
-            get {
-                object obj = ResourceManager.GetObject("application_blue", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap application_terminal {
-            get {
-                object obj = ResourceManager.GetObject("application_terminal", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap application_text {
-            get {
-                object obj = ResourceManager.GetObject("application_text", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap arrow_circle {
+        internal static System.Drawing.Bitmap arrow_circle {
             get {
                 object obj = ResourceManager.GetObject("arrow_circle", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap AuthorIcon {
+        internal static System.Drawing.Bitmap AuthorIcon {
             get {
                 object obj = ResourceManager.GetObject("AuthorIcon", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap chain {
+        internal static System.Drawing.Bitmap broom {
             get {
-                object obj = ResourceManager.GetObject("chain", resourceCulture);
-                return ((Bitmap)(obj));
+                object obj = ResourceManager.GetObject("broom", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap control {
+        internal static System.Drawing.Bitmap control {
             get {
                 object obj = ResourceManager.GetObject("control", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap control_power {
-            get {
-                object obj = ResourceManager.GetObject("control_power", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap control_stop_square {
+        internal static System.Drawing.Bitmap control_stop_square {
             get {
                 object obj = ResourceManager.GetObject("control_stop_square", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap cookie {
+        internal static System.Drawing.Bitmap cookie {
             get {
                 object obj = ResourceManager.GetObject("cookie", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap cross {
-            get {
-                object obj = ResourceManager.GetObject("cross", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap cross_button {
-            get {
-                object obj = ResourceManager.GetObject("cross_button", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap cross_circle {
-            get {
-                object obj = ResourceManager.GetObject("cross_circle", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap cross_circle_frame {
-            get {
-                object obj = ResourceManager.GetObject("cross_circle_frame", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap disk {
+        internal static System.Drawing.Bitmap disk {
             get {
                 object obj = ResourceManager.GetObject("disk", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap exclamation {
-            get {
-                object obj = ResourceManager.GetObject("exclamation", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap exclamation__frame {
+        internal static System.Drawing.Bitmap exclamation__frame {
             get {
                 object obj = ResourceManager.GetObject("exclamation__frame", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap exclamation_button {
-            get {
-                object obj = ResourceManager.GetObject("exclamation_button", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap exclamation_circle {
-            get {
-                object obj = ResourceManager.GetObject("exclamation_circle", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap exclamation_circle_frame {
-            get {
-                object obj = ResourceManager.GetObject("exclamation_circle_frame", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap folder_open_document_text {
+        internal static System.Drawing.Bitmap folder_open_document_text {
             get {
                 object obj = ResourceManager.GetObject("folder_open_document_text", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap gear {
+        internal static System.Drawing.Bitmap gear {
             get {
                 object obj = ResourceManager.GetObject("gear", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap heart {
+        internal static System.Drawing.Bitmap heart {
             get {
                 object obj = ResourceManager.GetObject("heart", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap information {
+        internal static System.Drawing.Bitmap information {
             get {
                 object obj = ResourceManager.GetObject("information", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap information_button {
-            get {
-                object obj = ResourceManager.GetObject("information_button", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap information_frame {
-            get {
-                object obj = ResourceManager.GetObject("information_frame", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap information_italic {
-            get {
-                object obj = ResourceManager.GetObject("information_italic", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap lifebuoy {
-            get {
-                object obj = ResourceManager.GetObject("lifebuoy", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap lifebuoy__plus {
-            get {
-                object obj = ResourceManager.GetObject("lifebuoy__plus", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap light_bulb {
-            get {
-                object obj = ResourceManager.GetObject("light_bulb", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap light_bulb__plus {
-            get {
-                object obj = ResourceManager.GetObject("light_bulb__plus", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap minus {
-            get {
-                object obj = ResourceManager.GetObject("minus", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap minus_button {
-            get {
-                object obj = ResourceManager.GetObject("minus_button", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap minus_circle {
-            get {
-                object obj = ResourceManager.GetObject("minus_circle", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap minus_circle_frame {
-            get {
-                object obj = ResourceManager.GetObject("minus_circle_frame", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap navigation_090 {
+        internal static System.Drawing.Bitmap navigation_090 {
             get {
                 object obj = ResourceManager.GetObject("navigation_090", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap plus {
-            get {
-                object obj = ResourceManager.GetObject("plus", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap plus_button {
-            get {
-                object obj = ResourceManager.GetObject("plus_button", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap plus_circle {
-            get {
-                object obj = ResourceManager.GetObject("plus_circle", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap plus_circle_frame {
-            get {
-                object obj = ResourceManager.GetObject("plus_circle_frame", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap question {
-            get {
-                object obj = ResourceManager.GetObject("question", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap question_button {
-            get {
-                object obj = ResourceManager.GetObject("question_button", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap question_frame {
-            get {
-                object obj = ResourceManager.GetObject("question_frame", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap radar {
-            get {
-                object obj = ResourceManager.GetObject("radar", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap scraps {
+        internal static System.Drawing.Bitmap scraps {
             get {
                 object obj = ResourceManager.GetObject("scraps", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap shortcut {
-            get {
-                object obj = ResourceManager.GetObject("shortcut", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap terminal {
+        internal static System.Drawing.Bitmap terminal {
             get {
                 object obj = ResourceManager.GetObject("terminal", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static Bitmap tick {
-            get {
-                object obj = ResourceManager.GetObject("tick", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap tick_button {
-            get {
-                object obj = ResourceManager.GetObject("tick_button", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap tick_circle {
-            get {
-                object obj = ResourceManager.GetObject("tick_circle", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap tick_circle_frame {
-            get {
-                object obj = ResourceManager.GetObject("tick_circle_frame", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap ticket {
-            get {
-                object obj = ResourceManager.GetObject("ticket", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap ticket__plus {
-            get {
-                object obj = ResourceManager.GetObject("ticket__plus", resourceCulture);
-                return ((Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static Bitmap trophy {
+        internal static System.Drawing.Bitmap trophy {
             get {
                 object obj = ResourceManager.GetObject("trophy", resourceCulture);
-                return ((Bitmap)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

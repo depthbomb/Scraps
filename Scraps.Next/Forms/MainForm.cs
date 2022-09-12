@@ -54,7 +54,7 @@ public sealed partial class MainForm : Form
         {
             Images =
             {
-                Images.application_terminal,
+                Images.terminal,
                 Images.trophy,
                 Images.gear,
                 Images.information

@@ -3,3 +3,4 @@ FreeConsole
 RegisterWindowMessage
 SendMessage
 FindWindow
+FlashWindow

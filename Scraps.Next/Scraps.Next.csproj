@@ -18,7 +18,6 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.17.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-preview.7.22375.6" />
-    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1369-prerelease" />
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.2.46-beta">
       <PrivateAssets>all</PrivateAssets>

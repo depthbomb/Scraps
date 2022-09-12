@@ -11,9 +11,6 @@
     <Setting Name="IncrementScanDelay" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="EnableToastNotifications" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="Paranoid" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
