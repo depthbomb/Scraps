@@ -1,8 +1,8 @@
 #define MyAppName "Scraps"
 #define MyAppDescription "Scrap.TF Raffle Bot"
-#define MyAppVersion "4.10.0.0"
+#define MyAppVersion "5.0.0.0"
 #define MyAppPublisher "Caprine Logic"
-#define MyAppExeName "Scraps.GUI.exe"
+#define MyAppExeName "scraps.exe"
 #define MyAppCopyright "Copyright (C) 2022 Caprine Logic"
 
 [Setup]
@@ -22,9 +22,9 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 AllowNoIcons=yes
 LicenseFile=.\license.txt
-OutputDir=..\Scraps.GUI\bin\Publish
+OutputDir=..\Scraps.Next\bin
 OutputBaseFilename=scraps_setup
-SetupIconFile=..\Scraps.GUI\Scraps.ico
+SetupIconFile=..\Scraps.Next\Resources\Scraps.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
@@ -32,7 +32,7 @@ WizardResizable=no
 WizardImageFile=.\images\Image_*.bmp
 WizardSmallImageFile=.\images\SmallImage_*.bmp
 ArchitecturesAllowed=x64
-UninstallDisplayIcon={app}\Scraps.GUI.exe
+UninstallDisplayIcon={app}\scraps.exe
 UninstallDisplayName={#MyAppName} - {#MyAppDescription}
 ShowTasksTreeLines=True
 AlwaysShowDirOnReadyPage=True
@@ -61,7 +61,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
-Source: "..\Scraps.GUI\bin\Publish\win-x64\*"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps.Next\bin\Publish\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\license.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [INI]

@@ -49,7 +49,7 @@ public partial class AboutControl : UserControl
         }
         var buildDate   = new FileInfo(assLocation).LastWriteTime;
 
-        return buildDate.ToLocalTime().ToString("O");
+        return buildDate.ToString("F");
     }
 
     private void _RepositoryLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

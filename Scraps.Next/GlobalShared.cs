@@ -36,7 +36,7 @@ public static class GlobalShared
     public static int          MinorVersion       => 0;
     public static int          PatchVersion       => 0;
     public static int          HotfixVersion      => 0;
-    public static ReleaseTypes VersionReleaseType => ReleaseTypes.Development;
+    public static ReleaseTypes VersionReleaseType => ReleaseTypes.Release;
     public static string       SemVerVersion      => $"{MajorVersion}.{MinorVersion}.{PatchVersion}.{HotfixVersion}";
     public static string       FullVersion        => $"{SemVerVersion}-{VersionReleaseType}";
     #endregion
