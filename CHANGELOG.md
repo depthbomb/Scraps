@@ -12,6 +12,7 @@ This major release includes a complete rewrite and reorganization of the applica
 - WebView2 runtime is now required and will be installed on launch if it isn't already
 - More granular logging
 - New app icon
+- Links in the runner view can now be opened
 - Added in-app won raffle viewing
 - Added option to always display Scraps on top of all other windows
 - Added option to skip automatic update checking

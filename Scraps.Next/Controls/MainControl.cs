@@ -134,8 +134,8 @@ public partial class MainControl : UserControl
                 _AlertLabel.ForeColor = Color.Crimson;
                 break;
             case AlertState.AccountBanned:
-                _AlertLabel.ForeColor = Color.Crimson;
                 _AlertLabel.Text      = "Account banned";
+                _AlertLabel.ForeColor = Color.Crimson;
                 break;
             default:
             case AlertState.Default:
@@ -195,6 +195,8 @@ public partial class MainControl : UserControl
             await _announcement.FetchAnnouncementsAsync();
         }
     }
+
+    private void _MainViewLog_LinkClicked(object sender, LinkClickedEventArgs e) => Utils.OpenUrl(e.LinkText);
 
     private async void RunnerButtonOnClick(object sender, EventArgs e)
     {
