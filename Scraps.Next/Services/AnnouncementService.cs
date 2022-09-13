@@ -79,7 +79,8 @@ public class AnnouncementService : IDisposable
         }
         catch(Exception ex)
         {
-            _log.Error(ex, "Failed to fetch announcements");
+            _log.Error("Failed to fetch announcements");
+            _log.Error(ex);
         }
     }
 }

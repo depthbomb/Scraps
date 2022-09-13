@@ -77,12 +77,14 @@ public class WebViewService
                 }
                 catch (HttpRequestException ex)
                 {
-                    _log.Error(ex, "Failed to write runtime installer");
+                    _log.Error("Failed to write runtime installer");
+                    _log.Error(ex);
                     throw;
                 }
                 catch (Win32Exception ex)
                 {
-                    _log.Error(ex, "Failed to start runtime installer {Path}", downloadPath);
+                    _log.Error("Failed to start runtime installer {Path}", downloadPath);
+                    _log.Error(ex);
                     throw;
                 }
             }

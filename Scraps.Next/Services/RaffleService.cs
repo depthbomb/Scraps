@@ -558,7 +558,8 @@ public class RaffleService : IDisposable
         }
         catch (Exception ex)
         {
-            _log.Error(ex, "Error while paginating");
+            _log.Error("Error while paginating");
+            _log.Error(ex);
         }
 
         return null;
