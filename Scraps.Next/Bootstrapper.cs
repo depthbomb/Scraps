@@ -21,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Scraps.Next.Forms;
 using Scraps.Next.Controls;
 using Scraps.Next.Services;
+using Scraps.Next.Resources;
 
 namespace Scraps.Next;
 
@@ -125,7 +126,7 @@ internal static class Bootstrapper
                    .BuildServiceProvider();
     }
 
-    private static void ShowDisclaimer() => Utils.ShowWarning(null, "Disclaimer", "Use of this tool is very much against Scrap.TF's community guidelines.\n\nThere is a very real, albeit, low possibility that your Scrap.TF account can get banned.\n\nIf you value your Scrap.TF account then do not use this program (or at least use an alternative account).\n\nBy continuing to use this tool, you take full responsibility of what may or may not happen to your Scrap.TF account.\n\nThis message will only be displayed once.");
+    private static void ShowDisclaimer() => Utils.ShowWarning(null, "Disclaimer", Strings.DisclaimerText);
 
     private static void MainWindowOnFormClosing(object sender, FormClosingEventArgs e)
     {

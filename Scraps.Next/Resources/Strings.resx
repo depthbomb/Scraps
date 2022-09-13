@@ -34,4 +34,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</value>
     </data>
+    <data name="DisclaimerText" xml:space="preserve">
+        <value>Use of this tool is very much against Scrap.TF's community guidelines.
+
+There is a very real, albeit, low possibility that your Scrap.TF account can get banned.
+
+If you value your Scrap.TF account then do not use this program (or at least use an alternative account).
+
+By continuing to use this tool, you take full responsibility of what may or may not happen to your Scrap.TF account.
+
+This message will only be displayed once.</value>
+    </data>
 </root>
