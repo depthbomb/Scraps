@@ -22,9 +22,9 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 AllowNoIcons=yes
 LicenseFile=.\license.txt
-OutputDir=..\Scraps.Next\bin
+OutputDir=..\Scraps\bin
 OutputBaseFilename=scraps_setup
-SetupIconFile=..\Scraps.Next\Resources\Scraps.ico
+SetupIconFile=..\Scraps\Resources\Scraps.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
@@ -61,7 +61,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
-Source: "..\Scraps.Next\bin\Publish\*"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Scraps\bin\Publish\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\license.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [INI]
