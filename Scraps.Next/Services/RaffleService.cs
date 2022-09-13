@@ -30,7 +30,7 @@ using Scraps.Next.Services.Honeypot;
 
 namespace Scraps.Next.Services;
 
-public class RaffleService : IDisposable
+public partial class RaffleService : IDisposable
 {
     /// <summary>
     /// Whether the runner is running because a cancellation is not requested.
@@ -110,16 +110,16 @@ public class RaffleService : IDisposable
     
     private readonly SettingsService _settings;
     private readonly SoundPlayer     _alertPlayer;
-    private readonly Logger          _log               = LogManager.GetCurrentClassLogger();
-    private readonly HtmlParser      _html              = new();
-    private readonly List<string>    _raffleQueue       = new();
-    private readonly List<string>    _enteredRaffles    = new();
-    private readonly Regex           _csrfPattern       = new(@"value=""(?<CsrfToken>[a-f\d]{64})""");
-    private readonly Regex           _banReasonPattern  = new(@"<b>Reason:<\/b> (?<Reason>[\w\s]+)");
-    private readonly Regex           _wonRafflesPattern = new(@"You've won \d raffles? that must be withdrawn");
-    private readonly Regex           _entryPattern      = new(@"ScrapTF\.Raffles\.RedirectToRaffle\('(?<RaffleId>[A-Z0-9]{6,})'\)", RegexOptions.Compiled);
-    private readonly Regex           _hashPattern       = new(@"EnterRaffle\('(?<RaffleId>[A-Z0-9]{6,})', '(?<RaffleHash>[a-f0-9]{64})'", RegexOptions.Compiled);
-    private readonly Regex           _limitPattern      = new(@"total=""(?<Entered>\d+)"" data-max=""(?<Max>\d+)", RegexOptions.Compiled);
+    private readonly Logger          _log             = LogManager.GetCurrentClassLogger();
+    private readonly HtmlParser      _html            = new();
+    private readonly List<string>    _raffleQueue     = new();
+    private readonly List<string>    _enteredRaffles  = new();
+    private readonly Regex           _csrfRegex       = CsrfRegex();
+    private readonly Regex           _banReasonRegex  = BanReasonRegex();
+    private readonly Regex           _wonRafflesRegex = WonRafflesRegex();
+    private readonly Regex           _entryRegex      = EntryRegex();
+    private readonly Regex           _hashRegex       = HashRegex();
+    private readonly Regex           _limitRegex      = LimitRegex();
 
     public RaffleService(SettingsService settings)
     {
@@ -277,7 +277,7 @@ public class RaffleService : IDisposable
         
         string html = await GetStringAsync();
         
-        var csrf = _csrfPattern.Match(html);
+        var csrf = _csrfRegex.Match(html);
         if (csrf.Success)
         {
             string csrfToken = csrf.Groups["CsrfToken"].Value;
@@ -307,7 +307,7 @@ public class RaffleService : IDisposable
         _log.Debug("Retrieving ban reason");
         
         string html  = await GetStringAsync("/banappeal");
-        var    match = _banReasonPattern.Match(html);
+        var    match = _banReasonRegex.Match(html);
         return match.Success ? match.Groups["Reason"].Value.Trim() : "Could not obtain reason";
     }
 
@@ -372,7 +372,7 @@ public class RaffleService : IDisposable
                 var raffleElements = document.QuerySelectorAll(RafflePanelSelector);
                 if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
                 {
-                    var    wonRafflesMatch   = _wonRafflesPattern.Match(html);
+                    var    wonRafflesMatch   = _wonRafflesRegex.Match(html);
                     string wonRafflesMessage = wonRafflesMatch.Groups[0].Value;
 
                     OnWithdrawalAvailable?.Invoke(this, new RaffleServiceWithdrawalAvailableArgs(wonRafflesMessage));
@@ -395,7 +395,7 @@ public class RaffleService : IDisposable
                 foreach (var raffleElement in raffleElements)
                 {
                     string elementHtml   = raffleElement.InnerHtml;
-                    var    raffleIdMatch = _entryPattern.Match(elementHtml);
+                    var    raffleIdMatch = _entryRegex.Match(elementHtml);
                     if (!raffleIdMatch.Success)
                     {
                         _log.Error("Unable to find raffle ID from {Html}", elementHtml);
@@ -424,8 +424,8 @@ public class RaffleService : IDisposable
             Broadcast($"Joining raffle {raffle}");
             
             string html        = await GetStringAsync($"/raffles/{raffle}");
-            var    hashMatch   = _hashPattern.Match(html);
-            var    limitsMatch = _limitPattern.Match(html);
+            var    hashMatch   = _hashRegex.Match(html);
+            var    limitsMatch = _limitRegex.Match(html);
             bool   hasEnded    = html.Contains(@"data-time=""Raffle Ended""");
             bool   paranoid    = _settings.Get<bool>("Paranoid");
             
@@ -589,6 +589,24 @@ public class RaffleService : IDisposable
         string banReason = await GetBanReasonAsync();
         return new AccountBannedException(banReason);
     }
+
+    [RegexGenerator("value=\"(?<CsrfToken>[a-f\\d]{64})\"", RegexOptions.Compiled)]
+    private static partial Regex CsrfRegex();
     
+    [RegexGenerator("<b>Reason:<\\/b> (?<Reason>[\\w\\s]+)", RegexOptions.Compiled)]
+    private static partial Regex BanReasonRegex();
+    
+    [RegexGenerator("You've won \\d raffles? that must be withdrawn", RegexOptions.Compiled)]
+    private static partial Regex WonRafflesRegex();
+    
+    [RegexGenerator("ScrapTF\\.Raffles\\.RedirectToRaffle\\('(?<RaffleId>[A-Z0-9]{6,})'\\)", RegexOptions.Compiled)]
+    private static partial Regex EntryRegex();
+    
+    [RegexGenerator("EnterRaffle\\('(?<RaffleId>[A-Z0-9]{6,})', '(?<RaffleHash>[a-f0-9]{64})'", RegexOptions.Compiled)]
+    private static partial Regex HashRegex();
+    
+    [RegexGenerator("total=\"(?<Entered>\\d+)\" data-max=\"(?<Max>\\d+)", RegexOptions.Compiled)]
+    private static partial Regex LimitRegex();
+
     #endregion
 }

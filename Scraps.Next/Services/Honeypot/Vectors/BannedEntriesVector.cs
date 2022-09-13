@@ -18,16 +18,16 @@
 
 namespace Scraps.Next.Services.Honeypot.Vectors;
 
-public class BannedEntriesVector : IHoneypotVector
+public partial class BannedEntriesVector : IHoneypotVector
 {
     public bool   Detected     { get; private set; }
     public string DetectReason { get; private set; }
     
-    private readonly Regex _bannedUsersPattern = new (@"<img class='tiny-raffle-avatar\s?' style='border-color:\s?#CC1100;?' src='(.*)' loading=""lazy""\s?\/>", RegexOptions.Compiled);
+    private readonly Regex _bannedUsersRegex = BannedUserRegex();
     
     public void Check(string html)
     {
-        var entries = _bannedUsersPattern.Matches(html);
+        var entries = _bannedUsersRegex.Matches(html);
 
         if (entries.Count > 1)
         {
@@ -35,4 +35,7 @@ public class BannedEntriesVector : IHoneypotVector
             DetectReason = $"{entries.Count} users who entered this raffle are now banned";
         }
     }
+
+    [RegexGenerator("<img class='tiny-raffle-avatar\\s?' style='border-color:\\s?#CC1100;?' src='(.*)' loading=\"lazy\"\\s?\\/>", RegexOptions.Compiled)]
+    private static partial Regex BannedUserRegex();
 }

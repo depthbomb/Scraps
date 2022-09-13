@@ -18,7 +18,7 @@
 
 namespace Scraps.Next;
 
-public static class Args
+public static partial class Args
 {
     private record Arg
     {
@@ -28,12 +28,12 @@ public static class Args
     }
     
     private static readonly IList<Arg> _args;
-    private static readonly Regex      _argPrefixPattern;
+    private static readonly Regex      _argPrefixRegex;
 
     static Args()
     {
-        _args             = new List<Arg>();
-        _argPrefixPattern = new Regex("(/|-+)", RegexOptions.Compiled);
+        _args           = new List<Arg>();
+        _argPrefixRegex = ArgPrefixRegex();
     }
 
     /// <summary>
@@ -86,9 +86,12 @@ public static class Args
 
     private static Arg GetArg(string input)
     {
-        string arg           = _argPrefixPattern.Replace(input.ToLower(), "");
+        string arg           = _argPrefixRegex.Replace(input.ToLower(), "");
         var    registeredArg = _args.FirstOrDefault(f => f.Name == arg || f.ShortName == arg);
         
         return registeredArg;
     }
+
+    [RegexGenerator("(/|--?)", RegexOptions.Compiled)]
+    private static partial Regex ArgPrefixRegex();
 }
