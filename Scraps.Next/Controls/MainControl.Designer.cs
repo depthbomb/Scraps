@@ -67,6 +67,7 @@ namespace Scraps.Next.Controls
             this._MainViewLog.TabIndex = 2;
             this._MainViewLog.Text = "";
             this._MainViewLog.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this._MainViewLog_LinkClicked);
+            this._MainViewLog.TextChanged += new System.EventHandler(this._MainViewLog_TextChanged);
             // 
             // _AlertLabel
             // 

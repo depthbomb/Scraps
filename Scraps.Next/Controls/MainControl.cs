@@ -212,6 +212,8 @@ public partial class MainControl : UserControl
     }
 
     private void _MainViewLog_LinkClicked(object sender, LinkClickedEventArgs e) => Utils.OpenUrl(e.LinkText);
+    
+    private void _MainViewLog_TextChanged(object sender, EventArgs e) => _ClearButton.Enabled = _MainViewLog.Text.Length > 0;
 
     private async void RunnerButtonOnClick(object sender, EventArgs e)
     {
@@ -225,11 +227,6 @@ public partial class MainControl : UserControl
         }
     }
 
-    private void _ClearButton_Click(object sender, EventArgs e)
-    {
-        _ClearButton.Enabled = false;
-        _MainViewLog.Clear();
-        _ClearButton.Enabled = true;
-    }
+    private void _ClearButton_Click(object sender, EventArgs e) => _MainViewLog.Clear();
     #endregion
 }
