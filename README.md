@@ -38,15 +38,12 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Requirements
 
-Scraps simply requires the .NET 7 Desktop Runtime which you can download [here.](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+- Windows 10, version 2004 (10.0.19041.x)
+- [.NET 7 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
 
 ## Finding your Cookie
 
 Scraps requires your Scrap.TF session cookie, `scr_session` to function. This can be found by accessing your browser's dev tools (usually by pressing `F12`), going to **Application** and then **Cookies**. This process may differ depending on your browser.
-
-## Launch Arguments
-
-- `/Debug` Enable logging debug info to the app's log window
 
 ## Avoiding Bans
 
