@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.0.0
+
+- Fixed a potential crash when attempting to check for updates with no internet connection
+- Improved exception logging across the application
 
 ## 5.0.0.0
 
