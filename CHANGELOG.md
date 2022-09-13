@@ -9,7 +9,7 @@ This major release includes a complete rewrite and reorganization of the applica
 - The window can now be resized and maximized
 - Runner button now disables itself if your cookie is missing or invalid
 - Cookie input now hides its contents and reveals them when the mouse is hovering
-- WebView2 runtime is now required and will be installed on launch if it isn't already
+- WebView2 runtime is now required and will be installed on launch
 - More granular logging
 - New app icon
 - Links in the runner view can now be opened
