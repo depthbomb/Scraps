@@ -28,6 +28,7 @@ namespace Scraps.Next.Controls;
 public partial class AboutControl : UserControl
 {
     private readonly UpdateService _update;
+    private readonly Logger        _log = LogManager.GetCurrentClassLogger();
     
     public AboutControl(UpdateService update)
     {
@@ -64,11 +65,29 @@ public partial class AboutControl : UserControl
     {
         _CheckForUpdatesButton.Enabled = false;
 
-        await _update.CheckForUpdatesAsync();
-
-        if (!_update.IsUpdateAvailable)
+        try
         {
-            Utils.ShowInfo(null, "Updater", "You are using the latest version of Scraps!");
+            await _update.CheckForUpdatesAsync();
+
+            if (!_update.IsUpdateAvailable)
+            {
+                Utils.ShowInfo(null, "Updater", "You are using the latest version of Scraps!");
+            }
+        }
+        catch (Exception ex)
+        {
+            _log.Error("Failed to check for updates");
+            _log.Error(ex);
+            
+            switch (ex)
+            {
+                case HttpRequestException:
+                    Utils.ShowError(null, "Updater", "Failed to check for updates because of a network issue.\nCheck your internet connection and try again.");
+                    break;
+                default:
+                    Utils.ShowError(null, "Updater", "Failed to check for updates for an unknown reason.\nPlease check for new releases on GitHub.");
+                    break;
+            }
         }
 
         _CheckForUpdatesButton.Enabled = true;
