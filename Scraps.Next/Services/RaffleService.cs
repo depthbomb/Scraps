@@ -570,14 +570,18 @@ public class RaffleService : IDisposable
         _http ??= CreateHttpClient();
         
         _log.Debug("Sending GET request to {Path}", path);
-        
+
         var res = await _http.GetAsync(path, _cancelToken);
         if (res.StatusCode == HttpStatusCode.OK)
         {
             return await res.Content.ReadAsStringAsync(_cancelToken);
         }
         
-        throw new HttpRequestException($"Unable to get string: {res.ReasonPhrase}");
+        string body = await res.Content.ReadAsStringAsync(_cancelToken);
+        _log.Error("Unable to get string: {Reason}", res.ReasonPhrase);
+        _log.Error(body);
+
+        throw new Exception("Unable to make request");
     }
 
     private async Task<AccountBannedException> ThrowAccountBannedAsync()
