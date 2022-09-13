@@ -64,7 +64,7 @@ public class AnnouncementService : IDisposable
                 foreach (var announcement in announcementLines.Where(announcement => !_announcements.Contains(announcement)))
                 {
                     _announcements.Add(announcement);
-                        
+                    
                     OnAnnouncementReceived?.Invoke(this, new AnnouncementServiceAnnouncementReceivedArgs(announcement));
                 }
             }

@@ -24,7 +24,7 @@ namespace Scraps.Next;
 public sealed class RtbTarget : TargetWithLayout
 {
     private readonly RichTextBox _rtb;
-    private readonly Color       _prefixColor = ColorTranslator.FromHtml("#334155");
+    private readonly Color       _prefixColor = ColorTranslator.FromHtml("#475569");
     private readonly Color       _traceColor  = ColorTranslator.FromHtml("#cbd5e1");
     private readonly Color       _debugColor  = ColorTranslator.FromHtml("#64748b");
     private readonly Color       _infoColor   = ColorTranslator.FromHtml("#0ea5e9");

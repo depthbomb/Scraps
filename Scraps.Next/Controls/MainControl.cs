@@ -224,5 +224,12 @@ public partial class MainControl : UserControl
             await _runner.StartAsync();
         }
     }
+
+    private void _ClearButton_Click(object sender, EventArgs e)
+    {
+        _ClearButton.Enabled = false;
+        _MainViewLog.Clear();
+        _ClearButton.Enabled = true;
+    }
     #endregion
 }

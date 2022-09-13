@@ -15,9 +15,6 @@
 					<a href="https://github.com/depthbomb/Scraps/releases/latest"><img src="https://img.shields.io/github/release-date/depthbomb/Scraps.svg?label=Released&logo=github&style=flat-square"></a>
 					<a href="https://github.com/depthbomb/Scraps/releases/latest"><img src="https://img.shields.io/github/downloads/depthbomb/Scraps/latest/total.svg?label=Release%20Downloads&logo=github&style=flat-square"></a>
 				</p>
-				<p>
-					<a href='https://ko-fi.com/O4O1DV77' target='_blank'><img height='36' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' alt='Buy Me a Coffee at ko-fi.com' /></a>
-				</p>
 				<img width="2000" height="0">
 			</td>
 		</tbody>
@@ -25,7 +22,7 @@
 </p>
 
 <p align="center">
-	<img src="https://files.catbox.moe/07ec3d.png">
+	<img src="https://i.imgur.com/Cn8r17B.png">
 </p>
 
 The idea for Scraps was conceived during one of my periods of "devious programming".

@@ -1,19 +1,20 @@
 # Changelog
 
 
-## 5.0.0.0 BETA
+## 5.0.0.0
 
 This major release includes a complete rewrite and reorganization of the application's backend which allows for rapid development of new features. This release also includes a overhauled UI to better convey information and make it more pleasant to interact with. Detailed changes are below.
 
 - The main (runner), settings, and about views are now accessed via tabs
 - The window can now be resized and maximized
 - Runner button now disables itself if your cookie is missing or invalid
-- Cookie input textbox now hides its contents and reveals them when the mouse is hovering
+- Cookie input now hides its contents and reveals them when the mouse is hovering
 - WebView2 runtime is now required and will be installed on launch if it isn't already
 - More granular logging
 - New app icon
 - Links in the runner view can now be opened
 - Added in-app won raffle viewing
+- Added button to clear runner log display
 - Added option to always display Scraps on top of all other windows
 - Added option to skip automatic update checking
 - Added option to skip announcement fetching

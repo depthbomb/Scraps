@@ -33,6 +33,7 @@ namespace Scraps.Next.Controls
             this._RunnerButton = new System.Windows.Forms.Button();
             this._MainViewLog = new System.Windows.Forms.RichTextBox();
             this._AlertLabel = new System.Windows.Forms.Label();
+            this._ClearButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // _RunnerButton
@@ -40,9 +41,9 @@ namespace Scraps.Next.Controls
             this._RunnerButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this._RunnerButton.Image = global::Scraps.Next.Resources.Images.control;
             this._RunnerButton.Location = new System.Drawing.Point(6, 371);
-            this._RunnerButton.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this._RunnerButton.Margin = new System.Windows.Forms.Padding(0, 0, 9, 0);
             this._RunnerButton.Name = "_RunnerButton";
-            this._RunnerButton.Size = new System.Drawing.Size(100, 24);
+            this._RunnerButton.Size = new System.Drawing.Size(90, 24);
             this._RunnerButton.TabIndex = 0;
             this._RunnerButton.Text = "Start";
             this._RunnerButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -71,17 +72,33 @@ namespace Scraps.Next.Controls
             // 
             this._AlertLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._AlertLabel.Location = new System.Drawing.Point(115, 371);
+            this._AlertLabel.Location = new System.Drawing.Point(207, 371);
             this._AlertLabel.Name = "_AlertLabel";
-            this._AlertLabel.Size = new System.Drawing.Size(703, 24);
+            this._AlertLabel.Size = new System.Drawing.Size(611, 24);
             this._AlertLabel.TabIndex = 3;
             this._AlertLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // _ClearButton
+            // 
+            this._ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this._ClearButton.Image = global::Scraps.Next.Resources.Images.broom;
+            this._ClearButton.Location = new System.Drawing.Point(105, 371);
+            this._ClearButton.Margin = new System.Windows.Forms.Padding(0, 0, 9, 0);
+            this._ClearButton.Name = "_ClearButton";
+            this._ClearButton.Size = new System.Drawing.Size(90, 24);
+            this._ClearButton.TabIndex = 4;
+            this._ClearButton.Text = "Clear";
+            this._ClearButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this._ClearButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this._ClearButton.UseVisualStyleBackColor = true;
+            this._ClearButton.Click += new System.EventHandler(this._ClearButton_Click);
             // 
             // MainControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this._ClearButton);
             this.Controls.Add(this._AlertLabel);
             this.Controls.Add(this._MainViewLog);
             this.Controls.Add(this._RunnerButton);
@@ -99,5 +116,6 @@ namespace Scraps.Next.Controls
         private Button _RunnerButton;
         private RichTextBox _MainViewLog;
         private Label _AlertLabel;
+        private Button _ClearButton;
     }
 }
