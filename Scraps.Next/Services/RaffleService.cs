@@ -266,7 +266,7 @@ public class RaffleService : IDisposable
             client.DefaultRequestHeaders.Add("user-agent", UserAgent);
             client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _cookie);
 
-        _log.Debug("Created HTTP client (cookie={First32},{Length})", _cookie[..32], _cookie.Length);
+        _log.Debug("Created HTTP client (cookie={First32}...{Last32},{Length})", _cookie[..32], _cookie[^32..], _cookie.Length);
         
         return client;
     }
