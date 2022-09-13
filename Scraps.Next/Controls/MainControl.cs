@@ -35,7 +35,6 @@ public partial class MainControl : UserControl
     private readonly AnnouncementService _announcement;
     private readonly RaffleService       _runner;
     private readonly SettingsService     _settings;
-    private readonly FlagsService        _flags;
     private readonly Image               _startIcon = Images.control;
     private readonly Image               _stopIcon  = Images.control_stop_square;
     private readonly Image               _errorIcon = Images.exclamation__frame;
@@ -57,12 +56,11 @@ public partial class MainControl : UserControl
         AccountBanned
     }
 
-    public MainControl(AnnouncementService announcement, RaffleService runner, SettingsService settings, FlagsService flags)
+    public MainControl(AnnouncementService announcement, RaffleService runner, SettingsService settings)
     {
         _announcement = announcement;
         _runner       = runner;
         _settings     = settings;
-        _flags        = flags;
         
         _announcement.OnAnnouncementReceived += AnnouncementOnAnnouncementReceived;
 
@@ -85,7 +83,7 @@ public partial class MainControl : UserControl
 
     private void AddRtbTarget()
     {
-        var debug  = _flags.HasFlag("Debug");
+        var debug  = Args.Has("debug");
         var config = LogManager.Configuration;
         var target = new RtbTarget(_MainViewLog)
         {
@@ -180,7 +178,7 @@ public partial class MainControl : UserControl
         SetAlert();
         SetRunnerButtonState(RunnerButtonState.Started, true);
     }
-    
+
     private void RaffleOnStopping(object sender, RaffleServiceStoppingArgs e)
         => SetRunnerButtonState(RunnerButtonState.Stopping, false);
 
@@ -211,7 +209,7 @@ public partial class MainControl : UserControl
         }
     }
 
-    private void _MainViewLog_LinkClicked(object sender, LinkClickedEventArgs e) => Utils.OpenUrl(e.LinkText);
+    private async void _MainViewLog_LinkClicked(object sender, LinkClickedEventArgs e) => await Utils.OpenUrl(e.LinkText);
     
     private void _MainViewLog_TextChanged(object sender, EventArgs e) => _ClearButton.Enabled = _MainViewLog.Text.Length > 0;
 

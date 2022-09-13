@@ -55,11 +55,11 @@ public partial class AboutControl : UserControl
         return buildDate.ToString("F");
     }
 
-    private void _RepositoryLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        => Utils.OpenUrl("https://github.com/depthbomb/Scraps");
+    private async void _RepositoryLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        => await Utils.OpenUrl("https://github.com/depthbomb/Scraps");
 
-    private void _SubmitIssueLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        => Utils.OpenUrl("https://github.com/depthbomb/Scraps/issues/new/choose");
+    private async void _SubmitIssueLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        => await Utils.OpenUrl("https://github.com/depthbomb/Scraps/issues/new/choose");
 
     private async void _CheckForUpdatesButton_Click(object sender, EventArgs e)
     {
@@ -93,9 +93,9 @@ public partial class AboutControl : UserControl
         _CheckForUpdatesButton.Enabled = true;
     }
 
-    private void _AuthorGithubLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        => Utils.OpenUrl("https://github.com/depthbomb");
+    private async void _AuthorGithubLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        => await Utils.OpenUrl("https://github.com/depthbomb");
 
-    private void _OpenLogsFolderButton_Click(object sender, EventArgs e)
-        => Process.Start("explorer", GlobalShared.LogsPath);
+    private async void _OpenLogsFolderButton_Click(object sender, EventArgs e)
+        => await Utils.OpenDirectory(GlobalShared.LogsPath);
 }

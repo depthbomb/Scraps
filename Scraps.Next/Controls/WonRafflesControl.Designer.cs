@@ -52,6 +52,7 @@ partial class WonRafflesControl
             // 
             // _StatusLabel
             // 
+            this._StatusLabel.BackColor = System.Drawing.Color.White;
             this._StatusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this._StatusLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this._StatusLabel.Location = new System.Drawing.Point(0, 0);

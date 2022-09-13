@@ -4,6 +4,9 @@
 
 - Fixed a potential crash when attempting to check for updates with no internet connection
 - Improved exception logging across the application
+- Adjusted background color of Won Raffles view's no cookie message 
+- Fixed links and some buttons briefly showing a console window when clicked
+- Added debug view
 
 ## 5.0.0.0
 

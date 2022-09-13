@@ -28,6 +28,8 @@ namespace Scraps.Next;
 internal static class Bootstrapper
 {
     public static           IServiceProvider Services { get; private set; }
+
+    private static Logger _log;
     
     private static readonly Mutex Mutex = new(false, GlobalShared.MutexName);
 
@@ -46,15 +48,18 @@ internal static class Bootstrapper
             return;
         }
         
-        #if DEBUG
-        Native.AllocConsole();
-        #endif
+        Args.Register("debug", "d");
+        Args.Parse(args);
+
+        if (Args.Has("debug"))
+        {
+            Native.AllocConsole();
+        }
 
         InitializeLogger();
 
-        var log = LogManager.GetCurrentClassLogger();
-        
-        log.Debug("Startup");
+        _log = LogManager.GetCurrentClassLogger();
+        _log.Debug("Startup");
         
         InitializeServices();
 
@@ -63,7 +68,7 @@ internal static class Bootstrapper
 
         if (!settings.Get<bool>("SeenInitialDisclaimer"))
         {
-            log.Debug("Showing first-time warning disclaimer");
+            _log.Debug("Showing first-time warning disclaimer");
             
             ShowDisclaimer();
             settings.Set("SeenInitialDisclaimer", true)
@@ -71,10 +76,6 @@ internal static class Bootstrapper
         }
 
         Services.GetRequiredService<WebViewService>().TryInstallRuntimeAsync().Wait();
-        
-        Services.GetRequiredService<FlagsService>()
-                .RegisterFlag("debug", "d")
-                .ParseFlags(args);
 
         if (settings.Get<bool>("CheckUpdates"))
         {
@@ -86,11 +87,11 @@ internal static class Bootstrapper
         
         var mainForm = Services.GetRequiredService<MainForm>();
             mainForm.TopMost     =  settings.Get<bool>("AlwaysOnTop");
-            mainForm.FormClosing += MainWindowOnFormClosing;
-        
-            
-        log.Debug("Displaying MainForm");
-        
+
+        _log.Debug("Displaying MainForm");
+
+        Application.ThreadException += ApplicationOnThreadException;
+        Application.ApplicationExit += ApplicationOnApplicationExit;
         Application.Run(mainForm);
     }
 
@@ -127,7 +128,6 @@ internal static class Bootstrapper
                    .AddSingleton<SettingsControl>()
                    .AddSingleton<AboutControl>()
                    // Services
-                   .AddSingleton<FlagsService>()
                    .AddSingleton<SettingsService>()
                    .AddSingleton<RaffleService>()
                    .AddSingleton<UpdateService>()
@@ -137,13 +137,22 @@ internal static class Bootstrapper
     }
 
     private static void ShowDisclaimer() => Utils.ShowWarning(null, "Disclaimer", Strings.DisclaimerText);
-
-    private static void MainWindowOnFormClosing(object sender, FormClosingEventArgs e)
+    
+    private static void ApplicationOnThreadException(object sender, ThreadExceptionEventArgs e)
     {
-        #if DEBUG
-        Native.FreeConsole();
-        #endif
+        var ex = e.Exception;
         
+        _log.Fatal(ex);
+
+        Utils.ShowError(null, "Error", $"The following error has occured:\n\n{ex.Message}\n\nThis error has been logged. Please report this if it keeps happening.");
+    }
+    
+    private static void ApplicationOnApplicationExit(object sender, EventArgs e)
+    {
+        _log.Debug("Shutdown");
+        
+        Native.FreeConsole();
         Mutex.ReleaseMutex();
+        LogManager.Shutdown();
     }
 }

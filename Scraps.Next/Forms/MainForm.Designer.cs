@@ -44,7 +44,11 @@ namespace Scraps.Next.Forms
             // 
             // MainWindowStatusStrip
             // 
+            this.MainWindowStatusStrip.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.MainWindowStatusStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.MainWindowStatusStrip.GripMargin = new System.Windows.Forms.Padding(0);
             this.MainWindowStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._MainWindowStatus,
             this._MainWindowSecondaryStatus});
@@ -59,16 +63,18 @@ namespace Scraps.Next.Forms
             this._MainWindowStatus.AutoSize = false;
             this._MainWindowStatus.BackColor = System.Drawing.Color.Transparent;
             this._MainWindowStatus.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this._MainWindowStatus.Margin = new System.Windows.Forms.Padding(0);
             this._MainWindowStatus.Name = "_MainWindowStatus";
-            this._MainWindowStatus.Size = new System.Drawing.Size(392, 17);
+            this._MainWindowStatus.Size = new System.Drawing.Size(785, 22);
             this._MainWindowStatus.Spring = true;
             this._MainWindowStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // _MainWindowSecondaryStatus
             // 
             this._MainWindowSecondaryStatus.BackColor = System.Drawing.Color.Transparent;
+            this._MainWindowSecondaryStatus.Margin = new System.Windows.Forms.Padding(0);
             this._MainWindowSecondaryStatus.Name = "_MainWindowSecondaryStatus";
-            this._MainWindowSecondaryStatus.Size = new System.Drawing.Size(392, 17);
+            this._MainWindowSecondaryStatus.Size = new System.Drawing.Size(0, 0);
             this._MainWindowSecondaryStatus.Spring = true;
             this._MainWindowSecondaryStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -78,6 +84,7 @@ namespace Scraps.Next.Forms
             this._MainWindowTabs.Location = new System.Drawing.Point(0, 0);
             this._MainWindowTabs.Margin = new System.Windows.Forms.Padding(0);
             this._MainWindowTabs.Name = "_MainWindowTabs";
+            this._MainWindowTabs.Padding = new System.Drawing.Point(3, 3);
             this._MainWindowTabs.SelectedIndex = 0;
             this._MainWindowTabs.Size = new System.Drawing.Size(800, 428);
             this._MainWindowTabs.TabIndex = 1;
@@ -107,10 +114,8 @@ namespace Scraps.Next.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.toolStripContainer1);
-            this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.MainWindowStatusStrip.ResumeLayout(false);

@@ -25,10 +25,10 @@ namespace Scraps.Next.Forms;
 
 public sealed partial class MainForm : Form
 {
-    private readonly Logger _log = LogManager.GetCurrentClassLogger();
-    
     private CancellationTokenSource _secondaryStatusCancelTokenSource = new();
-        
+    
+    private readonly Logger _log = LogManager.GetCurrentClassLogger();
+
     public MainForm(
         MainControl mainControl,
         WonRafflesControl wonRaffles,
@@ -47,9 +47,8 @@ public sealed partial class MainForm : Form
 
         Text        = GlobalShared.WindowTitle;
         MinimumSize = new Size(900, 525);
-
-        _MainWindowTabs.BackColor = Color.Transparent;
-        _MainWindowTabs.SizeMode  = TabSizeMode.Fixed;
+        
+        _MainWindowTabs.SizeMode = TabSizeMode.Fixed;
         _MainWindowTabs.ImageList = new ImageList
         {
             Images =
@@ -57,7 +56,8 @@ public sealed partial class MainForm : Form
                 Images.terminal,
                 Images.trophy,
                 Images.gear,
-                Images.information
+                Images.information,
+                Images.radar,
             }
         };
 
@@ -65,6 +65,12 @@ public sealed partial class MainForm : Form
         AddControlToTab(wonRaffles, "Won Raffles", 1);
         AddControlToTab(settingsControl, "Settings", 2);
         AddControlToTab(aboutControl, "About", 3);
+
+        if (Args.Has("debug"))
+        {
+            var debugControl = new DebugControl();
+            AddControlToTab(debugControl, "Debug", 4);
+        }
     }
 
     private void AddControlToTab(UserControl control, string name, int imageIndex)

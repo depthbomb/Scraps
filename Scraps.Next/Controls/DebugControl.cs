@@ -16,22 +16,25 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
-global using System;
-global using System.IO;
-global using System.Net;
-global using System.Linq;
-global using System.Net.Http;
-global using System.Threading;
-global using System.Text.Json;
-global using System.Configuration;
-global using System.Threading.Tasks;
-global using System.Collections.Generic;
-global using System.Text.RegularExpressions;
-global using System.Text.Json.Serialization;
+namespace Scraps.Next.Controls
+{
+    public partial class DebugControl : UserControl
+    {
+        public DebugControl()
+        {
+            InitializeComponent();
+        }
 
-global using Windows.Win32;
-global using Windows.System;
+        private async void _OpenSettingsFolder_Click(object sender, EventArgs e)
+        {
+            string path = Path.GetDirectoryName(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath);
 
-global using NLog;
-global using NLog.Config;
-global using NLog.Targets;
+            await Utils.OpenDirectory(path);
+        }
+
+        private void _ForceExceptionButton_Click(object sender, EventArgs e)
+        {
+            throw new DivideByZeroException();
+        }
+    }
+}

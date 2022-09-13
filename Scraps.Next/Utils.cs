@@ -16,8 +16,6 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
-using System.Diagnostics;
-
 using Scraps.Next.Extensions;
 
 namespace Scraps.Next;
@@ -39,8 +37,14 @@ public static class Utils
     public static Form GetFormByTitle(string title)
         => Application.OpenForms.Cast<Form>().FirstOrDefault(form => form.Text == title);
 
-    public static Process OpenUrl(string url)
-        => Process.Start(new ProcessStartInfo("cmd", $"/c start {url}"));
+    public static async Task<bool> OpenUrl(string url)
+        => await OpenUrl(new Uri(url));
+    
+    public static async Task<bool> OpenUrl(Uri uri)
+        => await Launcher.LaunchUriAsync(uri);
+
+    public static async Task<bool> OpenDirectory(string path)
+        => await Launcher.LaunchFolderPathAsync(path);
 
     /// <summary>
     /// Returns `true` if the provided cookie value is valid.

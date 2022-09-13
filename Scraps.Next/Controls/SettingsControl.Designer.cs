@@ -273,6 +273,7 @@ namespace Scraps.Next.Controls
             // 
             this._FetchAnnouncementsToggle.AutoSize = true;
             this._FetchAnnouncementsToggle.Location = new System.Drawing.Point(102, 363);
+            this._FetchAnnouncementsToggle.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
             this._FetchAnnouncementsToggle.Name = "_FetchAnnouncementsToggle";
             this._FetchAnnouncementsToggle.Size = new System.Drawing.Size(201, 19);
             this._FetchAnnouncementsToggle.TabIndex = 21;

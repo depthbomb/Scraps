@@ -2,19 +2,29 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net7.0-windows10.0.19041.0</TargetFramework>
     <Nullable>disable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <StartupObject>Scraps.Next.Bootstrapper</StartupObject>
     <AssemblyName>scraps</AssemblyName>
-    <LangVersion>latestmajor</LangVersion>
+    <LangVersion>11</LangVersion>
     <IsPackable>false</IsPackable>
     <Company>Caprine Logic</Company>
     <Product>Scraps</Product>
     <ApplicationIcon>Resources\Scraps.ico</ApplicationIcon>
     <AssemblyVersion>5.1.0.0</AssemblyVersion>
     <FileVersion>5.1.0.0</FileVersion>
+    <NeutralLanguage>en</NeutralLanguage>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

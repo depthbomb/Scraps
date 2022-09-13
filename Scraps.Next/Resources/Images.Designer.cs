@@ -193,6 +193,16 @@ namespace Scraps.Next.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap radar {
+            get {
+                object obj = ResourceManager.GetObject("radar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap scraps {
             get {
                 object obj = ResourceManager.GetObject("scraps", resourceCulture);
