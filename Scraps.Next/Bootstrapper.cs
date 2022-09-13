@@ -51,13 +51,20 @@ internal static class Bootstrapper
         #endif
 
         InitializeLogger();
+
+        var log = LogManager.GetCurrentClassLogger();
+        
+        log.Debug("Startup");
+        
         InitializeServices();
 
         var settings = Services.GetRequiredService<SettingsService>();
-        settings.TryUpgrade();
+            settings.TryUpgrade();
 
         if (!settings.Get<bool>("SeenInitialDisclaimer"))
         {
+            log.Debug("Showing first-time warning disclaimer");
+            
             ShowDisclaimer();
             settings.Set("SeenInitialDisclaimer", true)
                     .Save(false);
@@ -77,11 +84,14 @@ internal static class Bootstrapper
 
         ApplicationConfiguration.Initialize();
         
-        var mainWindow = Services.GetRequiredService<MainForm>();
-            mainWindow.TopMost     =  settings.Get<bool>("AlwaysOnTop");
-            mainWindow.FormClosing += MainWindowOnFormClosing;
+        var mainForm = Services.GetRequiredService<MainForm>();
+            mainForm.TopMost     =  settings.Get<bool>("AlwaysOnTop");
+            mainForm.FormClosing += MainWindowOnFormClosing;
         
-        Application.Run(mainWindow);
+            
+        log.Debug("Displaying MainForm");
+        
+        Application.Run(mainForm);
     }
 
     private static void InitializeLogger()
