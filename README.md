@@ -3,7 +3,7 @@
 		<tbody>
 			<td align="center">
 				<h1>Scraps</h1>
-				<p>A Scrap.TF Raffle Bot</p>
+				<p>A Scrap.TF Raffle Joining Bot</p>
 				<p>
 					<a href="https://github.com/depthbomb/Scraps/commits"><img src="https://img.shields.io/github/last-commit/depthbomb/Scraps.svg?label=Updated&logo=github&style=flat-square"></a>
 					<img src="https://img.shields.io/github/repo-size/depthbomb/Scraps.svg?label=Repo%20Size&logo=github&style=flat-square">

@@ -1,5 +1,5 @@
 #define MyAppName "Scraps"
-#define MyAppDescription "Scrap.TF Raffle Bot"
+#define MyAppDescription "Scrap.TF Raffle Joiner"
 #define MyAppVersion "5.0.0.0"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "scraps.exe"
