@@ -30,6 +30,7 @@ namespace Scraps.Next.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.MainWindowStatusStrip = new System.Windows.Forms.StatusStrip();
             this._MainWindowStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this._MainWindowSecondaryStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -59,7 +60,7 @@ namespace Scraps.Next.Forms
             this._MainWindowStatus.BackColor = System.Drawing.Color.Transparent;
             this._MainWindowStatus.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this._MainWindowStatus.Name = "_MainWindowStatus";
-            this._MainWindowStatus.Size = new System.Drawing.Size(377, 17);
+            this._MainWindowStatus.Size = new System.Drawing.Size(392, 17);
             this._MainWindowStatus.Spring = true;
             this._MainWindowStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -67,7 +68,7 @@ namespace Scraps.Next.Forms
             // 
             this._MainWindowSecondaryStatus.BackColor = System.Drawing.Color.Transparent;
             this._MainWindowSecondaryStatus.Name = "_MainWindowSecondaryStatus";
-            this._MainWindowSecondaryStatus.Size = new System.Drawing.Size(377, 17);
+            this._MainWindowSecondaryStatus.Size = new System.Drawing.Size(392, 17);
             this._MainWindowSecondaryStatus.Spring = true;
             this._MainWindowSecondaryStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -110,6 +111,7 @@ namespace Scraps.Next.Forms
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.toolStripContainer1);
             this.HelpButton = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.MainWindowStatusStrip.ResumeLayout(false);
             this.MainWindowStatusStrip.PerformLayout();

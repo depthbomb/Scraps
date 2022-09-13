@@ -124,7 +124,7 @@ namespace Scraps.Next.Controls
             this.panel2.Location = new System.Drawing.Point(9, 193);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(6);
-            this.panel2.Size = new System.Drawing.Size(702, 253);
+            this.panel2.Size = new System.Drawing.Size(830, 253);
             this.panel2.TabIndex = 1;
             // 
             // _LicenseTextLabel
@@ -132,7 +132,7 @@ namespace Scraps.Next.Controls
             this._LicenseTextLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this._LicenseTextLabel.Location = new System.Drawing.Point(6, 6);
             this._LicenseTextLabel.Name = "_LicenseTextLabel";
-            this._LicenseTextLabel.Size = new System.Drawing.Size(690, 239);
+            this._LicenseTextLabel.Size = new System.Drawing.Size(818, 239);
             this._LicenseTextLabel.TabIndex = 0;
             this._LicenseTextLabel.Text = "label4";
             // 
@@ -153,8 +153,9 @@ namespace Scraps.Next.Controls
             // 
             this._CheckForUpdatesButton.Image = global::Scraps.Next.Resources.Images.navigation_090;
             this._CheckForUpdatesButton.Location = new System.Drawing.Point(188, 67);
+            this._CheckForUpdatesButton.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
             this._CheckForUpdatesButton.Name = "_CheckForUpdatesButton";
-            this._CheckForUpdatesButton.Size = new System.Drawing.Size(153, 24);
+            this._CheckForUpdatesButton.Size = new System.Drawing.Size(156, 24);
             this._CheckForUpdatesButton.TabIndex = 11;
             this._CheckForUpdatesButton.Text = "Check for Updates";
             this._CheckForUpdatesButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -178,9 +179,8 @@ namespace Scraps.Next.Controls
             // 
             // _OpenLogsFolderButton
             // 
-            this._OpenLogsFolderButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this._OpenLogsFolderButton.Image = global::Scraps.Next.Resources.Images.folder_open_document_text;
-            this._OpenLogsFolderButton.Location = new System.Drawing.Point(717, 445);
+            this._OpenLogsFolderButton.Location = new System.Drawing.Point(353, 67);
             this._OpenLogsFolderButton.Name = "_OpenLogsFolderButton";
             this._OpenLogsFolderButton.Size = new System.Drawing.Size(122, 24);
             this._OpenLogsFolderButton.TabIndex = 8;
@@ -194,7 +194,7 @@ namespace Scraps.Next.Controls
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(31, 452);
+            this.label3.Location = new System.Drawing.Point(28, 453);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(248, 15);
             this.label3.TabIndex = 7;
