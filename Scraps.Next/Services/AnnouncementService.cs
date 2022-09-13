@@ -17,6 +17,7 @@
 #endregion
 
 using Scraps.Next.Events;
+using Scraps.Next.Extensions;
 
 namespace Scraps.Next.Services;
 
@@ -61,11 +62,14 @@ public class AnnouncementService : IDisposable
                 var announcementLines = contents.Split("\n").ToList();
                 
                 // Iterate through the announcements instead of adding them as a range so we can raise an event per announcement.
-                foreach (var announcement in announcementLines.Where(announcement => !_announcements.Contains(announcement)))
+                foreach (string announcement in announcementLines.Where(announcement => !_announcements.Contains(announcement)))
                 {
-                    _announcements.Add(announcement);
+                    if (!announcement.IsNullOrEmpty())
+                    {
+                        _announcements.Add(announcement);
                     
-                    OnAnnouncementReceived?.Invoke(this, new AnnouncementServiceAnnouncementReceivedArgs(announcement));
+                        OnAnnouncementReceived?.Invoke(this, new AnnouncementServiceAnnouncementReceivedArgs(announcement));
+                    }
                 }
             }
             else
