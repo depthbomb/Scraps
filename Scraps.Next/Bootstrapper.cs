@@ -143,5 +143,7 @@ internal static class Bootstrapper
         #if DEBUG
         Native.FreeConsole();
         #endif
+        
+        Mutex.ReleaseMutex();
     }
 }
