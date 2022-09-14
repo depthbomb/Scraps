@@ -276,8 +276,7 @@ public partial class RaffleService : IDisposable
         Broadcast("Grabbing CSRF token");
         
         string html = await GetStringAsync();
-        
-        var csrf = _csrfRegex.Match(html);
+        var    csrf = _csrfRegex.Match(html);
         if (csrf.Success)
         {
             string csrfToken = csrf.Groups["CsrfToken"].Value;
