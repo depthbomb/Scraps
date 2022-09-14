@@ -95,7 +95,7 @@ public partial class RaffleService : IDisposable
     private const string AccountBannedString   = "You have received a site-ban";
     private const string ProfileNotSetUpString = "Scrap.TF requires your Steam profile and inventory set to <b>Public</b> visibility.";
     private const string SiteDownString        = "<div class=\"dialog-title\">We're down!</div>";
-    private const string CloudflareString      = "cf-wrapper";
+    private const string CloudflareString      = "challenge-form";
     private const string UserAgent             = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
     
     private string                  _cookie;
@@ -286,18 +286,6 @@ public partial class RaffleService : IDisposable
             
             return csrfToken;
         }
-        
-        if (html.Contains(CloudflareString))
-            throw new CloudflareException("Scrap.TF is displaying a Cloudflare challenge, Scraps cannot continue.");
-
-        if (html.Contains(AccountBannedString))
-            throw await ThrowAccountBannedAsync();
-        
-        if (html.Contains(ProfileNotSetUpString))
-            throw new ProfileNotSetUpException("Profile is not set up to use Scrap.TF. See the website for more info.");
-        
-        if (html.Contains(SiteDownString))
-            throw new MaintenanceException("Site appears to be down/under maintenance.");
 
         throw new Exception("Unable to retrieve CSRF token. Please check your cookie value.");
     }
@@ -578,6 +566,19 @@ public partial class RaffleService : IDisposable
         }
         
         string body = await res.Content.ReadAsStringAsync(_cancelToken);
+        
+        if (body.Contains(CloudflareString))
+            throw new CloudflareException("Scrap.TF is displaying a Cloudflare challenge, Scraps cannot continue.");
+        
+        if (body.Contains(AccountBannedString))
+            throw await ThrowAccountBannedAsync();
+        
+        if (body.Contains(ProfileNotSetUpString))
+            throw new ProfileNotSetUpException("Profile is not set up to use Scrap.TF. See the website for more info.");
+        
+        if (body.Contains(SiteDownString))
+            throw new MaintenanceException("Site appears to be down/under maintenance.");
+        
         _log.Error("Unable to get string: {Reason}", res.ReasonPhrase);
         _log.Error(body);
 
