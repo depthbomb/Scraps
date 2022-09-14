@@ -26,15 +26,9 @@ public static partial class Args
         public string ShortName { get; init; }
         public bool   Active    { get; set; }
     }
-    
-    private static readonly IList<Arg> _args;
-    private static readonly Regex      _argPrefixRegex;
 
-    static Args()
-    {
-        _args           = new List<Arg>();
-        _argPrefixRegex = ArgPrefixRegex();
-    }
+    private static readonly IList<Arg> _args           = new List<Arg>();
+    private static readonly Regex      _argPrefixRegex = new("(/|--?)", RegexOptions.Compiled);
 
     /// <summary>
     /// Parses program args and sets registered args active if applicable.
@@ -91,7 +85,4 @@ public static partial class Args
         
         return registeredArg;
     }
-
-    [RegexGenerator("(/|--?)", RegexOptions.Compiled)]
-    private static partial Regex ArgPrefixRegex();
 }

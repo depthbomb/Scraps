@@ -114,12 +114,12 @@ public partial class RaffleService : IDisposable
     private readonly HtmlParser      _html            = new();
     private readonly List<string>    _raffleQueue     = new();
     private readonly List<string>    _enteredRaffles  = new();
-    private readonly Regex           _csrfRegex       = CsrfRegex();
-    private readonly Regex           _banReasonRegex  = BanReasonRegex();
-    private readonly Regex           _wonRafflesRegex = WonRafflesRegex();
-    private readonly Regex           _entryRegex      = EntryRegex();
-    private readonly Regex           _hashRegex       = HashRegex();
-    private readonly Regex           _limitRegex      = LimitRegex();
+    private readonly Regex           _csrfRegex       = new(@"value=""(?<CsrfToken>[a-f\d]{64})""");
+    private readonly Regex           _banReasonRegex  = new(@"<b>Reason:<\/b> (?<Reason>[\w\s]+)");
+    private readonly Regex           _wonRafflesRegex = new(@"You've won \d raffles? that must be withdrawn");
+    private readonly Regex           _entryRegex      = new(@"ScrapTF\.Raffles\.RedirectToRaffle\('(?<RaffleId>[A-Z0-9]{6,})'\)", RegexOptions.Compiled);
+    private readonly Regex           _hashRegex       = new(@"EnterRaffle\('(?<RaffleId>[A-Z0-9]{6,})', '(?<RaffleHash>[a-f0-9]{64})'", RegexOptions.Compiled);
+    private readonly Regex           _limitRegex      = new(@"total=""(?<Entered>\d+)"" data-max=""(?<Max>\d+)", RegexOptions.Compiled);
 
     public RaffleService(SettingsService settings)
     {
@@ -589,24 +589,6 @@ public partial class RaffleService : IDisposable
         string banReason = await GetBanReasonAsync();
         return new AccountBannedException(banReason);
     }
-
-    [RegexGenerator("value=\"(?<CsrfToken>[a-f\\d]{64})\"", RegexOptions.Compiled)]
-    private static partial Regex CsrfRegex();
-    
-    [RegexGenerator("<b>Reason:<\\/b> (?<Reason>[\\w\\s]+)", RegexOptions.Compiled)]
-    private static partial Regex BanReasonRegex();
-    
-    [RegexGenerator("You've won \\d raffles? that must be withdrawn", RegexOptions.Compiled)]
-    private static partial Regex WonRafflesRegex();
-    
-    [RegexGenerator("ScrapTF\\.Raffles\\.RedirectToRaffle\\('(?<RaffleId>[A-Z0-9]{6,})'\\)", RegexOptions.Compiled)]
-    private static partial Regex EntryRegex();
-    
-    [RegexGenerator("EnterRaffle\\('(?<RaffleId>[A-Z0-9]{6,})', '(?<RaffleHash>[a-f0-9]{64})'", RegexOptions.Compiled)]
-    private static partial Regex HashRegex();
-    
-    [RegexGenerator("total=\"(?<Entered>\\d+)\" data-max=\"(?<Max>\\d+)", RegexOptions.Compiled)]
-    private static partial Regex LimitRegex();
 
     #endregion
 }

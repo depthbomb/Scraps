@@ -23,7 +23,7 @@ public partial class BannedEntriesVector : IHoneypotVector
     public bool   Detected     { get; private set; }
     public string DetectReason { get; private set; }
     
-    private readonly Regex _bannedUsersRegex = BannedUserRegex();
+    private readonly Regex _bannedUsersRegex = new("<img class='tiny-raffle-avatar\\s?' style='border-color:\\s?#CC1100;?' src='(.*)' loading=\"lazy\"\\s?\\/>", RegexOptions.Compiled);
     
     public void Check(string html)
     {
@@ -35,7 +35,4 @@ public partial class BannedEntriesVector : IHoneypotVector
             DetectReason = $"{entries.Count} users who entered this raffle are now banned";
         }
     }
-
-    [RegexGenerator("<img class='tiny-raffle-avatar\\s?' style='border-color:\\s?#CC1100;?' src='(.*)' loading=\"lazy\"\\s?\\/>", RegexOptions.Compiled)]
-    private static partial Regex BannedUserRegex();
 }

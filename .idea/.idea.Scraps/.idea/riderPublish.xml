@@ -3,8 +3,6 @@
   <component name="LocationsWithSilentDeleteHolder">
     <option name="locations">
       <list>
-        <option value="$PROJECT_DIR$/Scraps.GUI/bin/Release/net7.0-windows10.0.22621.0/win-x64/publish" />
-        <option value="$PROJECT_DIR$/Scraps.GUI/bin/Publish/win-x64" />
         <option value="$PROJECT_DIR$/Scraps/bin/Publish" />
       </list>
     </option>
