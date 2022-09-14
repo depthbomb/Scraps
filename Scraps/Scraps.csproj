@@ -8,7 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <StartupObject>Scraps.Bootstrapper</StartupObject>
     <AssemblyName>scraps</AssemblyName>
-    <LangVersion>latestmajor</LangVersion>
+    <LangVersion>preview</LangVersion>
     <IsPackable>false</IsPackable>
     <Company>Caprine Logic</Company>
     <Product>Scraps</Product>
@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.17.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-preview.7.22375.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-rc.1.22426.10" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1369-prerelease" />
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.2.46-beta">
       <PrivateAssets>all</PrivateAssets>

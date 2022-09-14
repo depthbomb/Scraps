@@ -28,7 +28,6 @@ public partial class BannedEntriesVector : IHoneypotVector
     public void Check(string html)
     {
         var entries = _bannedUsersRegex.Matches(html);
-
         if (entries.Count > 1)
         {
             Detected     = true;

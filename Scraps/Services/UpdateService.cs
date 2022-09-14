@@ -60,8 +60,6 @@ public class UpdateService : IDisposable
 
     public bool IsUpdateAvailable => _updateAvailable;
 
-    public string GetUpdateBody() => _latestRelease?.Body;
-
     public async Task CheckForUpdatesAsync()
     {
         _log.Debug("Checking for updates");

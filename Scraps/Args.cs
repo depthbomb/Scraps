@@ -18,7 +18,7 @@
 
 namespace Scraps;
 
-public static partial class Args
+public static class Args
 {
     private record Arg
     {

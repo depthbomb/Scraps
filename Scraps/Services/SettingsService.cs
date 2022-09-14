@@ -26,14 +26,13 @@ public class SettingsService : IDisposable
     public event EventHandler<SettingsServiceSavedArgs> OnSaved;
     public event EventHandler<SettingsServiceResetArgs> OnReset;
 
-    public UserSettings Settings => _settings;
+    public UserSettings Settings { get; }
 
-    private readonly UserSettings _settings;
     private readonly Logger       _log = LogManager.GetCurrentClassLogger();
 
     public SettingsService()
     {
-        _settings = UserSettings.Default;
+        Settings = UserSettings.Default;
     }
 
     ~SettingsService() => Dispose();
@@ -49,9 +48,9 @@ public class SettingsService : IDisposable
     /// <returns><see cref="SettingsService"/></returns>
     public SettingsService Set<T>(string key, T value)
     {
-        if (_settings[key] != null)
+        if (Settings[key] != null)
         {
-            _settings[key] = value;
+            Settings[key] = value;
             
             _log.Debug("Set {Key} to {Value}", key, value);
         }
@@ -67,18 +66,18 @@ public class SettingsService : IDisposable
     /// <returns>The value if it exists, `null` otherwise</returns>
     public T Get<T>(string key)
     {
-        return (T)_settings[key];
+        return (T)Settings[key];
     }
 
     /// <summary>
     /// Returns `true` settings require an upgrade after a new installation.
     /// </summary>
-    public bool RequireUpgrade() => _settings.UpgradeRequired;
+    public bool RequireUpgrade() => Settings.UpgradeRequired;
 
     /// <inheritdoc cref="ApplicationSettingsBase.Upgrade()"/>
     public void Upgrade()
     {
-        _settings.Upgrade();
+        Settings.Upgrade();
         Set("UpgradeRequired", false);
         Save(false);
         
@@ -99,14 +98,14 @@ public class SettingsService : IDisposable
     /// <param name="reload">Reloads the values on retrieval from storage. See <see cref="ApplicationSettingsBase.Reload()">ApplicationSettingsBase.Reload()</see>.</param>
     public void Save(bool reload = true)
     {
-        _settings.Save();
+        Settings.Save();
 
         if (reload)
         {
-            _settings.Reload();
+            Settings.Reload();
         }
         
-        OnSaved?.Invoke(this, new SettingsServiceSavedArgs(_settings));
+        OnSaved?.Invoke(this, new SettingsServiceSavedArgs(Settings));
         
         _log.Debug("Saved settings (reload={Reload})", reload);
     }
@@ -116,9 +115,9 @@ public class SettingsService : IDisposable
     /// </summary>
     public void Reset()
     {
-        _settings.Reset();
+        Settings.Reset();
         
-        OnReset?.Invoke(this, new SettingsServiceResetArgs(_settings));
+        OnReset?.Invoke(this, new SettingsServiceResetArgs(Settings));
         
         _log.Debug("Reset settings to defaults");
     }
