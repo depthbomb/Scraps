@@ -3,6 +3,7 @@
 ## 5.2.0.0
 
 - Improved checking for CloudFlare, account banned, profile not set up, and site maintenance cases
+- Fixed secondary status text not appearing
 
 ## 5.1.0.0
 

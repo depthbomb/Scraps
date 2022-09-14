@@ -44,9 +44,6 @@ namespace Scraps.Forms
             // 
             // MainWindowStatusStrip
             // 
-            this.MainWindowStatusStrip.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.MainWindowStatusStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.MainWindowStatusStrip.GripMargin = new System.Windows.Forms.Padding(0);
             this.MainWindowStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -62,19 +59,21 @@ namespace Scraps.Forms
             // 
             this._MainWindowStatus.AutoSize = false;
             this._MainWindowStatus.BackColor = System.Drawing.Color.Transparent;
-            this._MainWindowStatus.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this._MainWindowStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this._MainWindowStatus.Margin = new System.Windows.Forms.Padding(0);
             this._MainWindowStatus.Name = "_MainWindowStatus";
-            this._MainWindowStatus.Size = new System.Drawing.Size(785, 22);
+            this._MainWindowStatus.Size = new System.Drawing.Size(392, 22);
             this._MainWindowStatus.Spring = true;
             this._MainWindowStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // _MainWindowSecondaryStatus
             // 
+            this._MainWindowSecondaryStatus.AutoSize = false;
             this._MainWindowSecondaryStatus.BackColor = System.Drawing.Color.Transparent;
+            this._MainWindowSecondaryStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this._MainWindowSecondaryStatus.Margin = new System.Windows.Forms.Padding(0);
             this._MainWindowSecondaryStatus.Name = "_MainWindowSecondaryStatus";
-            this._MainWindowSecondaryStatus.Size = new System.Drawing.Size(0, 0);
+            this._MainWindowSecondaryStatus.Size = new System.Drawing.Size(392, 22);
             this._MainWindowSecondaryStatus.Spring = true;
             this._MainWindowSecondaryStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
