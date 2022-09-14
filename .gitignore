@@ -3,12 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-Scraps.GUI/Internal.cs
-
-setup/*.aip
-setup/Setup Files/
-setup/Scraps-cache/
-setup/Prerequisites/
+.idea/
 
 # User-specific files
 *.rsuser
