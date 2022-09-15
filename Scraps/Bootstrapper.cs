@@ -66,18 +66,17 @@ internal static class Bootstrapper
         var settings = Services.GetRequiredService<SettingsService>();
             settings.TryUpgrade();
 
-        if (!settings.Get<bool>("SeenInitialDisclaimer"))
+        if (!settings.GetBool("SeenWarningDisclaimer"))
         {
             _log.Debug("Showing first-time warning disclaimer");
             
             ShowDisclaimer();
-            settings.Set("SeenInitialDisclaimer", true)
-                    .Save(false);
+            settings.Set("SeenWarningDisclaimer", true);
         }
 
         Services.GetRequiredService<WebViewService>().TryInstallRuntimeAsync().Wait();
 
-        if (settings.Get<bool>("CheckUpdates"))
+        if (settings.GetBool("CheckUpdates"))
         {
             Services.GetRequiredService<UpdateService>()
                     .CheckUntilUpdateAvailable();
@@ -86,7 +85,7 @@ internal static class Bootstrapper
         ApplicationConfiguration.Initialize();
         
         var mainForm = Services.GetRequiredService<MainForm>();
-            mainForm.TopMost     =  settings.Get<bool>("AlwaysOnTop");
+            mainForm.TopMost = settings.GetBool("AlwaysOnTop");
 
         _log.Debug("Displaying MainForm");
 

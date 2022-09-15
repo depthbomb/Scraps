@@ -163,11 +163,11 @@ public partial class RaffleService : IDisposable
         {
             _http          = CreateHttpClient();
             _csrfToken     = await GetCsrfTokenAsync();
-            _scanDelay     = _settings.Get<int>("ScanDelay");
-            _joinDelay     = _settings.Get<int>("JoinDelay");
-            _paginateDelay = _settings.Get<int>("PaginateDelay");
+            _scanDelay     = _settings.GetInt("ScanDelay");
+            _joinDelay     = _settings.GetInt("JoinDelay");
+            _paginateDelay = _settings.GetInt("PaginateDelay");
             
-            bool incrementScanDelay = _settings.Get<bool>("IncrementScanDelay");
+            bool incrementScanDelay = _settings.GetBool("IncrementScanDelay");
 
             Running = true;
 
@@ -183,7 +183,7 @@ public partial class RaffleService : IDisposable
                 {
                     Broadcast("Joining raffles");
 
-                    _scanDelay = _settings.Get<int>("ScanDelay");
+                    _scanDelay = _settings.GetInt("ScanDelay");
 
                     await JoinRafflesAsync();
 
@@ -253,7 +253,7 @@ public partial class RaffleService : IDisposable
         _log.Debug("Creating HTTP client");
         
         _http?.Dispose();
-        _cookie = _settings.Get<string>("Cookie");
+        _cookie = _settings.GetString("Cookie");
         var cookies = new CookieContainer();
         var handler = new HttpClientHandler
         {
@@ -414,7 +414,7 @@ public partial class RaffleService : IDisposable
             var    hashMatch   = _hashRegex.Match(html);
             var    limitsMatch = _limitRegex.Match(html);
             bool   hasEnded    = html.Contains(@"data-time=""Raffle Ended""");
-            bool   paranoid    = _settings.Get<bool>("Paranoid");
+            bool   paranoid    = _settings.GetBool("Paranoid");
             
             if (hasEnded)
             {

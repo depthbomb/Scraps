@@ -1,6 +1,6 @@
 #define MyAppName "Scraps"
 #define MyAppDescription "Scrap.TF Raffle Joiner"
-#define MyAppVersion "5.2.0.0"
+#define MyAppVersion "5.3.0.0"
 #define MyAppPublisher "Caprine Logic"
 #define MyAppExeName "scraps.exe"
 #define MyAppCopyright "Copyright (C) 2022 Caprine Logic"

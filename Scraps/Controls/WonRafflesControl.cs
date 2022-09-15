@@ -78,7 +78,7 @@ public partial class WonRafflesControl : UserControl
         ClearBrowserData();
         _WebView.CoreWebView2.CookieManager.DeleteAllCookies();
         _WebView.CoreWebView2.CookieManager.AddOrUpdateCookie(
-            _WebView.CoreWebView2.CookieManager.CreateCookie("scr_session", _settings.Get<string>("Cookie"), "scrap.tf", "/")
+            _WebView.CoreWebView2.CookieManager.CreateCookie("scr_session", _settings.GetString("Cookie"), "scrap.tf", "/")
         );
     }
 
@@ -86,9 +86,7 @@ public partial class WonRafflesControl : UserControl
     {
         if (addCookie)
         {
-            _WebView.CoreWebView2.CookieManager.AddOrUpdateCookie(
-                _WebView.CoreWebView2.CookieManager.CreateCookie("scr_session", _settings.Get<string>("Cookie"), "scrap.tf", "/")
-            );
+            AddCookie();
         }
         
         _WebView.CoreWebView2.Navigate(SourceUrl);
@@ -120,15 +118,15 @@ public partial class WonRafflesControl : UserControl
         => NavigateToWonRafflesPage(false);
 
     private void SettingsOnSaved(object sender, SettingsServiceSavedArgs e)
-        => SetStatusFromCookie(e.Settings.Cookie);
+        => SetStatusFromCookie(_settings.GetString("Cookie"));
 
     private void SettingsOnReset(object sender, SettingsServiceResetArgs e)
-        => SetStatusFromCookie(e.Settings.Cookie);
+        => SetStatusFromCookie(_settings.GetString("Cookie"));
     #endregion
     
     #region Control Event Subscriptions
     private void WonRafflesControl_Load(object sender, EventArgs e)
-        => SetStatusFromCookie(_settings.Get<string>("Cookie"));
+        => SetStatusFromCookie(_settings.GetString("Cookie"));
     
     private void WebViewOnNavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
     {

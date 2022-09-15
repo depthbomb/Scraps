@@ -20,7 +20,6 @@ using Scraps.Events;
 using Scraps.Services;
 using Scraps.Resources;
 using Scraps.Extensions;
-using Scraps.Properties;
 
 namespace Scraps.Controls;
 
@@ -64,10 +63,10 @@ public partial class MainControl : UserControl
         
         _announcement.OnAnnouncementReceived += AnnouncementOnAnnouncementReceived;
 
-        _runner.OnStarting += RaffleOnStarting;
-        _runner.OnStarted  += RaffleOnStarted;
-        _runner.OnStopping += RaffleOnStopping;
-        _runner.OnStopped  += RaffleOnStopped;
+        _runner.OnStarting            += RaffleOnStarting;
+        _runner.OnStarted             += RaffleOnStarted;
+        _runner.OnStopping            += RaffleOnStopping;
+        _runner.OnStopped             += RaffleOnStopped;
         _runner.OnWithdrawalAvailable += RunnerOnWithdrawalAvailable;
 
         _settings.OnSaved += SettingsOnSaved;
@@ -78,7 +77,7 @@ public partial class MainControl : UserControl
 
         _RunnerButton.Click += RunnerButtonOnClick;
 
-        ValidateCookie(settings.Settings);
+        ValidateCookie(_settings.GetString("Cookie"));
     }
 
     private void AddRtbTarget()
@@ -148,11 +147,11 @@ public partial class MainControl : UserControl
         }
     }
 
-    private void ValidateCookie(UserSettings settings)
+    private void ValidateCookie(string cookie)
     {
         if (!_runner.Running)
         {
-            if (Utils.IsValidCookie(settings.Cookie))
+            if (Utils.IsValidCookie(cookie))
             {
                 SetRunnerButtonState(RunnerButtonState.Stopped, true);
                 SetAlert();
@@ -192,10 +191,10 @@ public partial class MainControl : UserControl
         => SetAlert(AlertState.WonRaffle, e.Message);
 
     private void SettingsOnSaved(object sender, SettingsServiceSavedArgs e)
-        => ValidateCookie(e.Settings);
+        => ValidateCookie(_settings.GetString("Cookie"));
     
     private void SettingsOnReset(object sender, SettingsServiceResetArgs e)
-        => ValidateCookie(e.Settings);
+        => ValidateCookie(_settings.GetString("Cookie"));
 
     #endregion
     
@@ -203,7 +202,7 @@ public partial class MainControl : UserControl
 
     private async void MainControl_Load(object sender, EventArgs e)
     {
-        if (_settings.Get<bool>("FetchAnnouncements"))
+        if (_settings.GetBool("FetchAnnouncements"))
         {
             await _announcement.FetchAnnouncementsAsync();
         }

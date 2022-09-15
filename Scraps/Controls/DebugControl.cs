@@ -16,12 +16,19 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
+using Microsoft.Win32;
+using Scraps.Services;
+
 namespace Scraps.Controls
 {
     public partial class DebugControl : UserControl
     {
-        public DebugControl()
+        private readonly SettingsService _settings;
+        
+        public DebugControl(SettingsService settings)
         {
+            _settings = settings;
+            
             InitializeComponent();
         }
 
@@ -35,6 +42,20 @@ namespace Scraps.Controls
         private void _ForceExceptionButton_Click(object sender, EventArgs e)
         {
             throw new DivideByZeroException();
+        }
+
+        private void _DeleteSettingsSubKeyButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Registry.CurrentUser.DeleteSubKey(_settings.FullSettingsKey);
+
+                Utils.ShowInfo(Utils.GetMainForm(), "Debug", "Settings subkey deleted, exiting");
+            }
+            finally
+            {
+                Application.Exit();
+            }
         }
     }
 }

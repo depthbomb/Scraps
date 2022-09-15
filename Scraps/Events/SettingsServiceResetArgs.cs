@@ -16,16 +16,8 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
-using Scraps.Properties;
-
 namespace Scraps.Events;
 
 public class SettingsServiceResetArgs : EventArgs
 {
-    public UserSettings Settings { get; set; }
-    
-    public SettingsServiceResetArgs(UserSettings settings)
-    {
-        Settings = settings;
-    }
 }

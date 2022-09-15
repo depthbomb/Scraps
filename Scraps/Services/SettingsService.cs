@@ -16,109 +16,124 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
+using Microsoft.Win32;
+using System.Reflection;
+
 using Scraps.Events;
-using Scraps.Properties;
 
 namespace Scraps.Services;
 
-public class SettingsService : IDisposable
+public class SettingsService
 {
     public event EventHandler<SettingsServiceSavedArgs> OnSaved;
     public event EventHandler<SettingsServiceResetArgs> OnReset;
-
-    public UserSettings Settings { get; }
-
-    private readonly Logger       _log = LogManager.GetCurrentClassLogger();
-
-    public SettingsService()
-    {
-        Settings = UserSettings.Default;
-    }
-
-    ~SettingsService() => Dispose();
     
-    public void Dispose() => Save(false);
+    public readonly string FullSettingsKey = "Software\\Caprine Logic\\Scraps\\Settings";
 
-    /// <summary>
-    /// Sets a property value. Does NOT save.
-    /// </summary>
-    /// <param name="key">The name of the property to set</param>
-    /// <param name="value">The value to set the property to</param>
-    /// <typeparam name="T">The type to cast the property value to</typeparam>
-    /// <returns><see cref="SettingsService"/></returns>
-    public SettingsService Set<T>(string key, T value)
+    // Default settings values
+    private const string Cookie                = "";
+    private const int    ScanDelay             = 5000;
+    private const int    PaginateDelay         = 500;
+    private const int    JoinDelay             = 4000;
+    private const bool   IncrementScanDelay    = true;
+    private const bool   SortByNew             = true;
+    private const bool   Paranoid              = false;
+    private const bool   AlwaysOnTop           = false;
+    private const bool   CheckUpdates          = true;
+    private const bool   FetchAnnouncements    = true;
+    private const bool   SeenWarningDisclaimer = false;
+
+    private readonly Logger _log = LogManager.GetCurrentClassLogger();
+
+    public SettingsService Set(string settingKey, object settingValue)
     {
-        if (Settings[key] != null)
+        using (var key = Registry.CurrentUser.OpenSubKey(FullSettingsKey, true))
         {
-            Settings[key] = value;
+            if (settingValue is int)
+            {
+                key.SetValue(settingKey, settingValue, RegistryValueKind.String);
+            }
+            else
+            {
+                key.SetValue(settingKey, settingValue);
+            }
             
-            _log.Debug("Set {Key} to {Value}", key, value);
+            _log.Debug("Set {Key} to {Value}", settingKey, settingValue);
         }
         
+        OnSaved?.Invoke(this, new SettingsServiceSavedArgs());
+
         return this;
     }
+
+    public int GetInt(string settingKey) => Convert.ToInt32(Get(settingKey));
+
+    public bool GetBool(string settingKey) => Convert.ToBoolean(Get(settingKey));
+
+    public string GetString(string settingKey) => (string)Get(settingKey);
+
+    public object Get(string settingKey)
+    {
+        using (var key = Registry.CurrentUser.OpenSubKey(FullSettingsKey, false))
+        {
+            return (string)key.GetValue(settingKey);
+        }
+    }
     
-    /// <summary>
-    /// Retrieves a setting value if it exists.
-    /// </summary>
-    /// <param name="key">The key of the property to retrieve</param>
-    /// <typeparam name="T">The type to cast the return value to</typeparam>
-    /// <returns>The value if it exists, `null` otherwise</returns>
-    public T Get<T>(string key)
+    public void TryUpgrade(bool reset = false)
     {
-        return (T)Settings[key];
-    }
-
-    /// <summary>
-    /// Returns `true` settings require an upgrade after a new installation.
-    /// </summary>
-    public bool RequireUpgrade() => Settings.UpgradeRequired;
-
-    /// <inheritdoc cref="ApplicationSettingsBase.Upgrade()"/>
-    public void Upgrade()
-    {
-        Settings.Upgrade();
-        Set("UpgradeRequired", false);
-        Save(false);
+        CreateSubKey();
         
-        _log.Debug("Upgraded settings from previous installation");
-    }
-
-    public void TryUpgrade()
-    {
-        if (RequireUpgrade())
+        var fields = GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+        foreach (var field in fields)
         {
-            Upgrade();
+            bool isConst = field.IsLiteral && !field.IsInitOnly;
+            if (isConst)
+            {
+                using (var key = Registry.CurrentUser.OpenSubKey(FullSettingsKey, true))
+                {
+                    string fieldName  = field.Name;
+                    object fieldValue = field.GetValue(null);
+                    if (key.GetValue(fieldName) == null || reset)
+                    {
+                        if (fieldValue is int)
+                        {
+                            key.SetValue(fieldName, fieldValue, RegistryValueKind.String);
+                        }
+                        else
+                        {
+                            key.SetValue(fieldName, fieldValue);
+                        }
+                        
+                        _log.Debug("Set {Key} to {Value}", fieldName, fieldValue);
+                    }
+                }
+            }
+        }
+
+        if (reset)
+        {
+            OnReset?.Invoke(this, new SettingsServiceResetArgs());
+            
+            _log.Debug("Settings reset to default values");
         }
     }
 
-    /// <summary>
-    /// Saves the current properties to persistent storage. See <see cref="ApplicationSettingsBase.Save()">ApplicationSettingsBase.Save()</see>.
-    /// </summary>
-    /// <param name="reload">Reloads the values on retrieval from storage. See <see cref="ApplicationSettingsBase.Reload()">ApplicationSettingsBase.Reload()</see>.</param>
-    public void Save(bool reload = true)
+    private void CreateSubKey()
     {
-        Settings.Save();
-
-        if (reload)
+        if (!HasSubKey())
         {
-            Settings.Reload();
+            Registry.CurrentUser.CreateSubKey(FullSettingsKey);
+            
+            _log.Debug("Created settings registry subkey at {KeyPath}", FullSettingsKey);
         }
-        
-        OnSaved?.Invoke(this, new SettingsServiceSavedArgs(Settings));
-        
-        _log.Debug("Saved settings (reload={Reload})", reload);
     }
 
-    /// <summary>
-    /// Resets properties to their default values. See <see cref="ApplicationSettingsBase.Reset()">ApplicationSettingsBase.Reset()</see>.
-    /// </summary>
-    public void Reset()
+    private bool HasSubKey()
     {
-        Settings.Reset();
-        
-        OnReset?.Invoke(this, new SettingsServiceResetArgs(Settings));
-        
-        _log.Debug("Reset settings to defaults");
+        using (var key = Registry.CurrentUser.OpenSubKey(FullSettingsKey, false))
+        {
+            return key != null;
+        }
     }
 }

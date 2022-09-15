@@ -28,8 +28,9 @@ namespace Scraps.Forms;
 public sealed partial class MainForm : Form
 {
     private CancellationTokenSource _secondaryStatusCancelTokenSource = new();
-    
-    private readonly Logger _log = LogManager.GetCurrentClassLogger();
+
+    private readonly SettingsService _settings;
+    private readonly Logger          _log = LogManager.GetCurrentClassLogger();
 
     public MainForm(
         MainControl mainControl,
@@ -41,8 +42,10 @@ public sealed partial class MainForm : Form
         UpdateService update
     )
     {
+        _settings = settings;
+        
         runner.OnStatus          += RunnerOnStatus;
-        settings.OnSaved         += SettingsOnSaved;
+        _settings.OnSaved        += SettingsOnSaved;
         update.OnCheckingUpdates += UpdateOnCheckingUpdates;
 
         InitializeComponent();
@@ -70,7 +73,7 @@ public sealed partial class MainForm : Form
 
         if (Args.Has("debug"))
         {
-            var debugControl = new DebugControl();
+            var debugControl = new DebugControl(settings);
             AddControlToTab(debugControl, "Debug", 4);
         }
     }
@@ -93,7 +96,7 @@ public sealed partial class MainForm : Form
     
     private void SettingsOnSaved(object sender, SettingsServiceSavedArgs e)
     {
-        TopMost = e.Settings.AlwaysOnTop;
+        TopMost = _settings.GetBool("AlwaysOnTop");
         
         ShowSecondaryStatus("Settings saved!");
     }

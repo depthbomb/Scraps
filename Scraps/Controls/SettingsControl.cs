@@ -40,16 +40,16 @@ public partial class SettingsControl : UserControl
 
     private void PopulateControlValues()
     {
-        _CookieInput.Text                     = _settings.Get<string>("Cookie");
-        _ScanDelayInput.Value                 = _settings.Get<int>("ScanDelay");
-        _AutoIncrementScanDelayToggle.Checked = _settings.Get<bool>("IncrementScanDelay");
-        _PaginateDelayInput.Value             = _settings.Get<int>("PaginateDelay");
-        _JoinDelayInput.Value                 = _settings.Get<int>("JoinDelay");
-        _RaffleSortByNewToggle.Checked        = _settings.Get<bool>("SortByNew");
-        _ParanoidModeToggle.Checked           = _settings.Get<bool>("Paranoid");
-        _TopmostToggle.Checked                = _settings.Get<bool>("AlwaysOnTop");
-        _CheckUpdatesToggle.Checked           = _settings.Get<bool>("CheckUpdates");
-        _FetchAnnouncementsToggle.Checked     = _settings.Get<bool>("FetchAnnouncements");
+        _CookieInput.Text                     = _settings.GetString("Cookie");
+        _ScanDelayInput.Value                 = _settings.GetInt("ScanDelay");
+        _PaginateDelayInput.Value             = _settings.GetInt("PaginateDelay");
+        _JoinDelayInput.Value                 = _settings.GetInt("JoinDelay");
+        _RaffleSortByNewToggle.Checked        = _settings.GetBool("SortByNew");
+        _AutoIncrementScanDelayToggle.Checked = _settings.GetBool("IncrementScanDelay");
+        _ParanoidModeToggle.Checked           = _settings.GetBool("Paranoid");
+        _TopmostToggle.Checked                = _settings.GetBool("AlwaysOnTop");
+        _CheckUpdatesToggle.Checked           = _settings.GetBool("CheckUpdates");
+        _FetchAnnouncementsToggle.Checked     = _settings.GetBool("FetchAnnouncements");
     }
     
     #region Service Event Subscriptions
@@ -74,10 +74,10 @@ public partial class SettingsControl : UserControl
     {
         string cookie             = _CookieInput.Text.Trim();
         int    scanDelay          = (int)_ScanDelayInput.Value;
-        bool   incrementScanDelay = _AutoIncrementScanDelayToggle.Checked;
         int    paginateDelay      = (int)_PaginateDelayInput.Value;
         int    joinDelay          = (int)_JoinDelayInput.Value;
         bool   sortByNew          = _RaffleSortByNewToggle.Checked;
+        bool   incrementScanDelay = _AutoIncrementScanDelayToggle.Checked;
         bool   paranoid           = _ParanoidModeToggle.Checked;
         bool   alwaysOnTop        = _TopmostToggle.Checked;
         bool   checkUpdates       = _CheckUpdatesToggle.Checked;
@@ -92,15 +92,14 @@ public partial class SettingsControl : UserControl
         _settings
             .Set("Cookie", cookie)
             .Set("ScanDelay", scanDelay)
-            .Set("IncrementScanDelay", incrementScanDelay)
             .Set("PaginateDelay", paginateDelay)
             .Set("JoinDelay", joinDelay)
+            .Set("IncrementScanDelay", incrementScanDelay)
             .Set("SortByNew", sortByNew)
             .Set("Paranoid", paranoid)
             .Set("AlwaysOnTop", alwaysOnTop)
             .Set("CheckUpdates", checkUpdates)
-            .Set("FetchAnnouncements", fetchAnnouncements)
-            .Save();
+            .Set("FetchAnnouncements", fetchAnnouncements);
 
         if (_runner.Running)
         {
@@ -122,7 +121,7 @@ public partial class SettingsControl : UserControl
             return;
         }
         
-        _settings.Reset();
+        _settings.TryUpgrade(true);
     }
     
     #endregion
