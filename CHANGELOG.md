@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.3.0.0
+
+- Settings are now saved to registry and should be more consistent between updates
+
 ## 5.2.0.0
 
 - Improved checking for CloudFlare, account banned, profile not set up, and site maintenance cases
