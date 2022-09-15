@@ -1,8 +1,8 @@
 ﻿<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Scraps" type="DotNetProject" factoryName=".NET Project">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/Scraps/bin/Debug/net7.0-windows10.0.17763.0/scraps.exe" />
+    <option name="EXE_PATH" value="$PROJECT_DIR$/Scraps/bin/Debug/net7.0-windows10.0.19041.0/scraps.exe" />
     <option name="PROGRAM_PARAMETERS" value="/debug" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Scraps/bin/Debug/net7.0-windows10.0.17763.0" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Scraps/bin/Debug/net7.0-windows10.0.19041.0" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="USE_MONO" value="0" />
@@ -12,7 +12,7 @@
     <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
     <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
     <option name="PROJECT_KIND" value="DotNetCore" />
-    <option name="PROJECT_TFM" value="net7.0-windows10.0.17763" />
+    <option name="PROJECT_TFM" value="net7.0-windows10.0.19041" />
     <method v="2">
       <option name="Build" />
     </method>
