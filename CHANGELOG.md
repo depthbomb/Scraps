@@ -4,6 +4,8 @@
 
 - Improved checking for CloudFlare, account banned, profile not set up, and site maintenance cases
 - Fixed secondary status text not appearing
+- Window will now flash when activated from running a second instance
+- Updated dependencies
 
 ## 5.1.0.0
 

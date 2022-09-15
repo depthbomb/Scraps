@@ -16,6 +16,8 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
+using Windows.Win32.Foundation;
+
 using Scraps.Events;
 using Scraps.Controls;
 using Scraps.Services;
@@ -82,7 +84,7 @@ public sealed partial class MainForm : Form
             tab.Controls.Add(control);
 
         _MainWindowTabs.TabPages.Add(tab);
-            
+
         _log.Debug("Added control {Name} to tabs with image index {Index}", name, imageIndex);
     }
 
@@ -128,7 +130,7 @@ public sealed partial class MainForm : Form
         if (m.Msg == GlobalShared.WM_SCRAPSNEXT_SHOWME)
         {
             _log.Debug("Bringing to front from second instance");
-                
+
             if (WindowState == FormWindowState.Minimized)
             {
                 WindowState = FormWindowState.Normal;
@@ -137,6 +139,7 @@ public sealed partial class MainForm : Form
             Show();
             Activate();
             BringToFront();
+            Native.FlashWindow((HWND)Handle, true);
         }
 
         base.WndProc(ref m);

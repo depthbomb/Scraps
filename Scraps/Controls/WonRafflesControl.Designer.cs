@@ -39,7 +39,7 @@ partial class WonRafflesControl
             // 
             // _WebView
             // 
-            this._WebView.AllowExternalDrop = true;
+            this._WebView.AllowExternalDrop = false;
             this._WebView.CreationProperties = null;
             this._WebView.DefaultBackgroundColor = System.Drawing.Color.White;
             this._WebView.Dock = System.Windows.Forms.DockStyle.Fill;

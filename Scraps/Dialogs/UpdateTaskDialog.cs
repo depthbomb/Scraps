@@ -17,6 +17,7 @@
 #endregion
 
 using System.Diagnostics;
+
 using Scraps.Models;
 
 namespace Scraps.Dialogs;
