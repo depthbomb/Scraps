@@ -3,6 +3,7 @@
 ## 5.3.0.0
 
 - Settings are now saved to registry and should be more consistent between updates
+  - You will be shown the warning disclaimer and need to enter your cookie one more time
 
 ## 5.2.0.0
 
