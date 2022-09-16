@@ -55,12 +55,6 @@ public static class GlobalShared
     public static string StorePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Caprine Logic", "Scraps");
     public static string LogsPath  = Path.Combine(StorePath, "Logs");
     public static string DataPath  = Path.Combine(StorePath, "Data");
-    public static string[] RequiredPaths = {
-        StorePath,
-        LogsPath,
-        DataPath
-    };
-    public static string LogoPath = Path.Combine(DataPath, "Logo.png");
 
     #endregion
     
@@ -70,15 +64,7 @@ public static class GlobalShared
     public static string UpdateLatestReleaseEndpoint = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
 
     #endregion
-    
-    #region Raffle Service
 
-    public static int RaffleScanDelay     = 5000;
-    public static int RafflePaginateDelay = 5000;
-    public static int RaffleJoinDelay     = 4000;
-    
-    #endregion
-    
     #region Announcement Service
 
     public static string AnnouncementFileUrl = "https://raw.githubusercontent.com/depthbomb/Scraps/master/ANNOUNCEMENT";

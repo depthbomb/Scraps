@@ -123,6 +123,6 @@ public partial class SettingsControl : UserControl
         
         _settings.TryUpgrade(true);
     }
-    
+
     #endregion
 }
