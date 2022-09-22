@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.3.1.0
+
+- Updated logging
+- Updated dependencies
+
 ## 5.3.0.0
 
 - Settings are now saved to registry and should be more consistent between updates
