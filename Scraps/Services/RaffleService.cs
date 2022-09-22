@@ -567,7 +567,7 @@ public partial class RaffleService : IDisposable
         string body = await res.Content.ReadAsStringAsync(_cancelToken);
         
         if (body.Contains(CloudflareString))
-            throw new CloudflareException("Scrap.TF is displaying a Cloudflare challenge, Scraps cannot continue.");
+            throw new CloudflareException("Scrap.TF is displaying a Cloudflare challenge and Scraps cannot continue. Please try again later. This is not a bug so do not report it.");
         
         if (body.Contains(AccountBannedString))
             throw await ThrowAccountBannedAsync();
