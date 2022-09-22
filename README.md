@@ -52,3 +52,7 @@ Scraps requires your Scrap.TF session cookie, `scr_session` to function. This ca
 ## Avoiding Bans
 
 The default settings are set so as to avoid hitting any rate limits and drawing suspicion. Since staff can see if you are using the same IP for multiple accounts, it is highly recommended that you run a VPN alongside Scraps to hide your IP if you are to use multiple accounts.
+
+## I can't use Scraps because of CloudFlare!
+
+This usually means that Scrap.TF manually enabled more stricter protection that prevents from software like Scraps from working. No attempts will be made by Scraps to bypass this protection. Please do not create issues regarding this as they will be closed with no response.
