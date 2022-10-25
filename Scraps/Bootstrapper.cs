@@ -27,10 +27,9 @@ namespace Scraps;
 
 internal static class Bootstrapper
 {
-    public static           IServiceProvider Services { get; private set; }
+    private static IServiceProvider Services { get; set; }
+    private static Logger           _log;
 
-    private static Logger _log;
-    
     private static readonly Mutex Mutex = new(false, GlobalShared.MutexName);
 
     [STAThread]
