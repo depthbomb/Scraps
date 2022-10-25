@@ -133,7 +133,7 @@ public partial class WonRafflesControl : UserControl
         if (_hasCookie)
         {
             string url = e.Uri;
-            if (!url.StartsWith("https://scrap.tf"))
+            if (url != "https://scrap.tf/raffles/won")
             {
                 e.Cancel = true;
             }
