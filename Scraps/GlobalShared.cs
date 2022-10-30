@@ -23,7 +23,6 @@ public static class GlobalShared
     public static uint WM_SCRAPSNEXT_SHOWME = Native.RegisterWindowMessage("WM_SCRAPSNEXT_SHOWME");
     
     #region Version
-
     public enum ReleaseTypes
     {
         Development,
@@ -35,39 +34,31 @@ public static class GlobalShared
     public static int          MajorVersion       => 5;
     public static int          MinorVersion       => 3;
     public static int          PatchVersion       => 2;
-    public static int          HotfixVersion      => 0;
+    public static int          HotfixVersion      => 1;
     public static ReleaseTypes VersionReleaseType => ReleaseTypes.Release;
     public static string       SemVerVersion      => $"{MajorVersion}.{MinorVersion}.{PatchVersion}.{HotfixVersion}";
     public static string       FullVersion        => $"{SemVerVersion}-{VersionReleaseType}";
     #endregion
     
     #region Strings
-
     public static string WindowTitle          = "Scraps - Scrap.TF Raffle Joiner";
     public static string UserAgent            = $"Scraps {FullVersion}";
     public static string MutexName            = "ScrapsNext";
     public static string WebView2InstallerUrl = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
-
     #endregion
     
     #region Paths
-
     public static string StorePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Caprine Logic", "Scraps");
     public static string LogsPath  = Path.Combine(StorePath, "Logs");
     public static string DataPath  = Path.Combine(StorePath, "Data");
-
     #endregion
     
     #region Update Service
-
     public static int    UpdateAutoCheckInterval     = 60_000;
     public static string UpdateLatestReleaseEndpoint = "https://api.github.com/repos/depthbomb/scraps/releases/latest";
-
     #endregion
 
     #region Announcement Service
-
     public static string AnnouncementFileUrl = "https://raw.githubusercontent.com/depthbomb/Scraps/master/ANNOUNCEMENT";
-
     #endregion
 }
