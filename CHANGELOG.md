@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.3.2.1
+
+- Updated dependencies
+
 ## 5.3.2.0
 
 - You can no longer navigate away from the won raffles page
