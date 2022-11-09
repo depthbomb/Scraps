@@ -30,7 +30,7 @@ using Scraps.Services.Honeypot;
 
 namespace Scraps.Services;
 
-public partial class RaffleService : IDisposable
+public class RaffleService : IDisposable
 {
     /// <summary>
     /// Whether the runner is running because a cancellation is not requested.
