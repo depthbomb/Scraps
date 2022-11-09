@@ -29,8 +29,8 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="1.0.0-alpha-844" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-rc.2.22472.3" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1414-prerelease" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1466-prerelease" />
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.2.104-beta">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
