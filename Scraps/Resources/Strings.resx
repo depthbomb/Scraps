@@ -19,7 +19,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="LicenseText" xml:space="preserve">
-        <value>Copyright (C) 2022 Caprine Logic
+        <value>Copyright (C) 2021 Caprine Logic
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

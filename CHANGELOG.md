@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.3.3.0
+
+- Updated dependencies
+
 ## 5.3.2.1
 
 - Updated dependencies
