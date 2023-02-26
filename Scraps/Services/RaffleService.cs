@@ -193,7 +193,7 @@ public class RaffleService : IDisposable
                 Broadcast("Waiting to scan again");
 
                 System.Random _randomifier = new System.Random();
-                int _modifier = _randomifier.Next(-30000, 30000); // Adds a 30 second positive or negative delay. 
+                int _modifier = _randomifier.Next(0, 60000); // Adds up to a 60 second delay. 
 
                 int _scanDelayJittered = _scanDelay + _modifier;
 
