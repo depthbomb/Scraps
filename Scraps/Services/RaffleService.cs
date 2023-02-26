@@ -508,7 +508,7 @@ public class RaffleService : IDisposable
                 System.Random _randomifier = new System.Random();
                 int _joinModifier = _randomifier.Next(0, 6000);
 
-                int _joinDelayJittered = _joinDelay + _joinModifier
+                int _joinDelayJittered = _joinDelay + _joinModifier;
 
                 await Task.Delay(_joinDelayJittered, _cancelToken);
             }
