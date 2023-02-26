@@ -503,12 +503,15 @@ public class RaffleService : IDisposable
                     _log.Error("Unable to join raffle {Id}: {Message}", raffle, joinRaffleResponse?.Message ?? "Unknown");
                 }
 
-                Broadcast("Waiting to join next raffle");
-
                 System.Random _randomifier = new System.Random();
-                int _joinModifier = _randomifier.Next(0, 6000);
+                int _joinModifier = _randomifier.Next(0, 10000);
 
                 int _joinDelayJittered = _joinDelay + _joinModifier;
+
+                _log.Info("Waiting for next raffle, attempting to join in {Delay} seconds", _joinDelayJittered / 1000);
+
+                Broadcast("Waiting to join next raffle");
+
 
                 await Task.Delay(_joinDelayJittered, _cancelToken);
             }
