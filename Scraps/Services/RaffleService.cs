@@ -192,9 +192,14 @@ public class RaffleService : IDisposable
 
                 Broadcast("Waiting to scan again");
 
-                _log.Info("All raffles have been entered, scanning again after {Delay} seconds", _scanDelay / 1000);
+                System.Random _randomifier = new System.Random();
+                int _modifier = _randomifier.Next(-30000, 30000); // Adds a 30 second positive or negative delay. 
 
-                await Task.Delay(_scanDelay,  _cancelToken);
+                int _scanDelayJittered = _scanDelay + _modifier;
+
+                _log.Info("All raffles have been entered, scanning again after {Delay} seconds", _scanDelayJittered / 1000);
+
+                await Task.Delay(_scanDelayJittered,  _cancelToken);
 
                 if (incrementScanDelay)
                     _scanDelay += 1000;
@@ -499,8 +504,13 @@ public class RaffleService : IDisposable
                 }
 
                 Broadcast("Waiting to join next raffle");
-                
-                await Task.Delay(_joinDelay, _cancelToken);
+
+                System.Random _randomifier = new System.Random();
+                int _joinModifier = _randomifier.Next(0, 6000);
+
+                int _joinDelayJittered = _joinDelay + _joinModifier
+
+                await Task.Delay(_joinDelayJittered, _cancelToken);
             }
             else
             {
