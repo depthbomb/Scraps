@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.3.4.0
+
+- Added jitter option for scan and join delays that adds a random amount of time, up to a maximum value, to these delays to seem more natural
+  - This addition was contributed by [Mircoxi](https://github.com/Mircoxi)
+- Updated dependencies
+
 ## 5.3.3.0
 
 - Updated dependencies

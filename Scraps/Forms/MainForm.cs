@@ -73,7 +73,7 @@ public sealed partial class MainForm : Form
 
         if (Args.Has("debug"))
         {
-            var debugControl = new DebugControl(settings);
+            var debugControl = new DebugControl();
             AddControlToTab(debugControl, "Debug", 4);
         }
     }

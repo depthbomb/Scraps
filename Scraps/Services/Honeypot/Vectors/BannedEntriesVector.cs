@@ -18,7 +18,7 @@
 
 namespace Scraps.Services.Honeypot.Vectors;
 
-public partial class BannedEntriesVector : IHoneypotVector
+public class BannedEntriesVector : IHoneypotVector
 {
     public bool   Detected     { get; private set; }
     public string DetectReason { get; private set; }

@@ -28,7 +28,6 @@ public class UpdateTaskDialog : IDisposable
     private readonly TaskDialogPage              _updatePage;
     private readonly TaskDialogPage              _progressPage;
     private readonly TaskDialogCommandLinkButton _downloadButton;
-    private readonly TaskDialogCommandLinkButton _dismissButton;
     private readonly Logger                      _log = LogManager.GetCurrentClassLogger();
     
     public UpdateTaskDialog(LatestReleaseResponse latestRelease)
@@ -60,20 +59,19 @@ public class UpdateTaskDialog : IDisposable
             DescriptionText  = "Download and run the installer automatically",
             AllowCloseDialog = false,
         };
-        _dismissButton = new TaskDialogCommandLinkButton
+        var dismissButton = new TaskDialogCommandLinkButton
         {
             Text = "Dismiss"
         };
         
         _updatePage.Buttons.Add(_downloadButton);
-        _updatePage.Buttons.Add(_dismissButton);
+        _updatePage.Buttons.Add(dismissButton);
         _updatePage.DefaultButton = _downloadButton;
         
         _downloadButton.Click += DownloadButtonOnClick;
     }
 
-    public TaskDialogButton ShowDialog()
-        => TaskDialog.ShowDialog(_updatePage);
+    public TaskDialogButton ShowDialog() => TaskDialog.ShowDialog(_updatePage);
 
     private async void DownloadButtonOnClick(object sender, EventArgs e)
     {

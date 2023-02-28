@@ -17,13 +17,14 @@
 #endregion
 
 using Microsoft.Win32;
+
 using Scraps.Services;
 
 namespace Scraps.Controls
 {
     public partial class DebugControl : UserControl
     {
-        public DebugControl(SettingsService settings)
+        public DebugControl()
         {
             InitializeComponent();
         }
