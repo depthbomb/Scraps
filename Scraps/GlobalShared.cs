@@ -34,7 +34,7 @@ public static class GlobalShared
     public const  int          MajorVersion       = 5;
     public const  int          MinorVersion       = 3;
     public const  int          PatchVersion       = 4;
-    public const  int          HotfixVersion      = 0;
+    public const  int          HotfixVersion      = 1;
     public const  ReleaseTypes VersionReleaseType = ReleaseTypes.Release;
     public static string       SemVerVersion => $"{MajorVersion}.{MinorVersion}.{PatchVersion}.{HotfixVersion}";
     public static string       FullVersion   => $"{SemVerVersion}-{VersionReleaseType}";
