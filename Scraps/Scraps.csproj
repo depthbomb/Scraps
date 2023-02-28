@@ -13,8 +13,8 @@
     <Company>Caprine Logic</Company>
     <Product>Scraps</Product>
     <ApplicationIcon>Resources\Scraps.ico</ApplicationIcon>
-    <AssemblyVersion>5.3.4.0</AssemblyVersion>
-    <FileVersion>5.3.4.0</FileVersion>
+    <AssemblyVersion>5.3.4.1</AssemblyVersion>
+    <FileVersion>5.3.4.1</FileVersion>
     <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
