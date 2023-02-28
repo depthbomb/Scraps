@@ -107,12 +107,12 @@ public class RaffleService : IDisposable
     private bool                    _alertedOfWonRaffles;
     private CancellationToken       _cancelToken;
     private CancellationTokenSource _cancelTokenSource;
-    private System.Random           _randomifier;
 
     private readonly SettingsService _settings;
-    private readonly SoundPlayer     _alertPlayer;
     private readonly Logger          _log             = LogManager.GetCurrentClassLogger();
+    private readonly Random          _rng             = new();
     private readonly HtmlParser      _html            = new();
+    private readonly SoundPlayer     _alertPlayer     = new(Audio.alert);
     private readonly List<string>    _raffleQueue     = new();
     private readonly List<string>    _enteredRaffles  = new();
     private readonly Regex           _csrfRegex       = new(@"value=""(?<CsrfToken>[a-f\d]{64})""");
@@ -121,14 +121,10 @@ public class RaffleService : IDisposable
     private readonly Regex           _entryRegex      = new(@"ScrapTF\.Raffles\.RedirectToRaffle\('(?<RaffleId>[A-Z0-9]{6,})'\)", RegexOptions.Compiled);
     private readonly Regex           _hashRegex       = new(@"EnterRaffle\('(?<RaffleId>[A-Z0-9]{6,})', '(?<RaffleHash>[a-f0-9]{64})'", RegexOptions.Compiled);
     private readonly Regex           _limitRegex      = new(@"total=""(?<Entered>\d+)"" data-max=""(?<Max>\d+)", RegexOptions.Compiled);
-    
-
 
     public RaffleService(SettingsService settings)
     {
-        _settings    = settings;
-        _alertPlayer = new SoundPlayer(Audio.alert);
-        _randomifier = new System.Random();
+        _settings = settings;
     }
     
     ~RaffleService() => Dispose();
@@ -196,11 +192,11 @@ public class RaffleService : IDisposable
 
                 Broadcast("Waiting to scan again");
 
-                int scanDelayJittered = _scanDelay + _randomifier.Next(0, _settings.GetInt("ScanJitter"));
+                int jitteredScanDelay = _scanDelay + _rng.Next(0, _settings.GetInt("ScanJitter"));
 
-                _log.Info("All raffles have been entered, scanning again after {Delay} seconds", scanDelayJittered / 1000);
+                _log.Info("All raffles have been entered, scanning again after {Delay} seconds", jitteredScanDelay / 1000);
 
-                await Task.Delay(scanDelayJittered,  _cancelToken);
+                await Task.Delay(jitteredScanDelay,  _cancelToken);
 
                 if (incrementScanDelay)
                     _scanDelay += 1000;
@@ -504,15 +500,13 @@ public class RaffleService : IDisposable
                     _log.Error("Unable to join raffle {Id}: {Message}", raffle, joinRaffleResponse?.Message ?? "Unknown");
                 }
 
-                int joinDelayJittered = _joinDelay + _randomifier.Next(0, _settings.GetInt("JoinJitter"));
+                int jitteredJoinDelay = _joinDelay + _rng.Next(0, _settings.GetInt("JoinJitter"));
 
-                _log.Info("Waiting for next raffle, attempting to join in {Delay} seconds", joinDelayJittered / 1000);
-
+                _log.Info("Waiting for next raffle, attempting to join in {Delay} seconds", jitteredJoinDelay / 1000);
 
                 Broadcast("Waiting to join next raffle");
-
-
-                await Task.Delay(joinDelayJittered, _cancelToken);
+                
+                await Task.Delay(jitteredJoinDelay, _cancelToken);
             }
             else
             {

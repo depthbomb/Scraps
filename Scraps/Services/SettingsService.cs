@@ -27,8 +27,8 @@ public class SettingsService
 {
     public event EventHandler<SettingsServiceSavedArgs> OnSaved;
     public event EventHandler<SettingsServiceResetArgs> OnReset;
-    
-    public readonly string FullSettingsKey = "Software\\Caprine Logic\\Scraps\\Settings";
+
+    public const string FullSettingsKey = "Software\\Caprine Logic\\Scraps\\Settings";
 
     // Default settings values
     private const string Cookie                = "";

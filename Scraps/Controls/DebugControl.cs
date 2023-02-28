@@ -23,12 +23,8 @@ namespace Scraps.Controls
 {
     public partial class DebugControl : UserControl
     {
-        private readonly SettingsService _settings;
-        
         public DebugControl(SettingsService settings)
         {
-            _settings = settings;
-            
             InitializeComponent();
         }
 
@@ -48,7 +44,7 @@ namespace Scraps.Controls
         {
             try
             {
-                Registry.CurrentUser.DeleteSubKey(_settings.FullSettingsKey);
+                Registry.CurrentUser.DeleteSubKey(SettingsService.FullSettingsKey);
 
                 Utils.ShowInfo(Utils.GetMainForm(), "Debug", "Settings subkey deleted, exiting");
             }
