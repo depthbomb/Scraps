@@ -35,6 +35,8 @@ public class SettingsService
     private const int    ScanDelay             = 5000;
     private const int    PaginateDelay         = 500;
     private const int    JoinDelay             = 4000;
+    private const int    JoinJitter            = 0;
+    private const int    ScanJitter            = 0;
     private const bool   IncrementScanDelay    = true;
     private const bool   SortByNew             = true;
     private const bool   Paranoid              = false;

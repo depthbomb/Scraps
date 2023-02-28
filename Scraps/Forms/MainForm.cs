@@ -51,7 +51,7 @@ public sealed partial class MainForm : Form
         InitializeComponent();
 
         Text        = GlobalShared.WindowTitle;
-        MinimumSize = new Size(900, 525);
+        MinimumSize = new Size(900, 700);
         
         _MainWindowTabs.SizeMode = TabSizeMode.Fixed;
         _MainWindowTabs.ImageList = new ImageList
