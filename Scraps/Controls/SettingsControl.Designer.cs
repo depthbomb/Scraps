@@ -50,10 +50,18 @@ namespace Scraps.Controls
             this._CheckUpdatesToggle = new System.Windows.Forms.CheckBox();
             this._FetchAnnouncementsToggle = new System.Windows.Forms.CheckBox();
             this._SettingsParentPanel = new System.Windows.Forms.Panel();
+            this.label8 = new System.Windows.Forms.Label();
+            this._ScanJitterInput = new System.Windows.Forms.NumericUpDown();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this._JoinJitterInput = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this._ScanDelayInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._PaginateDelayInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._JoinDelayInput)).BeginInit();
             this._SettingsParentPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._ScanJitterInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this._JoinJitterInput)).BeginInit();
             this.SuspendLayout();
             // 
             // _SaveSettingsButton
@@ -193,22 +201,22 @@ namespace Scraps.Controls
             // _RaffleSortByNewToggle
             // 
             this._RaffleSortByNewToggle.AutoSize = true;
-            this._RaffleSortByNewToggle.Location = new System.Drawing.Point(102, 251);
+            this._RaffleSortByNewToggle.Location = new System.Drawing.Point(102, 399);
             this._RaffleSortByNewToggle.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this._RaffleSortByNewToggle.Name = "_RaffleSortByNewToggle";
             this._RaffleSortByNewToggle.Size = new System.Drawing.Size(171, 19);
-            this._RaffleSortByNewToggle.TabIndex = 11;
+            this._RaffleSortByNewToggle.TabIndex = 14;
             this._RaffleSortByNewToggle.Text = "Sort raffles by newer entries";
             this._RaffleSortByNewToggle.UseVisualStyleBackColor = true;
             // 
             // _ParanoidModeToggle
             // 
             this._ParanoidModeToggle.AutoSize = true;
-            this._ParanoidModeToggle.Location = new System.Drawing.Point(102, 279);
+            this._ParanoidModeToggle.Location = new System.Drawing.Point(102, 427);
             this._ParanoidModeToggle.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this._ParanoidModeToggle.Name = "_ParanoidModeToggle";
             this._ParanoidModeToggle.Size = new System.Drawing.Size(145, 19);
-            this._ParanoidModeToggle.TabIndex = 12;
+            this._ParanoidModeToggle.TabIndex = 15;
             this._ParanoidModeToggle.Text = "Enable paranoid mode";
             this._ParanoidModeToggle.UseVisualStyleBackColor = true;
             // 
@@ -250,33 +258,33 @@ namespace Scraps.Controls
             // _TopmostToggle
             // 
             this._TopmostToggle.AutoSize = true;
-            this._TopmostToggle.Location = new System.Drawing.Point(102, 307);
+            this._TopmostToggle.Location = new System.Drawing.Point(102, 455);
             this._TopmostToggle.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this._TopmostToggle.Name = "_TopmostToggle";
             this._TopmostToggle.Size = new System.Drawing.Size(157, 19);
-            this._TopmostToggle.TabIndex = 19;
+            this._TopmostToggle.TabIndex = 16;
             this._TopmostToggle.Text = "Window is always on top";
             this._TopmostToggle.UseVisualStyleBackColor = true;
             // 
             // _CheckUpdatesToggle
             // 
             this._CheckUpdatesToggle.AutoSize = true;
-            this._CheckUpdatesToggle.Location = new System.Drawing.Point(102, 335);
+            this._CheckUpdatesToggle.Location = new System.Drawing.Point(102, 483);
             this._CheckUpdatesToggle.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this._CheckUpdatesToggle.Name = "_CheckUpdatesToggle";
             this._CheckUpdatesToggle.Size = new System.Drawing.Size(197, 19);
-            this._CheckUpdatesToggle.TabIndex = 20;
+            this._CheckUpdatesToggle.TabIndex = 17;
             this._CheckUpdatesToggle.Text = "Check for updates automatically";
             this._CheckUpdatesToggle.UseVisualStyleBackColor = true;
             // 
             // _FetchAnnouncementsToggle
             // 
             this._FetchAnnouncementsToggle.AutoSize = true;
-            this._FetchAnnouncementsToggle.Location = new System.Drawing.Point(102, 363);
+            this._FetchAnnouncementsToggle.Location = new System.Drawing.Point(102, 511);
             this._FetchAnnouncementsToggle.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
             this._FetchAnnouncementsToggle.Name = "_FetchAnnouncementsToggle";
             this._FetchAnnouncementsToggle.Size = new System.Drawing.Size(201, 19);
-            this._FetchAnnouncementsToggle.TabIndex = 21;
+            this._FetchAnnouncementsToggle.TabIndex = 18;
             this._FetchAnnouncementsToggle.Text = "Fetch announcements on startup";
             this._FetchAnnouncementsToggle.UseVisualStyleBackColor = true;
             // 
@@ -286,6 +294,12 @@ namespace Scraps.Controls
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this._SettingsParentPanel.AutoScroll = true;
+            this._SettingsParentPanel.Controls.Add(this.label8);
+            this._SettingsParentPanel.Controls.Add(this._ScanJitterInput);
+            this._SettingsParentPanel.Controls.Add(this.label9);
+            this._SettingsParentPanel.Controls.Add(this.label10);
+            this._SettingsParentPanel.Controls.Add(this.label11);
+            this._SettingsParentPanel.Controls.Add(this._JoinJitterInput);
             this._SettingsParentPanel.Controls.Add(this.label1);
             this._SettingsParentPanel.Controls.Add(this._FetchAnnouncementsToggle);
             this._SettingsParentPanel.Controls.Add(this.label3);
@@ -309,6 +323,78 @@ namespace Scraps.Controls
             this._SettingsParentPanel.Size = new System.Drawing.Size(956, 575);
             this._SettingsParentPanel.TabIndex = 22;
             // 
+            // label8
+            // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(9, 255);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(62, 15);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "Scan jitter:";
+            // 
+            // _ScanJitterInput
+            // 
+            this._ScanJitterInput.Location = new System.Drawing.Point(102, 251);
+            this._ScanJitterInput.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
+            this._ScanJitterInput.Maximum = new decimal(new int[] {
+            -1,
+            -1,
+            -1,
+            0});
+            this._ScanJitterInput.Name = "_ScanJitterInput";
+            this._ScanJitterInput.Size = new System.Drawing.Size(135, 23);
+            this._ScanJitterInput.TabIndex = 11;
+            // 
+            // label9
+            // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label9.Location = new System.Drawing.Point(102, 346);
+            this.label9.Margin = new System.Windows.Forms.Padding(3, 0, 3, 18);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(845, 16);
+            this.label9.TabIndex = 27;
+            this.label9.Text = "Add a random value between zero and this setting to each scan to appear more natu" +
+    "ral. 0 to disable.";
+            // 
+            // label10
+            // 
+            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(9, 321);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(58, 15);
+            this.label10.TabIndex = 24;
+            this.label10.Text = "Join jitter:";
+            // 
+            // label11
+            // 
+            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label11.Location = new System.Drawing.Point(102, 280);
+            this.label11.Margin = new System.Windows.Forms.Padding(3, 0, 3, 18);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(845, 16);
+            this.label11.TabIndex = 26;
+            this.label11.Text = "Add a random value between zero and this setting to each scan to appear more natu" +
+    "ral. 0 to disable.";
+            // 
+            // _JoinJitterInput
+            // 
+            this._JoinJitterInput.Location = new System.Drawing.Point(102, 317);
+            this._JoinJitterInput.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
+            this._JoinJitterInput.Maximum = new decimal(new int[] {
+            -1,
+            -1,
+            -1,
+            0});
+            this._JoinJitterInput.Name = "_JoinJitterInput";
+            this._JoinJitterInput.Size = new System.Drawing.Size(135, 23);
+            this._JoinJitterInput.TabIndex = 13;
+            // 
             // SettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -325,6 +411,8 @@ namespace Scraps.Controls
             ((System.ComponentModel.ISupportInitialize)(this._JoinDelayInput)).EndInit();
             this._SettingsParentPanel.ResumeLayout(false);
             this._SettingsParentPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._ScanJitterInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this._JoinJitterInput)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -351,5 +439,11 @@ namespace Scraps.Controls
         private CheckBox _CheckUpdatesToggle;
         private CheckBox _FetchAnnouncementsToggle;
         private Panel _SettingsParentPanel;
+        private Label label8;
+        private NumericUpDown _ScanJitterInput;
+        private Label label9;
+        private Label label10;
+        private Label label11;
+        private NumericUpDown _JoinJitterInput;
     }
 }

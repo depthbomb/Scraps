@@ -44,6 +44,8 @@ public partial class SettingsControl : UserControl
         _ScanDelayInput.Value                 = _settings.GetInt("ScanDelay");
         _PaginateDelayInput.Value             = _settings.GetInt("PaginateDelay");
         _JoinDelayInput.Value                 = _settings.GetInt("JoinDelay");
+        _JoinJitterInput.Value                = _settings.GetInt("JoinJitter");
+        _ScanJitterInput.Value                = _settings.GetInt("ScanJitter");
         _RaffleSortByNewToggle.Checked        = _settings.GetBool("SortByNew");
         _AutoIncrementScanDelayToggle.Checked = _settings.GetBool("IncrementScanDelay");
         _ParanoidModeToggle.Checked           = _settings.GetBool("Paranoid");
@@ -76,6 +78,8 @@ public partial class SettingsControl : UserControl
         int    scanDelay          = (int)_ScanDelayInput.Value;
         int    paginateDelay      = (int)_PaginateDelayInput.Value;
         int    joinDelay          = (int)_JoinDelayInput.Value;
+        int    joinJitter         = (int)_JoinJitterInput.Value;
+        int    scanJitter         = (int)_ScanJitterInput.Value;
         bool   sortByNew          = _RaffleSortByNewToggle.Checked;
         bool   incrementScanDelay = _AutoIncrementScanDelayToggle.Checked;
         bool   paranoid           = _ParanoidModeToggle.Checked;
@@ -94,6 +98,8 @@ public partial class SettingsControl : UserControl
             .Set("ScanDelay", scanDelay)
             .Set("PaginateDelay", paginateDelay)
             .Set("JoinDelay", joinDelay)
+            .Set("JoinJitter", joinJitter)
+            .Set("ScanJitter", scanJitter)
             .Set("IncrementScanDelay", incrementScanDelay)
             .Set("SortByNew", sortByNew)
             .Set("Paranoid", paranoid)
