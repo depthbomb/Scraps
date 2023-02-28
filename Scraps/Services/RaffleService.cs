@@ -107,7 +107,8 @@ public class RaffleService : IDisposable
     private bool                    _alertedOfWonRaffles;
     private CancellationToken       _cancelToken;
     private CancellationTokenSource _cancelTokenSource;
-    
+    private System.Random           _randomifier;
+
     private readonly SettingsService _settings;
     private readonly SoundPlayer     _alertPlayer;
     private readonly Logger          _log             = LogManager.GetCurrentClassLogger();
@@ -120,11 +121,14 @@ public class RaffleService : IDisposable
     private readonly Regex           _entryRegex      = new(@"ScrapTF\.Raffles\.RedirectToRaffle\('(?<RaffleId>[A-Z0-9]{6,})'\)", RegexOptions.Compiled);
     private readonly Regex           _hashRegex       = new(@"EnterRaffle\('(?<RaffleId>[A-Z0-9]{6,})', '(?<RaffleHash>[a-f0-9]{64})'", RegexOptions.Compiled);
     private readonly Regex           _limitRegex      = new(@"total=""(?<Entered>\d+)"" data-max=""(?<Max>\d+)", RegexOptions.Compiled);
+    
+
 
     public RaffleService(SettingsService settings)
     {
         _settings    = settings;
         _alertPlayer = new SoundPlayer(Audio.alert);
+        _randomifier = new System.Random();
     }
     
     ~RaffleService() => Dispose();
@@ -192,14 +196,11 @@ public class RaffleService : IDisposable
 
                 Broadcast("Waiting to scan again");
 
-                System.Random _randomifier = new System.Random();
-                int _modifier = _randomifier.Next(0, 60000); // Adds up to a 60 second delay. 
+                int scanDelayJittered = _scanDelay + _randomifier.Next(0, _settings.GetInt("ScanJitter"));
 
-                int _scanDelayJittered = _scanDelay + _modifier;
+                _log.Info("All raffles have been entered, scanning again after {Delay} seconds", scanDelayJittered / 1000);
 
-                _log.Info("All raffles have been entered, scanning again after {Delay} seconds", _scanDelayJittered / 1000);
-
-                await Task.Delay(_scanDelayJittered,  _cancelToken);
+                await Task.Delay(scanDelayJittered,  _cancelToken);
 
                 if (incrementScanDelay)
                     _scanDelay += 1000;
@@ -503,17 +504,15 @@ public class RaffleService : IDisposable
                     _log.Error("Unable to join raffle {Id}: {Message}", raffle, joinRaffleResponse?.Message ?? "Unknown");
                 }
 
-                System.Random _randomifier = new System.Random();
-                int _joinModifier = _randomifier.Next(0, 10000);
+                int joinDelayJittered = _joinDelay + _randomifier.Next(0, _settings.GetInt("JoinJitter"));
 
-                int _joinDelayJittered = _joinDelay + _joinModifier;
+                _log.Info("Waiting for next raffle, attempting to join in {Delay} seconds", joinDelayJittered / 1000);
 
-                _log.Info("Waiting for next raffle, attempting to join in {Delay} seconds", _joinDelayJittered / 1000);
 
                 Broadcast("Waiting to join next raffle");
 
 
-                await Task.Delay(_joinDelayJittered, _cancelToken);
+                await Task.Delay(joinDelayJittered, _cancelToken);
             }
             else
             {
