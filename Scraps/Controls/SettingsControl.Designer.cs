@@ -71,7 +71,7 @@ namespace Scraps.Controls
             this._SaveSettingsButton.Location = new System.Drawing.Point(767, 584);
             this._SaveSettingsButton.Name = "_SaveSettingsButton";
             this._SaveSettingsButton.Size = new System.Drawing.Size(90, 24);
-            this._SaveSettingsButton.TabIndex = 0;
+            this._SaveSettingsButton.TabIndex = 12;
             this._SaveSettingsButton.Text = "Save";
             this._SaveSettingsButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this._SaveSettingsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -85,7 +85,7 @@ namespace Scraps.Controls
             this._ResetSettingsButton.Location = new System.Drawing.Point(863, 584);
             this._ResetSettingsButton.Name = "_ResetSettingsButton";
             this._ResetSettingsButton.Size = new System.Drawing.Size(90, 24);
-            this._ResetSettingsButton.TabIndex = 1;
+            this._ResetSettingsButton.TabIndex = 13;
             this._ResetSettingsButton.Text = "Reset";
             this._ResetSettingsButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this._ResetSettingsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -129,7 +129,7 @@ namespace Scraps.Controls
             0});
             this._ScanDelayInput.Name = "_ScanDelayInput";
             this._ScanDelayInput.Size = new System.Drawing.Size(135, 23);
-            this._ScanDelayInput.TabIndex = 4;
+            this._ScanDelayInput.TabIndex = 1;
             // 
             // label2
             // 
@@ -145,7 +145,7 @@ namespace Scraps.Controls
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 123);
+            this.label3.Location = new System.Drawing.Point(9, 321);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(87, 15);
             this.label3.TabIndex = 6;
@@ -153,7 +153,7 @@ namespace Scraps.Controls
             // 
             // _PaginateDelayInput
             // 
-            this._PaginateDelayInput.Location = new System.Drawing.Point(102, 119);
+            this._PaginateDelayInput.Location = new System.Drawing.Point(102, 317);
             this._PaginateDelayInput.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this._PaginateDelayInput.Maximum = new decimal(new int[] {
             -1,
@@ -162,7 +162,7 @@ namespace Scraps.Controls
             0});
             this._PaginateDelayInput.Name = "_PaginateDelayInput";
             this._PaginateDelayInput.Size = new System.Drawing.Size(135, 23);
-            this._PaginateDelayInput.TabIndex = 7;
+            this._PaginateDelayInput.TabIndex = 6;
             // 
             // label4
             // 
@@ -186,7 +186,7 @@ namespace Scraps.Controls
             0});
             this._JoinDelayInput.Name = "_JoinDelayInput";
             this._JoinDelayInput.Size = new System.Drawing.Size(135, 23);
-            this._JoinDelayInput.TabIndex = 9;
+            this._JoinDelayInput.TabIndex = 4;
             // 
             // _AutoIncrementScanDelayToggle
             // 
@@ -194,7 +194,7 @@ namespace Scraps.Controls
             this._AutoIncrementScanDelayToggle.Location = new System.Drawing.Point(246, 55);
             this._AutoIncrementScanDelayToggle.Name = "_AutoIncrementScanDelayToggle";
             this._AutoIncrementScanDelayToggle.Size = new System.Drawing.Size(111, 19);
-            this._AutoIncrementScanDelayToggle.TabIndex = 10;
+            this._AutoIncrementScanDelayToggle.TabIndex = 2;
             this._AutoIncrementScanDelayToggle.Text = "Auto-increment";
             this._AutoIncrementScanDelayToggle.UseVisualStyleBackColor = true;
             // 
@@ -205,7 +205,7 @@ namespace Scraps.Controls
             this._RaffleSortByNewToggle.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this._RaffleSortByNewToggle.Name = "_RaffleSortByNewToggle";
             this._RaffleSortByNewToggle.Size = new System.Drawing.Size(171, 19);
-            this._RaffleSortByNewToggle.TabIndex = 14;
+            this._RaffleSortByNewToggle.TabIndex = 7;
             this._RaffleSortByNewToggle.Text = "Sort raffles by newer entries";
             this._RaffleSortByNewToggle.UseVisualStyleBackColor = true;
             // 
@@ -216,7 +216,7 @@ namespace Scraps.Controls
             this._ParanoidModeToggle.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this._ParanoidModeToggle.Name = "_ParanoidModeToggle";
             this._ParanoidModeToggle.Size = new System.Drawing.Size(145, 19);
-            this._ParanoidModeToggle.TabIndex = 15;
+            this._ParanoidModeToggle.TabIndex = 8;
             this._ParanoidModeToggle.Text = "Enable paranoid mode";
             this._ParanoidModeToggle.UseVisualStyleBackColor = true;
             // 
@@ -236,7 +236,7 @@ namespace Scraps.Controls
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label6.Location = new System.Drawing.Point(102, 148);
+            this.label6.Location = new System.Drawing.Point(102, 346);
             this.label6.Margin = new System.Windows.Forms.Padding(3, 0, 3, 18);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(845, 16);
@@ -262,7 +262,7 @@ namespace Scraps.Controls
             this._TopmostToggle.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this._TopmostToggle.Name = "_TopmostToggle";
             this._TopmostToggle.Size = new System.Drawing.Size(157, 19);
-            this._TopmostToggle.TabIndex = 16;
+            this._TopmostToggle.TabIndex = 9;
             this._TopmostToggle.Text = "Window is always on top";
             this._TopmostToggle.UseVisualStyleBackColor = true;
             // 
@@ -273,7 +273,7 @@ namespace Scraps.Controls
             this._CheckUpdatesToggle.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this._CheckUpdatesToggle.Name = "_CheckUpdatesToggle";
             this._CheckUpdatesToggle.Size = new System.Drawing.Size(197, 19);
-            this._CheckUpdatesToggle.TabIndex = 17;
+            this._CheckUpdatesToggle.TabIndex = 10;
             this._CheckUpdatesToggle.Text = "Check for updates automatically";
             this._CheckUpdatesToggle.UseVisualStyleBackColor = true;
             // 
@@ -284,7 +284,7 @@ namespace Scraps.Controls
             this._FetchAnnouncementsToggle.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
             this._FetchAnnouncementsToggle.Name = "_FetchAnnouncementsToggle";
             this._FetchAnnouncementsToggle.Size = new System.Drawing.Size(201, 19);
-            this._FetchAnnouncementsToggle.TabIndex = 18;
+            this._FetchAnnouncementsToggle.TabIndex = 11;
             this._FetchAnnouncementsToggle.Text = "Fetch announcements on startup";
             this._FetchAnnouncementsToggle.UseVisualStyleBackColor = true;
             // 
@@ -328,7 +328,7 @@ namespace Scraps.Controls
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(9, 255);
+            this.label8.Location = new System.Drawing.Point(9, 123);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(62, 15);
             this.label8.TabIndex = 22;
@@ -336,7 +336,7 @@ namespace Scraps.Controls
             // 
             // _ScanJitterInput
             // 
-            this._ScanJitterInput.Location = new System.Drawing.Point(102, 251);
+            this._ScanJitterInput.Location = new System.Drawing.Point(102, 119);
             this._ScanJitterInput.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this._ScanJitterInput.Maximum = new decimal(new int[] {
             -1,
@@ -345,13 +345,13 @@ namespace Scraps.Controls
             0});
             this._ScanJitterInput.Name = "_ScanJitterInput";
             this._ScanJitterInput.Size = new System.Drawing.Size(135, 23);
-            this._ScanJitterInput.TabIndex = 11;
+            this._ScanJitterInput.TabIndex = 3;
             // 
             // label9
             // 
             this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label9.Location = new System.Drawing.Point(102, 346);
+            this.label9.Location = new System.Drawing.Point(102, 280);
             this.label9.Margin = new System.Windows.Forms.Padding(3, 0, 3, 18);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(845, 16);
@@ -364,7 +364,7 @@ namespace Scraps.Controls
             this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(9, 321);
+            this.label10.Location = new System.Drawing.Point(9, 255);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(58, 15);
             this.label10.TabIndex = 24;
@@ -374,7 +374,7 @@ namespace Scraps.Controls
             // 
             this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label11.Location = new System.Drawing.Point(102, 280);
+            this.label11.Location = new System.Drawing.Point(102, 148);
             this.label11.Margin = new System.Windows.Forms.Padding(3, 0, 3, 18);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(845, 16);
@@ -384,7 +384,7 @@ namespace Scraps.Controls
             // 
             // _JoinJitterInput
             // 
-            this._JoinJitterInput.Location = new System.Drawing.Point(102, 317);
+            this._JoinJitterInput.Location = new System.Drawing.Point(102, 251);
             this._JoinJitterInput.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this._JoinJitterInput.Maximum = new decimal(new int[] {
             -1,
@@ -393,7 +393,7 @@ namespace Scraps.Controls
             0});
             this._JoinJitterInput.Name = "_JoinJitterInput";
             this._JoinJitterInput.Size = new System.Drawing.Size(135, 23);
-            this._JoinJitterInput.TabIndex = 13;
+            this._JoinJitterInput.TabIndex = 5;
             // 
             // SettingsControl
             // 
