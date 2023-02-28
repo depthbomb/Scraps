@@ -356,8 +356,8 @@ namespace Scraps.Controls
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(845, 16);
             this.label9.TabIndex = 27;
-            this.label9.Text = "Add a random value between zero and this setting to each scan to appear more natu" +
-    "ral. 0 to disable.";
+            this.label9.Text = "Adds \"jitter\" to the time between raffle joins to seem more human. 0 to disable, " +
+    "or integer to set maximum variation.";
             // 
             // label10
             // 
@@ -379,8 +379,8 @@ namespace Scraps.Controls
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(845, 16);
             this.label11.TabIndex = 26;
-            this.label11.Text = "Add a random value between zero and this setting to each scan to appear more natu" +
-    "ral. 0 to disable.";
+            this.label11.Text = "Adds \"jitter\" to the scan delay to seem more human. 0 to disable, or integer to s" +
+    "et maximum variation.";
             // 
             // _JoinJitterInput
             // 
