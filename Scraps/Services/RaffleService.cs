@@ -196,7 +196,6 @@ public class RaffleService : IDisposable
 
                 Broadcast("Waiting to scan again");
 
-
                 int scanDelayJittered = _scanDelay + _randomifier.Next(0, _settings.GetInt("ScanJitter"));
 
                 _log.Info("All raffles have been entered, scanning again after {Delay} seconds", scanDelayJittered / 1000);
@@ -508,6 +507,7 @@ public class RaffleService : IDisposable
                 int joinDelayJittered = _joinDelay + _randomifier.Next(0, _settings.GetInt("JoinJitter"));
 
                 _log.Info("Waiting for next raffle, attempting to join in {Delay} seconds", joinDelayJittered / 1000);
+
 
                 Broadcast("Waiting to join next raffle");
 
