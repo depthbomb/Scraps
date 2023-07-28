@@ -16,12 +16,11 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
-using Windows.Win32.Foundation;
-
 using Scraps.Events;
 using Scraps.Controls;
 using Scraps.Services;
 using Scraps.Resources;
+using Windows.Win32.Foundation;
 
 namespace Scraps.Forms;
 

@@ -16,9 +16,8 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
-using System.Diagnostics;
-
 using Scraps.Models;
+using System.Diagnostics;
 
 namespace Scraps.Dialogs;
 
@@ -75,8 +74,8 @@ public class UpdateTaskDialog : IDisposable
 
     private async void DownloadButtonOnClick(object sender, EventArgs e)
     {
-        string downloadPath = Path.GetTempFileName();
-        string downloadUrl  = _latestRelease.Assets.First(a => a.Name.StartsWith("scraps_setup")).BrowserDownloadUrl;
+        var downloadPath = Path.GetTempFileName();
+        var downloadUrl  = _latestRelease.Assets.First(a => a.Name.StartsWith("scraps_setup")).BrowserDownloadUrl;
         
         _updatePage.Navigate(_progressPage);
 

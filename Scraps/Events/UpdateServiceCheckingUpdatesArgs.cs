@@ -18,5 +18,4 @@
 
 namespace Scraps.Events;
 
-public class UpdateServiceCheckingUpdatesArgs : EventArgs
-{ }
+public class UpdateServiceCheckingUpdatesArgs : EventArgs { }

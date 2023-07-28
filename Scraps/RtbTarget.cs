@@ -39,9 +39,9 @@ public sealed class RtbTarget : TargetWithLayout
 
     protected override void Write(LogEventInfo logEvent)
     {
-        string levelName = logEvent.Level.Name;
-        string prefix    = $"[{DateTime.Now:HH:mm:ss}]";
-        string message   = RenderLogEvent(Layout, logEvent);
+        var levelName = logEvent.Level.Name;
+        var prefix    = $"[{DateTime.Now:HH:mm:ss}]";
+        var message   = RenderLogEvent(Layout, logEvent);
         _rtb.AppendText($"{prefix} ", _prefixColor);
         _rtb.AppendLine(message, GetLevelColor(levelName));
         _rtb.ScrollToCaret();

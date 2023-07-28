@@ -16,10 +16,9 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
-using Microsoft.Web.WebView2.Core;
-
 using Scraps.Events;
 using Scraps.Services;
+using Microsoft.Web.WebView2.Core;
 
 namespace Scraps.Controls;
 
@@ -53,9 +52,9 @@ public partial class WonRafflesControl : UserControl
     {
         try
         {
-            var environment = await CoreWebView2Environment.CreateAsync(userDataFolder: GlobalShared.DataPath);
-            
-            await _WebView.EnsureCoreWebView2Async(environment);
+            await _WebView.EnsureCoreWebView2Async(
+                await CoreWebView2Environment.CreateAsync(userDataFolder: GlobalShared.DataPath)
+            );
 
             #if RELEASE
             _WebView.CoreWebView2.Settings.AreDevToolsEnabled            = false;
@@ -132,8 +131,7 @@ public partial class WonRafflesControl : UserControl
     {
         if (_hasCookie)
         {
-            string url = e.Uri;
-            if (url != "https://scrap.tf/raffles/won")
+            if (e.Uri != "https://scrap.tf/raffles/won")
             {
                 e.Cancel = true;
             }

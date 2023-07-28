@@ -17,7 +17,6 @@
 #endregion
 
 using Microsoft.Win32;
-
 using Scraps.Services;
 
 namespace Scraps.Controls
@@ -31,7 +30,7 @@ namespace Scraps.Controls
 
         private async void _OpenSettingsFolder_Click(object sender, EventArgs e)
         {
-            string path = Path.GetDirectoryName(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath);
+            var path = Path.GetDirectoryName(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath);
 
             await Utils.OpenDirectory(path);
         }

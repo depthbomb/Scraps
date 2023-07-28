@@ -16,12 +16,10 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
-using System.Reflection;
-using System.Diagnostics;
-
 using Scraps.Services;
 using Scraps.Resources;
 using Scraps.Extensions;
+using System.Reflection;
 
 namespace Scraps.Controls;
 
@@ -44,7 +42,7 @@ public partial class AboutControl : UserControl
     private string GetAssemblyBuildDate()
     {
         #pragma warning disable IL3000
-        string assLocation = Assembly.GetExecutingAssembly().Location;
+        var assLocation = Assembly.GetExecutingAssembly().Location;
         #pragma warning restore IL3000
         if (assLocation.IsNullOrEmpty())
         {

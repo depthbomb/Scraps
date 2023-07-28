@@ -74,18 +74,18 @@ public partial class SettingsControl : UserControl
 
     private void _SaveSettingsButton_Click(object sender, EventArgs e)
     {
-        string cookie             = _CookieInput.Text.Trim();
-        int    scanDelay          = (int)_ScanDelayInput.Value;
-        int    paginateDelay      = (int)_PaginateDelayInput.Value;
-        int    joinDelay          = (int)_JoinDelayInput.Value;
-        int    joinJitter         = (int)_JoinJitterInput.Value;
-        int    scanJitter         = (int)_ScanJitterInput.Value;
-        bool   sortByNew          = _RaffleSortByNewToggle.Checked;
-        bool   incrementScanDelay = _AutoIncrementScanDelayToggle.Checked;
-        bool   paranoid           = _ParanoidModeToggle.Checked;
-        bool   alwaysOnTop        = _TopmostToggle.Checked;
-        bool   checkUpdates       = _CheckUpdatesToggle.Checked;
-        bool   fetchAnnouncements = _FetchAnnouncementsToggle.Checked;
+        var cookie             = _CookieInput.Text.Trim();
+        var scanDelay          = (int)_ScanDelayInput.Value;
+        var paginateDelay      = (int)_PaginateDelayInput.Value;
+        var joinDelay          = (int)_JoinDelayInput.Value;
+        var joinJitter         = (int)_JoinJitterInput.Value;
+        var scanJitter         = (int)_ScanJitterInput.Value;
+        var sortByNew          = _RaffleSortByNewToggle.Checked;
+        var incrementScanDelay = _AutoIncrementScanDelayToggle.Checked;
+        var paranoid           = _ParanoidModeToggle.Checked;
+        var alwaysOnTop        = _TopmostToggle.Checked;
+        var checkUpdates       = _CheckUpdatesToggle.Checked;
+        var fetchAnnouncements = _FetchAnnouncementsToggle.Checked;
         
         if (cookie.Contains("scr_session"))
         {

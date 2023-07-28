@@ -27,8 +27,8 @@ public static class Args
         public bool   Active    { get; set; }
     }
 
-    private static readonly IList<Arg> _args           = new List<Arg>();
-    private static readonly Regex      _argPrefixRegex = new("(/|--?)", RegexOptions.Compiled);
+    private static readonly List<Arg> RegisteredArgs = new();
+    private static readonly Regex     ArgPrefixRegex = new("(/|--?)", RegexOptions.Compiled);
 
     /// <summary>
     /// Parses program args and sets registered args active if applicable.
@@ -36,7 +36,7 @@ public static class Args
     /// <param name="args">Args array from program entry</param>
     public static void Parse(IEnumerable<string> args)
     {
-        foreach (string a in args)
+        foreach (var a in args)
         {
             var arg = GetArg(a);
             if (arg != null && !arg.Active)
@@ -47,19 +47,19 @@ public static class Args
     }
 
     /// <summary>
-    /// Registers a arg that the program accepts as valid.
+    /// Registers an arg that the program accepts as valid.
     /// </summary>
     /// <param name="name">The full name of the arg</param>
     /// <param name="shortName">The short name or alias of the arg</param>
     /// <exception cref="Exception">Arg is already registered</exception>
     public static void Register(string name, string shortName)
     {
-        if (_args.Any(f => f.Name == name || f.ShortName == shortName))
+        if (RegisteredArgs.Any(f => f.Name == name || f.ShortName == shortName))
         {
             throw new Exception($"Arg {name}|{shortName} is already registered");
         }
 
-        _args.Add(new Arg
+        RegisteredArgs.Add(new Arg
         {
             Name      = name.ToLower(),
             ShortName = shortName.ToLower(),
@@ -67,7 +67,7 @@ public static class Args
     }
 
     /// <summary>
-    /// Returns true if a arg from the program args is found and active in the arg registry.
+    /// Returns true if an arg from the program args is found and active in the arg registry.
     /// </summary>
     /// <param name="arg">The arg name or short name to check the registry for</param>
     /// <returns>`true` if the arg is found in the registry and is active</returns>
@@ -80,9 +80,8 @@ public static class Args
 
     private static Arg GetArg(string input)
     {
-        string arg           = _argPrefixRegex.Replace(input.ToLower(), "");
-        var    registeredArg = _args.FirstOrDefault(f => f.Name == arg || f.ShortName == arg);
+        var arg = ArgPrefixRegex.Replace(input.ToLower(), "");
         
-        return registeredArg;
+        return RegisteredArgs.FirstOrDefault(f => f.Name == arg || f.ShortName == arg);
     }
 }

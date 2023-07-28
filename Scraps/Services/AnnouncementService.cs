@@ -57,12 +57,11 @@ public class AnnouncementService : IDisposable
             var res = await _http.GetAsync(GlobalShared.AnnouncementFileUrl);
             if (res.IsSuccessStatusCode)
             {
-                string contents = await res.Content.ReadAsStringAsync();
-
+                var contents          = await res.Content.ReadAsStringAsync();
                 var announcementLines = contents.Split("\n").ToList();
                 
                 // Iterate through the announcements instead of adding them as a range so we can raise an event per announcement.
-                foreach (string announcement in announcementLines.Where(announcement => !_announcements.Contains(announcement)))
+                foreach (var announcement in announcementLines.Where(announcement => !_announcements.Contains(announcement)))
                 {
                     if (!announcement.IsNullOrEmpty())
                     {

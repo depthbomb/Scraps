@@ -66,7 +66,7 @@ public class UpdateService : IDisposable
         
         OnCheckingUpdates?.Invoke(this, new UpdateServiceCheckingUpdatesArgs());
         
-        string json = await _http.GetStringAsync(GlobalShared.UpdateLatestReleaseEndpoint);
+        var json = await _http.GetStringAsync(GlobalShared.UpdateLatestReleaseEndpoint);
         _latestRelease = JsonSerializer.Deserialize<LatestReleaseResponse>(json);
         if (_latestRelease != null)
         {

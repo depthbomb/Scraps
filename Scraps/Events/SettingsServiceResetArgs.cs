@@ -18,6 +18,4 @@
 
 namespace Scraps.Events;
 
-public class SettingsServiceResetArgs : EventArgs
-{
-}
+public class SettingsServiceResetArgs : EventArgs { }

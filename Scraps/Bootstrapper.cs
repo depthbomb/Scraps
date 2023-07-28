@@ -16,12 +16,11 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #endregion
 
-using Microsoft.Extensions.DependencyInjection;
-
 using Scraps.Forms;
 using Scraps.Controls;
 using Scraps.Services;
 using Scraps.Resources;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Scraps;
 

@@ -89,13 +89,12 @@ public class SettingsService
         var fields = GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
         foreach (var field in fields)
         {
-            bool isConst = field.IsLiteral && !field.IsInitOnly;
-            if (isConst)
+            if (field.IsLiteral && !field.IsInitOnly)
             {
                 using (var key = Registry.CurrentUser.OpenSubKey(FullSettingsKey, true))
                 {
-                    string fieldName  = field.Name;
-                    object fieldValue = field.GetValue(null);
+                    var fieldName  = field.Name;
+                    var fieldValue = field.GetValue(null);
                     if (key.GetValue(fieldName) == null || reset)
                     {
                         if (fieldValue is int)

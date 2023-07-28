@@ -18,6 +18,4 @@
 
 namespace Scraps.Events;
 
-public class SettingsServiceSavedArgs : EventArgs
-{
-}
+public class SettingsServiceSavedArgs : EventArgs { }

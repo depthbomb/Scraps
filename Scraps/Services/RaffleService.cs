@@ -167,7 +167,7 @@ public class RaffleService : IDisposable
             _joinDelay     = _settings.GetInt("JoinDelay");
             _paginateDelay = _settings.GetInt("PaginateDelay");
             
-            bool incrementScanDelay = _settings.GetBool("IncrementScanDelay");
+            var incrementScanDelay = _settings.GetBool("IncrementScanDelay");
 
             Running = true;
 
@@ -192,7 +192,7 @@ public class RaffleService : IDisposable
 
                 Broadcast("Waiting to scan again");
 
-                int jitteredScanDelay = _scanDelay + _rng.Next(0, _settings.GetInt("ScanJitter"));
+                var jitteredScanDelay = _scanDelay + _rng.Next(0, _settings.GetInt("ScanJitter"));
 
                 _log.Info("All raffles have been entered, scanning again after {Delay} seconds", jitteredScanDelay / 1000);
 
@@ -276,9 +276,9 @@ public class RaffleService : IDisposable
     private async Task<string> GetCsrfTokenAsync()
     {
         Broadcast("Grabbing CSRF token");
-        
-        string html = await GetStringAsync();
-        var    csrf = _csrfRegex.Match(html);
+
+        var html = await GetStringAsync();
+        var csrf = _csrfRegex.Match(html);
         if (csrf.Success)
         {
             string csrfToken = csrf.Groups["CsrfToken"].Value;
@@ -294,9 +294,9 @@ public class RaffleService : IDisposable
     private async Task<string> GetBanReasonAsync()
     {
         _log.Debug("Retrieving ban reason");
-        
-        string html  = await GetStringAsync("/banappeal");
-        var    match = _banReasonRegex.Match(html);
+
+        var html  = await GetStringAsync("/banappeal");
+        var match = _banReasonRegex.Match(html);
         return match.Success ? match.Groups["Reason"].Value.Trim() : "Could not obtain reason";
     }
 
@@ -306,9 +306,9 @@ public class RaffleService : IDisposable
         
         _log.Debug("Scanning raffles");
         
-        bool         doneScanning  = false;
-        string       html          = await GetStringAsync("/raffles");
-        string       lastId        = string.Empty;
+        var doneScanning = false;
+        var html         = await GetStringAsync("/raffles");
+        var lastId       = string.Empty;
 
         while (!doneScanning && !_cancelToken.IsCancellationRequested)
         {
@@ -361,8 +361,8 @@ public class RaffleService : IDisposable
                 var raffleElements = document.QuerySelectorAll(RafflePanelSelector);
                 if (html.Contains("ScrapTF.Raffles.WithdrawRaffle"))
                 {
-                    var    wonRafflesMatch   = _wonRafflesRegex.Match(html);
-                    string wonRafflesMessage = wonRafflesMatch.Groups[0].Value;
+                    var wonRafflesMatch   = _wonRafflesRegex.Match(html);
+                    var wonRafflesMessage = wonRafflesMatch.Groups[0].Value;
 
                     OnWithdrawalAvailable?.Invoke(this, new RaffleServiceWithdrawalAvailableArgs(wonRafflesMessage));
 
@@ -383,15 +383,15 @@ public class RaffleService : IDisposable
 
                 foreach (var raffleElement in raffleElements)
                 {
-                    string elementHtml   = raffleElement.InnerHtml;
-                    var    raffleIdMatch = _entryRegex.Match(elementHtml);
+                    var elementHtml   = raffleElement.InnerHtml;
+                    var raffleIdMatch = _entryRegex.Match(elementHtml);
                     if (!raffleIdMatch.Success)
                     {
                         _log.Error("Unable to find raffle ID from {Html}", elementHtml);
                         continue;
                     }
                             
-                    string raffleId = raffleIdMatch.Groups["RaffleId"].Value;
+                    var raffleId = raffleIdMatch.Groups["RaffleId"].Value;
 
                     if (_raffleQueue.Contains(raffleId) || _enteredRaffles.Contains(raffleId)) continue;
 
@@ -405,18 +405,18 @@ public class RaffleService : IDisposable
 
     private async Task JoinRafflesAsync()
     {
-        int joinedRaffles = 0;
-        int queueCount    = _raffleQueue.Count;
+        var joinedRaffles = 0;
+        var queueCount    = _raffleQueue.Count;
         var queue         = _raffleQueue.Where(r => !_enteredRaffles.Contains(r));
-        foreach (string raffle in queue)
+        foreach (var raffle in queue)
         {
             Broadcast($"Joining raffle {raffle}");
             
-            string html        = await GetStringAsync($"/raffles/{raffle}");
-            var    hashMatch   = _hashRegex.Match(html);
-            var    limitsMatch = _limitRegex.Match(html);
-            bool   hasEnded    = html.Contains(@"data-time=""Raffle Ended""");
-            bool   paranoid    = _settings.GetBool("Paranoid");
+            var html        = await GetStringAsync($"/raffles/{raffle}");
+            var hashMatch   = _hashRegex.Match(html);
+            var limitsMatch = _limitRegex.Match(html);
+            var hasEnded    = html.Contains(@"data-time=""Raffle Ended""");
+            var paranoid    = _settings.GetBool("Paranoid");
             
             if (hasEnded)
             {
@@ -429,8 +429,8 @@ public class RaffleService : IDisposable
             
             if (limitsMatch.Success)
             {
-                int num = int.Parse(limitsMatch.Groups["Entered"].Value);
-                int max = int.Parse(limitsMatch.Groups["Max"].Value);
+                var num = int.Parse(limitsMatch.Groups["Entered"].Value);
+                var max = int.Parse(limitsMatch.Groups["Max"].Value);
                 if (paranoid && num < 2)
                 {
                     _log.Info("Skipping raffle {Id} because it has too few entries (paranoid mode)", raffle);
@@ -483,8 +483,8 @@ public class RaffleService : IDisposable
                 };
                 var response = await _http.SendAsync(httpRequest, _cancelToken);
 
-                string json               = await response.Content.ReadAsStringAsync(_cancelToken);
-                var    joinRaffleResponse = JsonSerializer.Deserialize<JoinRaffleResponse>(json);
+                var json               = await response.Content.ReadAsStringAsync(_cancelToken);
+                var joinRaffleResponse = JsonSerializer.Deserialize<JoinRaffleResponse>(json);
                 if (joinRaffleResponse is { Success: true })
                 {
                     joinedRaffles++;
@@ -500,7 +500,7 @@ public class RaffleService : IDisposable
                     _log.Error("Unable to join raffle {Id}: {Message}", raffle, joinRaffleResponse?.Message ?? "Unknown");
                 }
 
-                int jitteredJoinDelay = _joinDelay + _rng.Next(0, _settings.GetInt("JoinJitter"));
+                var jitteredJoinDelay = _joinDelay + _rng.Next(0, _settings.GetInt("JoinJitter"));
 
                 _log.Info("Waiting for next raffle, attempting to join in {Delay} seconds", jitteredJoinDelay / 1000);
 
@@ -570,7 +570,7 @@ public class RaffleService : IDisposable
             return await res.Content.ReadAsStringAsync(_cancelToken);
         }
         
-        string body = await res.Content.ReadAsStringAsync(_cancelToken);
+        var body = await res.Content.ReadAsStringAsync(_cancelToken);
         
         if (body.Contains(CloudflareString))
             throw new CloudflareException("Scrap.TF is displaying a Cloudflare challenge and Scraps cannot continue. Please try again later. This is not a bug so do not report it.");
@@ -592,7 +592,7 @@ public class RaffleService : IDisposable
 
     private async Task<AccountBannedException> ThrowAccountBannedAsync()
     {
-        string banReason = await GetBanReasonAsync();
+        var banReason = await GetBanReasonAsync();
         return new AccountBannedException(banReason);
     }
 

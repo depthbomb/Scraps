@@ -46,13 +46,13 @@ public class WebViewService
 
     public async Task InstallRuntimeAsync()
     {
-        string downloadUrl =  GlobalShared.WebView2InstallerUrl;
+        var downloadUrl = GlobalShared.WebView2InstallerUrl;
         using (var http = new HttpClient())
         {
             _log.Debug("Downloading WebView2 runtime from {Url}", downloadUrl);
-            
-            string downloadPath = Path.GetTempFileName();
-            var    res          = await http.GetAsync(downloadUrl);
+
+            var downloadPath = Path.GetTempFileName();
+            var res          = await http.GetAsync(downloadUrl);
             if (res.IsSuccessStatusCode)
             {
                 try
