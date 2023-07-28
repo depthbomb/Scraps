@@ -33,7 +33,7 @@ public static class GlobalShared
     public static Version      VersionAsDotNet() => new(MajorVersion, MinorVersion, PatchVersion, HotfixVersion);
     public const  int          MajorVersion       = 5;
     public const  int          MinorVersion       = 3;
-    public const  int          PatchVersion       = 5;
+    public const  int          PatchVersion       = 6;
     public const  int          HotfixVersion      = 0;
     public const  ReleaseTypes VersionReleaseType = ReleaseTypes.Release;
     public static string       SemVerVersion => $"{MajorVersion}.{MinorVersion}.{PatchVersion}.{HotfixVersion}";

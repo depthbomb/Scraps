@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.3.6.0
+
+- Updated to work after a recent site update
+
 ## 5.3.5.0
 
 - Updated dependencies

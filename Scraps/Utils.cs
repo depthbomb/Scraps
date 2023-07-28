@@ -51,5 +51,5 @@ public static class Utils
     /// </summary>
     /// <param name="cookie">Cookie value string</param>
     public static bool IsValidCookie(string cookie)
-        => !cookie.IsNullOrEmpty() && cookie.Length > 200;
+        => !cookie.IsNullOrEmpty() && cookie.Length >= 26;
 }

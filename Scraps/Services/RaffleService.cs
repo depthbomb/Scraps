@@ -266,9 +266,9 @@ public class RaffleService : IDisposable
         var client = new HttpClient(handler);
             client.BaseAddress = new Uri("https://scrap.tf");
             client.DefaultRequestHeaders.Add("user-agent", UserAgent);
-            client.DefaultRequestHeaders.Add("cookie", "scr_session=" + _cookie);
+            client.DefaultRequestHeaders.Add("cookie", "scraptf=" + _cookie);
 
-        _log.Debug("Created HTTP client (cookie={First32}...{Last32},{Length})", _cookie[..32], _cookie[^32..], _cookie.Length);
+        _log.Debug("Created HTTP client (cookie={First32}..{Last32},{Length})", _cookie[..4], _cookie[^4..], _cookie.Length);
         
         return client;
     }
@@ -281,7 +281,7 @@ public class RaffleService : IDisposable
         var csrf = _csrfRegex.Match(html);
         if (csrf.Success)
         {
-            string csrfToken = csrf.Groups["CsrfToken"].Value;
+            var csrfToken = csrf.Groups["CsrfToken"].Value;
             
             OnCsrfTokenObtained?.Invoke(this, new RaffleServiceCsrfTokenObtainedArgs(csrfToken));
             

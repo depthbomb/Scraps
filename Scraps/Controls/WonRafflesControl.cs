@@ -77,7 +77,7 @@ public partial class WonRafflesControl : UserControl
         ClearBrowserData();
         _WebView.CoreWebView2.CookieManager.DeleteAllCookies();
         _WebView.CoreWebView2.CookieManager.AddOrUpdateCookie(
-            _WebView.CoreWebView2.CookieManager.CreateCookie("scr_session", _settings.GetString("Cookie"), "scrap.tf", "/")
+            _WebView.CoreWebView2.CookieManager.CreateCookie("scraptf", _settings.GetString("Cookie"), "scrap.tf", "/")
         );
     }
 

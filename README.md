@@ -31,7 +31,6 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Features
 
-- Cross-platform CLI version available [here.](https://github.com/depthbomb/RaffleRunner)
 - Fast and lightweight; no need to install Python/Node.JS/Java/etc, doesn't use browser automation
 - Configurable
 - Detailed logging so you can see everything it does and makes it easier to report problems
@@ -43,7 +42,7 @@ It uses no exploits, doesn't rely on slow and clunky browser automation, and all
 
 ## Finding your Cookie
 
-Scraps requires your Scrap.TF session cookie, `scr_session` to function. This can be found by accessing your browser's dev tools (usually by pressing `F12`), going to **Application** and then **Cookies**. This process may differ depending on your browser.
+Scraps requires your Scrap.TF session cookie, `scraptf` to function. This can be found by accessing your browser's dev tools (usually by pressing `F12`), going to **Application** and then **Cookies**. This process may differ depending on your browser.
 
 ## Launch Flags
 

@@ -87,9 +87,9 @@ public partial class SettingsControl : UserControl
         var checkUpdates       = _CheckUpdatesToggle.Checked;
         var fetchAnnouncements = _FetchAnnouncementsToggle.Checked;
         
-        if (cookie.Contains("scr_session"))
+        if (cookie.Contains("scraptf"))
         {
-            Utils.ShowError(null, "Invalid Cookie Value", "Your cookie value is invalid. Make sure that you input ONLY the value of the scr_session cookie.");
+            Utils.ShowError(null, "Invalid Cookie Value", "Your cookie value is invalid. Make sure that you input ONLY the value of the scraptf cookie.");
             return;
         }
         
