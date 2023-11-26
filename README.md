@@ -1,3 +1,10 @@
+> [!IMPORTANT]
+> Scraps development has ended due to a combination of tighter anti-bot measures to attempt to work around and my lack of interest (considering I haven't used the software myself to gain items in over a year, raffles won during development were not claimed).
+>
+> The repository is archived and thus won't accept any contributions. If you wish to continue development of the project then you can fork the repository.
+
+---
+
 <p align="center">
 	<table>
 		<tbody>
